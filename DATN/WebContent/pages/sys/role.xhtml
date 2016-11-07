@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:form id="form-role" class="container-fluid">
+	<div class="row">
+		<div class="col-xs-12 col-md-2">
+			<p:outputLabel value="#{msg['role.ID']}" />
+		</div>
+		<div class="col-xs-12 col-md-4">
+			<p:inputText value="#{roleBean.sysRole.id}" readonly="true"
+				styleClass="form-control" />
+		</div>
+		<div class="col-xs-12 col-md-2">
+			<p:outputLabel value="#{msg['role.type']}" />
+		</div>
+		<div class="col-xs-12 col-md-4">
+			<h:selectOneMenu required="true" value="#{roleBean.sysRole.roleType}"
+				styleClass="form-control select">
+				<f:selectItems value="#{roleBean.getRoleTypeList().entrySet()}"
+					var="entry" itemValue="#{entry.key}" itemLabel="#{entry.value}"></f:selectItems>
+			</h:selectOneMenu>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-12 col-md-2">
+			<p:outputLabel value="#{msg['role.name']}" />
+		</div>
+		<div class="col-xs-12 col-md-4">
+			<p:inputText value="#{roleBean.sysRole.name}" maxlength="100"
+				required="true" requiredMessage="#{msg['common.required']}"
+				styleClass="form-control" />
+		</div>
+		<div class="col-xs-12 col-md-2">
+			<p:outputLabel value="#{msg['role.desc']}" />
+		</div>
+		<div class="col-xs-12 col-md-4">
+			<p:inputText value="#{roleBean.sysRole.description}" maxlength="100"
+				styleClass="form-control" />
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-12 col-md-4 col-md-offset-8">
+			<p:commandButton id="btnNew" value="#{msg['common.addNew']}"
+				actionListener="#{roleBean.btnNew}" rendered="#{!roleBean.editing}"
+				update="form-role" styleClass="btn btn-primary" immediate="true"
+				resetValues="true">
+			</p:commandButton>
+			<p:commandButton id="btnSave" value="#{msg['common.save']}"
+				actionListener="#{roleBean.btnSave}" rendered="#{roleBean.editing}"
+				update="ID_RoleTable form-role" styleClass="btn btn-default">
+			</p:commandButton>
+			<p:commandButton id="btnCancel" value="#{msg['common.cancel']}"
+				actionListener="#{roleBean.btnCancel}"
+				rendered="#{roleBean.editing}" update="form-role"
+				styleClass="btn btn-default" immediate="true" resetValues="true">
+			</p:commandButton>
+		</div>
+	</div>
+
+	<!-- <p:remoteCommand name="commandName" action="#{roleBean.searchRole()}"
+		update="ID_RoleTable" autoRun="true" /> -->
+
+
+	<p:dataTable id="ID_RoleTable" var="role"
+		value="#{roleBean.listSysRole}" rowIndexVar="rowIndex"
+		paginator="true" rows="20" paginatorPosition="bottom"
+		selectionMode="single" rowKey="#{role.id}">
+
+		<!-- <p:ajax event="rowSelect" listener="#{roleBean.onRowSelect}" update="form-role"/> -->
+
+		<p:column headerText="#" styleClass="widthSTTcolumn">
+			<h:outputText value="#{rowIndex+1}" />
+		</p:column>
+		<p:column headerText="#{msg['role.type']}">
+			<h:outputText value="#{roleBean.getRoleTypeLabel(role.roleType)}" />
+		</p:column>
+		<p:column headerText="#{msg['role.name']}" sortBy="#{role.name}"
+			filterBy="#{role.name}" filterMatchMode="contains">
+			<h:outputText value="#{role.name}" />
+		</p:column>
+		<p:column headerText="#{msg['role.desc']}"
+			sortBy="#{role.description}" filterBy="#{role.description}"
+			filterMatchMode="contains">
+			<h:outputText value="#{role.description}" />
+		</p:column>
+
+		<p:column headerText="#{msg['common.action']}"
+			styleClass="actionColumn">
+			<p:commandLink
+				actionListener="#{roleBean.onRowEdit(role)}"
+				update="form-role"
+				immediate="true"
+				styleClass="btn btn-sm btn-action-edit colorStrongGreen">
+				<i class="fa fa-pencil icon-only mr-0"></i>
+			</p:commandLink>					
+			<p:commandLink
+				actionListener="#{roleBean.onRowDelete(role)}"
+				update="ID_RoleTable"
+				immediate="true"
+				styleClass="btn btn-sm btn-action-del colorRed">
+				<i class="fa fa-times icon-only mr-0"></i>
+				<p:confirm header="#{msg['common.delete']}"
+					message="#{msg['common.confirmDelete']}" icon="ui-icon-alert" />
+			</p:commandLink>
+		</p:column>
+	</p:dataTable>
+</h:form>
+
+</html>

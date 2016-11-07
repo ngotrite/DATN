@@ -1,0 +1,75 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+<ui:composition>
+	<aside id="left-panel"> <nav>
+	<ul>
+		<li class="icon-member level1 cate-leftpn">
+			<div class="input-group"
+				style="margin-left: 10px; margin-right: 10px; padding: 6px 0; border-radius: 5px;">
+				<span class="input-group-addon" style="padding: 7px 15px 6px 3px;"><i
+					class="fa fa-search"></i></span> <input type="text" id="keyword_menu"
+					placeholder="Search menu..." style="margin-top: 1px;" />
+			</div>
+		</li>
+		<li class="icon-home cate-leftpn"><a href="#" title="Home"> <i
+				class="fa fa-lg fa-fw fa-home"></i> <span class="menu-item-parent">Home</span>
+		</a>
+			<ul>
+				
+			</ul></li>
+		<li class="cate-leftpn"><a href="#" title="Catalog Management">
+				<i class="fa fa-book"></i> <span class="menu-item-parent">Catalog
+					Management</span>
+		</a>
+			<ul>
+				<li><a
+					href="#{request.contextPath}/pages/catalog/student.xhtml"
+					title="Sinh viên"><i class="fa fa-arrow-circle-right"></i><span>Sinh
+							viên</span></a></li>
+
+			</ul></li>
+		<li class="cate-leftpn"><a href="#" title="Graduated Management">
+				<i class="fa fa-book"></i> <span class="menu-item-parent">Graduated
+					Management</span>
+		</a>
+			<ul>
+				<li><a
+					href="#{request.contextPath}/pages/student/gruaduation_period.xhtml"
+					title="Đợt tốt nghiệp"><i class="fa fa-arrow-circle-right"></i><span>Đợt
+							tốt nghiệp</span></a></li>
+
+			</ul></li>
+
+		<li class="cate-leftpn"><a href="#" title="Policies"><i
+				class="fa fa fa-dollar"></i> <span class="menu-item-parent">Tools</span></a>
+			<ul>
+				<li><a
+					href="#{request.contextPath}/pages/tools/subject_dictionary.xhtml"
+					title="Từ điển môn học"><i class="fa fa-arrow-circle-right"></i><span>Từ điển
+							môn học</span></a></li>
+				<li><a
+					href="#{request.contextPath}/pages/tools/test_score_admin.xhtml"
+					title="Danh sách điểm thi"><i class="fa fa-arrow-circle-right"></i><span>Danh sách
+							điểm thi</span></a></li>
+			</ul></li>
+		<li class="cate-leftpn"><a href="#" title="Settings"><i
+				class="fa fa fa-cog"></i> <span class="menu-item-parent">Settings</span></a>
+			<ul>
+			<li><a
+					href="#{request.contextPath}/pages/sys/user_management.xhtml"
+					title="User"><i class="fa fa-user"></i>User Management</a></li>
+			</ul>
+			</li>
+
+	</ul>
+	</nav> </aside>
+	<!-- END NAVIGATION -->
+</ui:composition>
+
+</html>

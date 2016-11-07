@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+</h:head>
+<ui:composition template="../templates/vcbsContentTemplate.xhtml">
+	<ui:define name="content">
+		<div class="col-xs-12 container-fluid"
+			style="padding: 2px;">
+			<div class="box box-default box-solid">
+				<!-- <div class="box-header with-border">
+					<h3 class="box-title">Content</h3>
+					<div class="box-tools pull-right">
+						                                <button type="button" class="btn btn-box-tool"><i class="fa fa-angle-left"></i>
+						                                </button>
+					</div>
+				</div> -->
+				<div class="box-body">
+					<div class="heightContentTree">
+						<p:panel id="categoryCommonTop">
+							<h:form id="form-CategoryList" class="container-fluid"
+								rendered="#{treeCommonBean.formType eq 'cat-list' }">
+								<div class="row">
+									<div
+										class="col-xs-2 col-md-2 col-xs-offset-10 col-md-offset-10">
+										<p:commandButton id="btnNewInList"
+											value="#{msg['common.addNew']}"
+											actionListener="#{treeCommonBean.btnCatNew}"
+											update="categoryCommonTop" styleClass="btn btn-primary"
+											immediate="true" resetValues="true">
+										</p:commandButton>
+									</div>
+									<div class="col-xs-12 col-md-12">
+										<p:dataTable id="ID_CategoryTable" var="category"
+											value="#{treeCommonBean.listAllCategory}"
+											rowKey="#{category.categoryId}"
+											emptyMessage="#{msg['common.noData']}" paginator="true"
+											rows="10" paginatorPosition="bottom"
+											paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+											rowsPerPageTemplate="10,20,50,100">
+											<p:column headerText="#{msg['common.ID']}">
+												<h:outputText value="#{category.categoryId}" />
+											</p:column>
+
+											<p:column headerText="#{msg['common.name']}">
+												<h:outputText value="#{category.categoryName}" />
+											</p:column>
+
+											<p:column headerText="#{msg['common.desc']}">
+												<h:outputText value="#{category.remark}" />
+											</p:column>
+											<p:column headerText="#{msg['common.action']}"
+												styleClass="text-center">
+												<p:commandLink
+													actionListener="#{treeCommonBean.editCategory(category)}"
+													update="categoryCommonTop contentPanel">
+													<h:outputText value="#{msg['common.edit']}"></h:outputText>
+												</p:commandLink>
+												<h:outputText value=" / "></h:outputText>
+												<p:commandLink
+													actionListener="#{treeCommonBean.deleteCategory(category)}"
+													update="categoryCommonTop treeCommon">
+													<h:outputText value="#{msg['common.delete']}"></h:outputText>
+													<p:confirm header="#{msg['common.delete']}"
+														message="#{msg['common.confirmDelete']}"
+														icon="ui-icon-alert" />
+												</p:commandLink>
+											</p:column>
+										</p:dataTable>
+									</div>
+								</div>
+							</h:form>
+							<h:form id="form-cat" class="container-fluid"
+								rendered="#{treeCommonBean.formType eq 'cat-form'}">
+								<div class="row">
+									<div class="col-xs-12 col-md-8 col-md-offset-2">
+										<p:outputLabel value="#{msg['cat.ID']}" />
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-xs-12 col-md-8 col-md-offset-2">
+										<p:inputText value="#{treeCommonBean.category.categoryId}"
+											readonly="true" styleClass="form-control" />
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-xs-12 col-md-8 col-md-offset-2">
+										<p:outputLabel value="#{msg['cat.type']}" />
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-xs-12 col-md-8 col-md-offset-2">
+										<p:selectOneMenu id="CatType" required="true"
+											value="#{treeCommonBean.category.categoryType}"
+											styleClass="form-control select">
+											<f:selectItems
+												value="#{treeCommonBean.getListCatType().entrySet()}"
+												var="entry" itemValue="#{entry.key}"
+												itemLabel="#{entry.value}"></f:selectItems>
+										</p:selectOneMenu>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-xs-12 col-md-8 col-md-offset-2">
+										<p:outputLabel value="#{msg['cat.parent']}" />
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-xs-12 col-md-8 col-md-offset-2">
+										<p:selectOneMenu value="#{treeCommonBean.categoryParentId}"
+											styleClass="form-control select">
+											<f:selectItems value="#{treeCommonBean.listParent}" var="cat"
+												itemValue="#{cat.categoryId}"
+												itemLabel="#{cat.categoryName}"></f:selectItems>
+										</p:selectOneMenu>
+									</div>
+								</div>
+
+								<div class="row">
+									<div class="col-xs-12 col-md-8 col-md-offset-2">
+										<p:outputLabel value="#{msg['cat.name']}" />
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-xs-12 col-md-8 col-md-offset-2">
+										<p:inputText value="#{treeCommonBean.category.categoryName}"
+											required="true" styleClass="form-control" />
+									</div>
+								</div>
+								<div class="row" style="padding-bottom: -30px">
+									<div class="col-xs-12 col-md-8 col-md-offset-2">
+										<p:outputLabel value="#{msg['cat.remark']}" />
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-xs-12 col-md-8 col-md-offset-2">
+										<p:inputText value="#{treeCommonBean.category.remark}"
+											styleClass="form-control" />
+									</div>
+								</div>
+
+								<div class="row">
+									<div class="col-xs-12 col-md-4 col-md-offset-6">
+										<p:commandButton id="btnNew" value="#{msg['common.addNew']}"
+											actionListener="#{treeCommonBean.btnCatNew}"
+											rendered="#{!treeCommonBean.editing}"
+											update="categoryCommonTop " styleClass="btn btn-primary"
+											immediate="true" resetValues="true">
+										</p:commandButton>
+										<p:commandButton id="btnSave" value="#{msg['common.save']}"
+											actionListener="#{treeCommonBean.btnCatSave}"
+											rendered="#{treeCommonBean.editing}"
+											update="categoryCommonTop treeCommon"
+											styleClass="btn btn-default">
+										</p:commandButton>
+										<p:commandButton id="btnCancel"
+											value="#{msg['common.cancel']}"
+											actionListener="#{treeCommonBean.btnCatCancel}"
+											rendered="#{treeCommonBean.editing}"
+											update="categoryCommonTop" styleClass="btn btn-default"
+											immediate="true" resetValues="true">
+										</p:commandButton>
+									</div>
+								</div>
+
+								<div class="row" style="padding-bottom: 10px;">
+									<div class="col-xs-12 col-md-8">
+										<p:outputLabel value="#{treeCommonBean.categoryTitle}"
+											style="font-weight:bold" />
+									</div>
+								</div>
+								<div class="col-xs-12 col-md-12">
+									<p:dataTable id="ID_SubCatTable" var="item"
+										value="#{treeCommonBean.listSubCategory}"
+										rowKey="#{item.categoryId}"
+										emptyMessage="#{msg['common.noData']}" paginator="true"
+										rows="10" paginatorPosition="bottom"
+										paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+										rowsPerPageTemplate="10,20,50,100">
+										<p:column headerText="#{msg['common.ID']}">
+											<h:outputText value="#{item.categoryId}" />
+										</p:column>
+
+										<p:column headerText="#{msg['common.name']}">
+											<h:outputText value="#{item.categoryName}" />
+										</p:column>
+
+										<p:column headerText="#{msg['common.desc']}">
+											<h:outputText value="#{item.remark}" />
+										</p:column>
+										<p:column headerText="#{msg['common.action']}"
+											styleClass="text-center">
+											<p:commandLink
+												actionListener="#{treeCommonBean.editCategory(item)}"
+												update="ID_SubCatTable form-cat contentPanel">
+												<h:outputText value="#{msg['common.edit']}"></h:outputText>
+											</p:commandLink>
+											<h:outputText value=" / "></h:outputText>
+											<p:commandLink
+												actionListener="#{treeCommonBean.deleteCategory(item)}"
+												update="ID_SubCatTable form-cat contentPanel treeCommon">
+												<h:outputText value="#{msg['common.delete']}"></h:outputText>
+												<p:confirm header="#{msg['common.delete']}"
+													message="#{msg['common.confirmDelete']}"
+													icon="ui-icon-alert" />
+											</p:commandLink>
+										</p:column>
+									</p:dataTable>
+								</div>
+							</h:form>
+						</p:panel>
+						<p:panel id="contentPanel">
+							<p:panel rendered="#{treeCommonBean.formType ne 'cat-list'}">
+								<ui:insert name="subcontent" />
+							</p:panel>
+							<p:panel rendered="#{treeCommonBean.page == 'offer'}">
+								<ui:include src="offer/offer.xhtml"></ui:include>
+							</p:panel>
+						</p:panel>
+					</div>
+				</div>
+			</div>
+		</div>
+	</ui:define>
+</ui:composition>
+</html>

@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:pe="http://primefaces.org/ui">
+
+<ui:composition template="../../templates/vcbsContentTemplate.xhtml">
+	<ui:define name="content">
+
+		<h:form id="form-sd-input" class="container-fluid">
+
+			<div class="row formFieldMg">
+
+				<div class="col-xs-12 col-sm-12">
+					<div class="row">
+						<div class="col-xs-12 col-md-6">
+							<p:outputLabel value="#{msg['title.subjectDictionary']}"
+								styleClass="line32" />
+						</div>
+
+						<div class="col-xs-12 col-md-2">
+							<p:fileUpload
+								fileUploadListener="#{subjectDictionaryBean.uploadExel}"
+								mode="advanced" auto="true"
+								update="form-sd-list:dtSubjectDictionary" label="Import"
+								styleClass="fupload" allowTypes="/(\.|\/)(xls)$/"
+								sizeLimit="10000000"
+								invalidSizeMessage="#{msg['validate.importSize']}"
+								invalidFileMessage="#{msg['validate.importFormatXLS']}" />
+						</div>
+
+						<!-- 						<div class="col-xs-12 col-md-2"> -->
+						<!-- 							<p:commandButton value="#{msg['common.addNew']}" type="submit" -->
+						<!-- 								actionListener="#{subjectDictionaryBean.showDialogSD(null)}" -->
+						<!-- 								update="dlgSubjectDictionary" styleClass="btn btn-default"> -->
+						<!-- 							</p:commandButton> -->
+						<!-- 														oncomplete="PF('dlgSubjectDictionaryWV').show();" -->
+
+						<!-- 						</div> -->
+
+						<div class="col-xs-12 col-md-2" align="right">
+							<p:commandButton value="#{msg['common.apply']}" type="submit"
+								actionListener="#{subjectDictionaryBean.saveSubjectDictionary()}"
+								update="form-sd-list:dtSubjectDictionary"
+								styleClass="btn btn-default pull-right">
+								<p:confirm header="#{msg['common.apply']}"
+									message="#{msg['common.confirm_apply']}" icon="ui-icon-alert" />
+							</p:commandButton>
+
+						</div>
+					</div>
+				</div>
+
+
+			</div>
+
+
+
+
+		</h:form>
+
+
+		<h:form id="form-sd-list" class="container-fluid">
+
+			<p:dataTable var="item"
+				value="#{subjectDictionaryBean.subjectDictionaries}"
+				id="dtSubjectDictionary" rowKey="#{item.subjectId}"
+				emptyMessage="#{msg['common.noData']}" paginator="true" rows="20"
+				paginatorPosition="bottom" rowIndexVar="rowIndex"
+				widgetVar="tblGeoNetWidgetVar"
+				selection="#{subjectDictionaryBean.subjectDictionariesSelection}"
+				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="10,20,50,100">
+
+
+
+				<p:column selectionMode="multiple"
+					style="width:5%;text-align:center" />
+				<p:ajax event="rowSelectCheckbox" update="dtSubjectDictionary"
+					listener="#{subjectDictionaryBean.selectEvent}" />
+				<p:ajax event="rowUnselectCheckbox" update="buttonRemove"
+					listener="#{subjectDictionaryBean.selectEvent}" />
+				<p:ajax event="toggleSelect" update="buttonRemove"
+					listener="#{subjectDictionaryBean.selectEvent}" />
+				<p:ajax event="rowSelect" update="buttonRemove"
+					listener="#{subjectDictionaryBean.selectEvent}" />
+				<p:ajax event="rowUnselect" update="buttonRemove"
+					listener="#{subjectDictionaryBean.selectEvent}" />
+
+
+				<p:column style="width:10%" headerText="#{msg['common.index']}">
+					<h:outputText value="#{rowIndex + 1}" />
+				</p:column>
+
+				<p:column sortBy="#{item.subjectId}" filterBy="#{item.subjectId}"
+					filterMatchMode="contains" headerText="#{msg['sb.subjectId']}">
+					<h:outputText value="#{item.subjectId}" />
+				</p:column>
+
+				<p:column sortBy="#{item.subject}" filterBy="#{item.subject}"
+					filterMatchMode="contains" headerText="#{msg['sb.subject']}">
+					<h:outputText value="#{item.subject}" />
+				</p:column>
+
+				<p:column sortBy="#{item.credit}" filterBy="#{item.credit}"
+					filterMatchMode="contains" headerText="#{msg['sb.credit']}">
+					<h:outputText value="#{item.credit}" />
+				</p:column>
+
+				<p:column headerText="#{msg['common.action']}"
+					style="text-align:center;">
+					<p:commandLink update="dlgSubjectDictionary"
+						actionListener="#{subjectDictionaryBean.showDialogSD(item)}"
+						styleClass="btn btn-sm btn-action-edit colorBlue">
+						<i class="fa fa-pencil icon-only mr-0"></i>
+					</p:commandLink>
+
+					<p:commandLink update="dtSubjectDictionary"
+						actionListener="#{subjectDictionaryBean.cmdDeleteSD(item)}"
+						styleClass="btn btn-sm btn-action-del colorRed">
+						<i class="fa fa-times icon-only mr-0"></i>
+						<p:confirm header="#{msg['common.delete']}"
+							message="#{msg['common.confirmDelete']}" icon="ui-icon-alert" />
+					</p:commandLink>
+
+					<f:facet name="header">
+						<p:commandButton value="#{msg['common.addNew']}" type="submit"
+							actionListener="#{subjectDictionaryBean.showDialogSD(null)}"
+							update="dlgSubjectDictionary" styleClass="btn btn-primary"
+							immediate="true">
+						</p:commandButton>
+					</f:facet>
+				</p:column>
+
+				<f:facet name="footer">
+					<p:commandButton value="#{msg['common.deleteSelected']}"
+						id="buttonRemove" update="dtSubjectDictionary"
+						disabled="#{!subjectDictionaryBean.activeButton()}"
+						actionListener="#{subjectDictionaryBean.commandRemoveSD()}"
+						styleClass="pull-right">
+						<p:confirm header="#{msg['common.delete']}"
+							message="#{msg['common.confirmDelete']}" icon="ui-icon-alert" />
+					</p:commandButton>
+				</f:facet>
+			</p:dataTable>
+		</h:form>
+
+		<!-- DIALOG SUBJECT DICTIONARY -->
+
+
+
+		<p:dialog header="#{msg['sb.subjectDictionary']}" modal="true"
+			id="dlgSubjectDictionary" resizable="false" showEffect="fade"
+			position="100,200" widgetVar="dlgSubjectDictionaryWV" height="300px"
+			width="600px">
+			<h:form id="form-geonet" class="container-fluid">
+				<div class="row formFieldMg">
+					<div class="col-xs-12 col-sm-12">
+						<div class="row">
+							<div class="col-xs-12 col-md-4">
+								<p:outputLabel value="#{msg['sb.subjectId']}" />
+							</div>
+							<div class="col-xs-12 col-md-7">
+								<p:inputText
+									readonly="#{subjectDictionaryBean.subjectDictionary.subjectId ne null}"
+									value="#{subjectDictionaryBean.subjectDictionary.subjectId}"
+									styleClass="form-control"
+									requiredMessage="#{msg['common.required']}" />
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-xs-12 col-md-4">
+								<p:outputLabel value="#{msg['sb.subject']}" />
+							</div>
+							<div class="col-xs-12 col-md-7">
+								<p:inputText
+									value="#{subjectDictionaryBean.subjectDictionary.subject}"
+									styleClass="form-control"
+									requiredMessage="#{msg['common.required']}" />
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-xs-12 col-md-4">
+								<p:outputLabel value="#{msg['sb.credit']}" />
+							</div>
+							<div class="col-xs-12 col-md-7">
+								<p:inputText
+									value="#{subjectDictionaryBean.subjectDictionary.credit}"
+									styleClass="form-control"
+									requiredMessage="#{msg['common.required']}" />
+								<pe:keyFilter regEx="/[0-9]/i" />
+							</div>
+						</div>
+
+
+						<div class="row">
+							<div class="col-xs-12 col-md-4">
+								<p:commandButton value="#{msg['common.apply']}" type="submit"
+									actionListener="#{subjectDictionaryBean.cmdApplyDLGSD()}"
+									styleClass="pull-right"
+									update="form-sd-list:dtSubjectDictionary">
+									<p:confirm header="#{msg['common.apply']}"
+										message="#{msg['common.confirm_apply']}" icon="ui-icon-alert" />
+								</p:commandButton>
+
+							</div>
+						</div>
+
+
+
+
+					</div>
+				</div>
+			</h:form>
+		</p:dialog>
+
+
+
+	</ui:define>
+</ui:composition>
+
+</html>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<faces-config xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_2.xsd"
+	version="2.2">
+
+	<application>
+		<!-- <el-resolver> org.springframework.web.jsf.el.SpringBeanFacesELResolver 
+			</el-resolver> -->
+		<locale-config>
+			<default-locale>en</default-locale>
+			<supported-locale>vi</supported-locale>
+		</locale-config>
+		<resource-bundle>
+			<base-name>resources.lang</base-name>
+			<var>msg</var>
+		</resource-bundle>
+		<message-bundle>
+		  	resources.MyMessages
+		</message-bundle>
+		<action-listener>
+			org.primefaces.application.DialogActionListener
+		</action-listener>
+		<navigation-handler>
+			org.primefaces.application.DialogNavigationHandler
+		</navigation-handler>
+		<view-handler>
+			org.primefaces.application.DialogViewHandler
+		</view-handler>
+	</application>
+
+	<navigation-rule>
+		<from-view-id>/login.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>home</from-outcome>
+			<to-view-id>/index.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+</faces-config>
