@@ -76,9 +76,7 @@ VIETTEL PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
 	<!-- Content Template CSS -->
 	<link rel="stylesheet" type="text/css" media="screen"
 		href="#{request.contextPath}/resources/themes/smartadmin/css/customContent.css" />
-	
-	<link rel="stylesheet" type="text/css" media="screen"
-		href="#{request.contextPath}/resources/newTheme/css/styleSheet.css" />
+
 	<!-- iOS web-app metas : hides Safari UI Components and Changes Status Bar Appearance -->
 	<meta name="apple-mobile-web-app-capable" content="yes" />
 	<meta name="apple-mobile-web-app-status-bar-style" content="black" />
@@ -93,6 +91,7 @@ VIETTEL PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
 	<link rel="apple-touch-startup-image"
 		href="#{request.contextPath}/resources/themes/smartadmin/img/splash/iphone.png"
 		media="screen and (max-device-width: 320px)" />
+
 	<script type="text/javascript"
 		src="#{request.contextPath}/resources/js/advance.js" />
 	<script type="text/javascript"
@@ -104,8 +103,6 @@ VIETTEL PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
 </h:head>
 
 <body oncontextmenu="return false;">
-	<div class="container">
-        <div class="row">
 	<f:view locale="#{userSession.language}" contentType="text/html"
 		id="viewLocale">
 		<p:ajaxStatus
@@ -141,23 +138,25 @@ VIETTEL PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
 		<ui:insert name="header">
 			<ui:include src="vcbsHeader.xhtml" />
 		</ui:insert>
-		
-		<div class="body">
-			<div class="container-fluid">
-				<div class="col-xs-12  login-right">
-					<div class="box-login-right">
-						<div class="content">
-							<ui:insert name="content">
-				
-							</ui:insert>
-						</div>
-					</div>
+
+		<div class="wrapper" style="clear: both;">
+			<ui:insert name="header">
+				<ui:include src="vcbsLeftMenu.xhtml" />
+			</ui:insert>
+
+			<!-- MAIN PANEL -->
+			<div id="main" role="main">
+
+				<!-- MAIN CONTENT -->
+				<div id="content">
+					<ui:insert name="content">
+
+					</ui:insert>
+
 				</div>
+				<!-- END MAIN CONTENT -->
+
 			</div>
-		</div>
-		<div id="footer">
-		    <p><strong>TRƯỜNG ĐẠI HỌC XÂY DỰNG</strong></p>
-			<p>Ðịa chỉ: 55 đường Giải Phóng, quận Hai Bà Trung, Hà Nội</p>
 		</div>
 		<!-- END MAIN PANEL -->
 		<!-- Link to Google CDN's jQuery + jQueryUI; fall back to local -->
@@ -211,7 +210,5 @@ VIETTEL PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
             </script>
 		<ui:insert name="footer_script"></ui:insert>
 	</f:view>
-		</div>
-	</div>
 </body>
 </html>

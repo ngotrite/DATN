@@ -125,7 +125,7 @@
 .ui-tabs-top .ui-tabs-nav li.ui-tabs-selected a,
 .ui-tabs-top .ui-tabs-nav li.ui-tabs-active a,
 .ui-tabs-top .ui-tabs-nav li.ui-state-hover a {
-  color: #00C292 !important;
+  color: #28306d !important;
 }
 
 
@@ -167,7 +167,7 @@
 }
 
 .btn-refresh-rt {
-	background: #00c292;
+	background: #28306d;
 }
 
 

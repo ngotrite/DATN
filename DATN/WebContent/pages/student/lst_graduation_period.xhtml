@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:pe="http://primefaces.org/ui">
+
+<ui:composition template="../../templates/vcbsContentTemplate.xhtml">
+	<ui:define name="content">
+
+		<h:form id="form-gp-list" class="container-fluid">
+
+			<p:dataTable var="item" value="#{graPeriodBean.graduationPeriods}"
+				id="dtGP" rowKey="#{item.graduationPeriodId}" selectionMode="single"
+				selection="#{graPeriodBean.graduationPeriod}"
+				emptyMessage="#{msg['common.noData']}" paginator="true" rows="20"
+				paginatorPosition="bottom" rowIndexVar="rowIndex" widgetVar="dtGPWV"
+				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="10,20,50,100">
+
+				<p:ajax event="rowSelect" listener="#{graPeriodBean.onRowSelect}"
+					update="form-sd-list:dtStudent" />
+				<p:ajax event="rowUnselect"
+					listener="#{graPeriodBean.onRowUnselect}"
+					update="form-sd-list:dtStudent" />
+
+				<p:column style="width:10%" headerText="#{msg['common.index']}">
+					<h:outputText value="#{rowIndex + 1}" />
+				</p:column>
+
+				<p:column sortBy="#{item.graduationPeriodName}"
+					filterBy="#{item.graduationPeriodName}" filterMatchMode="contains"
+					headerText="#{msg['gp.graPeriodName']}">
+					<h:outputText value="#{item.graduationPeriodName}" />
+				</p:column>
+
+				<p:column sortBy="#{item.startDate}" filterBy="#{item.startDate}"
+					filterMatchMode="contains" headerText="#{msg['gp.startDate']}">
+					<p:calendar effect="fold" value="#{item.startDate}" readonly="true" showOn="button" styleClass="calendarDisable">
+					<f:convertDateTime pattern="dd-MM-yyyy"/>
+					</p:calendar>
+
+				</p:column>
+
+				<p:column sortBy="#{item.finishDate}" filterBy="#{item.finishDate}"
+					filterMatchMode="contains" headerText="#{msg['gp.finishDate']}">
+					<p:calendar effect="fold" value="#{item.finishDate}" readonly="true" showOn="button" styleClass="calendarDisable">
+					<f:convertDateTime pattern="dd-MM-yyyy"/>
+					</p:calendar>
+				</p:column>
+
+
+			</p:dataTable>
+		</h:form>
+
+		<h:form id="form-sd-list" class="container-fluid">
+
+			<p:dataTable var="item" value="#{graPeriodBean.students}"
+				id="dtStudent" rowKey="#{item.studentId}"
+				emptyMessage="#{msg['common.noData']}" paginator="true" rows="20"
+				paginatorPosition="bottom" rowIndexVar="rowIndex"
+				widgetVar="dtStudentWV" editable="true" editMode="cell"
+				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="10,20,50,100">
+
+				<p:column style="width:10%" headerText="#{msg['common.index']}">
+					<h:outputText value="#{rowIndex + 1}" />
+				</p:column>
+
+				<p:column sortBy="#{item.studentId}" filterBy="#{item.studentId}"
+					filterMatchMode="contains" headerText="#{msg['st.studentId']}">
+					<h:outputText value="#{item.studentId}" />
+				</p:column>
+
+				<p:column sortBy="#{item.studentName}"
+					filterBy="#{item.studentName}" filterMatchMode="contains"
+					headerText="#{msg['st.studentName']}">
+					<h:outputText value="#{item.studentName}" />
+				</p:column>
+
+				<p:column sortBy="#{item._class}" filterBy="#{item._class}"
+					filterMatchMode="contains" headerText="#{msg['st.class']}">
+					<h:outputText value="#{item._class}" />
+				</p:column>
+
+				<p:column headerText="#{msg['common.status']}">
+					<p:selectBooleanCheckbox value="#{item.schoolFeeStatus}"
+						disabled="#{graPeriodBean.readOnly}">
+					</p:selectBooleanCheckbox>
+				</p:column>
+
+				<p:column headerText="#{msg['common.action']}"
+					style="text-align:center;">
+
+
+				</p:column>
+			</p:dataTable>
+		</h:form>
+
+
+	</ui:define>
+</ui:composition>
+
+</html>

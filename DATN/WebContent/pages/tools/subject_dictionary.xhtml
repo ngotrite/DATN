@@ -21,25 +21,16 @@
 								styleClass="line32" />
 						</div>
 
-						<div class="col-xs-12 col-md-2">
+						<div class="col-xs-12 col-md-4">
 							<p:fileUpload
 								fileUploadListener="#{subjectDictionaryBean.uploadExel}"
-								mode="advanced" auto="true"
+								mode="advanced" multiple="true" dragDropSupport="false"
 								update="form-sd-list:dtSubjectDictionary" label="Import"
 								styleClass="fupload" allowTypes="/(\.|\/)(xls)$/"
 								sizeLimit="10000000"
 								invalidSizeMessage="#{msg['validate.importSize']}"
 								invalidFileMessage="#{msg['validate.importFormatXLS']}" />
 						</div>
-
-						<!-- 						<div class="col-xs-12 col-md-2"> -->
-						<!-- 							<p:commandButton value="#{msg['common.addNew']}" type="submit" -->
-						<!-- 								actionListener="#{subjectDictionaryBean.showDialogSD(null)}" -->
-						<!-- 								update="dlgSubjectDictionary" styleClass="btn btn-default"> -->
-						<!-- 							</p:commandButton> -->
-						<!-- 														oncomplete="PF('dlgSubjectDictionaryWV').show();" -->
-
-						<!-- 						</div> -->
 
 						<div class="col-xs-12 col-md-2" align="right">
 							<p:commandButton value="#{msg['common.apply']}" type="submit"
@@ -53,18 +44,10 @@
 						</div>
 					</div>
 				</div>
-
-
 			</div>
-
-
-
-
 		</h:form>
 
-
 		<h:form id="form-sd-list" class="container-fluid">
-
 			<p:dataTable var="item"
 				value="#{subjectDictionaryBean.subjectDictionaries}"
 				id="dtSubjectDictionary" rowKey="#{item.subjectId}"
@@ -74,8 +57,6 @@
 				selection="#{subjectDictionaryBean.subjectDictionariesSelection}"
 				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 				rowsPerPageTemplate="10,20,50,100">
-
-
 
 				<p:column selectionMode="multiple"
 					style="width:5%;text-align:center" />
@@ -89,7 +70,6 @@
 					listener="#{subjectDictionaryBean.selectEvent}" />
 				<p:ajax event="rowUnselect" update="buttonRemove"
 					listener="#{subjectDictionaryBean.selectEvent}" />
-
 
 				<p:column style="width:10%" headerText="#{msg['common.index']}">
 					<h:outputText value="#{rowIndex + 1}" />
@@ -150,8 +130,6 @@
 
 		<!-- DIALOG SUBJECT DICTIONARY -->
 
-
-
 		<p:dialog header="#{msg['sb.subjectDictionary']}" modal="true"
 			id="dlgSubjectDictionary" resizable="false" showEffect="fade"
 			position="100,200" widgetVar="dlgSubjectDictionaryWV" height="300px"
@@ -210,16 +188,10 @@
 
 							</div>
 						</div>
-
-
-
-
 					</div>
 				</div>
 			</h:form>
 		</p:dialog>
-
-
 
 	</ui:define>
 </ui:composition>

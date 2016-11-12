@@ -21,6 +21,7 @@ import javax.faces.event.AjaxBehaviorEvent;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.poi.hssf.record.PageBreakRecord.Break;
 import org.apache.poi.util.IOUtils;
 import org.primefaces.event.FileUploadEvent;
 
@@ -28,6 +29,7 @@ import vn.edu.nuce.datn.dao.SubjectDictionaryDAO;
 import vn.edu.nuce.datn.dao.TestScoreDAO;
 import vn.edu.nuce.datn.entity.SubjectDictionary;
 import vn.edu.nuce.datn.entity.TestScore;
+import vn.edu.nuce.datn.util.ValidateUtil;
 
 @SuppressWarnings("serial")
 @ManagedBean(name = "testScoreBean")
@@ -38,7 +40,6 @@ public class TestScoreBean extends BaseController implements Serializable {
 	private List<TestScore> testScores;
 	private List<TestScore> testScoresSelection;
 	private TestScoreDAO testScoreDAO;
-	public int cout = 0;
 
 	private List<SubjectDictionary> lstSD;
 
@@ -63,24 +64,6 @@ public class TestScoreBean extends BaseController implements Serializable {
 		return false;
 	}
 
-	// DEL List Test Score
-	public void cmdRemoveTS() {
-		if (testScoresSelection.size() > 0) {
-			for (TestScore testScore : testScoresSelection) {
-				File file = new File(testScore.getFilePath());
-				file.delete();
-			}
-			testScoreDAO.delListTestScore(testScoresSelection);
-			testScoresSelection.clear();
-			activeButton();
-			loadTestScore();
-			this.showMessageINFO("validate.deleteSuccess", super.readProperties(""));
-		} else {
-			System.out.println("Fail");
-		}
-	}
-
-
 	/***** TEST SCORE *****/
 
 	public String getSubjectName(String subjectId) {
@@ -100,18 +83,76 @@ public class TestScoreBean extends BaseController implements Serializable {
 		this.showMessageINFO("common.save", "Test Score");
 	}
 
+	// Validate
+	private boolean validateTestScore() {
+		boolean result = true;
+		if (ValidateUtil.checkStringNullOrEmpty(this.testScore.getFileName())) {
+			this.showMessageWARN("testScore", super.readProperties("validate.checkValueNameNull"));
+			result = false;
+		}
+		if (testScoreDAO.checkFieldIsExist("fileName", testScore.getFileName(), this.testScore)) {
+			this.showMessageWARN("testScore", super.readProperties("validate.checkValueNameExist"));
+			result = false;
+		}
+		return result;
+	}
+
 	// DEL 1 Test Score
-	public void cmdDeleteTS(TestScore testScore) {
+	public Boolean cmdDeleteTS(TestScore testScore) {
+		boolean result;
 		if (testScore.getTestScoreId() != null) {
-			testScoreDAO.delete(testScore);
-			testScores.remove(testScore);
 			File file = new File(testScore.getFilePath());
-			file.delete();
-			this.showMessageINFO("common.delete", "Test Score");
+			if (file.exists()) {
+				if (file.delete()) {
+					testScoreDAO.delete(testScore);
+					if (testScoreDAO.get(testScore.getTestScoreId()) == null) {
+						testScores.remove(testScore);
+						result = true;
+						// this.showMessageINFO("common.delete", "Test Score");
+					} else {
+						result = false;
+						// System.out.println("xóa dữ liệu trên cơ sở dữ liệu
+						// gặp lỗi");
+					}
+				} else {
+					result = false;
+					// System.out.println("xoa file k thành công");
+
+				}
+			} else {
+				result = false;
+				// System.out.println("file k tồn tại");
+			}
+		} else {
+			result = false;
+			// System.out.println("id k tồn tại ");
+		}
+		return result;
+
+	}
+
+	// DEL List Test Score
+	public void cmdRemoveTS() {
+		if (testScoresSelection.size() > 0) {
+			Integer delFail = 0;
+			Integer delSuccess = 0;
+			for (TestScore testScore : testScoresSelection) {
+				if (cmdDeleteTS(testScore)) {
+					testScores.remove(testScore);
+					delSuccess++;
+					System.out.println(delSuccess++);
+				} else {
+					delFail++;
+					System.out.println(delFail++);
+				}
+			}
+			testScoresSelection.clear();
+			activeButton();
+			loadTestScore();
+			this.showMessageINFO("validate.deleteSuccess", super.readProperties(""));
 		} else {
 			System.out.println("Fail");
 		}
-
 	}
 
 	private void loadTestScore() {
@@ -159,47 +200,46 @@ public class TestScoreBean extends BaseController implements Serializable {
 			inputStream.close();
 
 			if (!file.exists()) {
-				file.createNewFile();
-			} else {
 				file.delete();
-				file.createNewFile();
 			}
+
+			file.createNewFile();
 
 			outputStream.flush();
 			outputStream.close();
 
 			if (selectedTestScore.getTestScoreId() != null) {
-				File fileItem = new File(selectedTestScore.getFilePath());
-				fileItem.delete();
-				testScores.remove(selectedTestScore);
-				testScoreDAO.delete(selectedTestScore);
+				if (cmdDeleteTS(selectedTestScore)) {
+					testScores.remove(selectedTestScore);
 
-				String[] values = fileName.substring(0, fileName.lastIndexOf(".")).split("_");
+					String[] values = fileName.substring(0, fileName.lastIndexOf(".")).split("_");
 
-				String subjectId = "";
-				String groupId = "";
-				String schoolYear = "";
-				String test = "";
+					String subjectId = "";
+					String groupId = "";
+					String schoolYear = "";
+					String test = "";
 
-				if (values.length >= 3) {
-					subjectId = values[0];
-					groupId = values[1];
+					if (values.length >= 3) {
+						subjectId = values[0];
+						groupId = values[1];
 
-					if (values[2].length() > 4) {
-						schoolYear = values[2].substring(0, 4);
-						test = values[2].substring(4, 5);
+						if (values[2].length() > 4) {
+							schoolYear = values[2].substring(0, 4);
+							test = values[2].substring(4, 5);
+						}
 					}
+					selectedTestScore.setSubjectId(subjectId);
+					selectedTestScore.setGroupId(groupId);
+					selectedTestScore.setSchoolYear(schoolYear);
+					selectedTestScore.setTest(test);
+					selectedTestScore.setFilePath(file.getPath());
+					selectedTestScore.setFileName(file.getName());
+
+					testScoreDAO.save(selectedTestScore);
+					testScores.add(selectedTestScore);
+				} else {
+
 				}
-				selectedTestScore.setSubjectId(subjectId);
-				selectedTestScore.setGroupId(groupId);
-				selectedTestScore.setSchoolYear(schoolYear);
-				selectedTestScore.setTest(test);
-				selectedTestScore.setFilePath(file.getPath());
-				selectedTestScore.setFileName(file.getName());
-
-				testScoreDAO.save(selectedTestScore);
-				testScores.add(selectedTestScore);
-
 			} else {
 				System.out.println("selectedTestScore is null");
 			}
@@ -215,6 +255,7 @@ public class TestScoreBean extends BaseController implements Serializable {
 		FacesContext.getCurrentInstance().addMessage(null, message);
 
 		try {
+			int count = 1;
 			String fileName = event.getFile().getFileName();
 
 			File file = new File("E:\\test\\" + fileName);
@@ -225,51 +266,46 @@ public class TestScoreBean extends BaseController implements Serializable {
 			inputStream.close();
 
 			if (!file.exists()) {
-				file.createNewFile();
-			} else {
 				file.delete();
-				file.createNewFile();
 			}
+
+			file.createNewFile();
 
 			outputStream.flush();
 			outputStream.close();
-			
-				String[] values = fileName.substring(0, fileName.lastIndexOf(".")).split("_");
 
-				String subjectId = "";
-				String groupId = "";
-				String schoolYear = "";
-				String test = "";
+			String[] values = fileName.substring(0, fileName.lastIndexOf(".")).split("_");
 
-				if (values.length >= 3) {
-					subjectId = values[0];
-					groupId = values[1];
+			String subjectId = "";
+			String groupId = "";
+			String schoolYear = "";
+			String test = "";
 
-					if (values[2].length() > 4) {
-						schoolYear = values[2].substring(0, 4);
-						test = values[2].substring(4, 5);
-					}
+			if (values.length >= 3) {
+				subjectId = values[0];
+				groupId = values[1];
+
+				if (values[2].length() > 4) {
+					schoolYear = values[2].substring(0, 4);
+					test = values[2].substring(4, 5);
 				}
-				TestScore testScore = new TestScore();
-				testScore.setSubjectId(subjectId);
-				testScore.setGroupId(groupId);
-				testScore.setSchoolYear(schoolYear);
-				testScore.setTest(test);
-				testScore.setFilePath(file.getPath());
-				testScore.setFileName(file.getName());
-				testScoreDAO.save(testScore);
-				testScores.add(testScore);
+			}
+			TestScore testScore = new TestScore();
+			testScore.setSubjectId(subjectId);
+			testScore.setGroupId(groupId);
+			testScore.setSchoolYear(schoolYear);
+			testScore.setTest(test);
+			testScore.setFilePath(file.getPath());
+			testScore.setFileName(file.getName());
+			testScoreDAO.save(testScore);
+			testScores.add(testScore);
 
-				cout++;
-				System.out.println(cout + " File Success");
-				
-				
-	
+			count++;
+			System.out.println(count++ + " File Success");
+			super.showMessageINFO("", this.readProperties("Đã upload thành công") + count++);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-
 	}
 
 	// View File PDF

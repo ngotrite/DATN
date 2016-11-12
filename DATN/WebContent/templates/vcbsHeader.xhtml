@@ -5,105 +5,108 @@ VIETTEL PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
 -->
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-	  xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:p="http://primefaces.org/ui">
-    <!-- HEADER -->
-    <header id="header">
-        <div id="logo-group" class="pull-left">
-            <!-- PLACE YOUR LOGO HERE -->
-<!--             <span id="logo"> <img src="#{request.contextPath}/resources/img/viettel/logo-nuce-unsub.png" alt="NUCE"/> </span> -->
-            <!-- END LOGO PLACEHOLDER -->
-        </div>
-        <div class="btn-collapse-leftmenu">
-        	<span class="minifyme">
-        		<i class="fa fa-caret-square-o-left hit"></i>
-        	</span>
-        </div>
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+<!-- HEADER -->
+<div id="header">
+	<a href="/dangky.html" class="btn_dangnhap_header">Ðang nh?p / Ðang
+		ký</a>
 
-        <!-- pulled right: nav area -->
-        <div class="pull-right" id="header-right">
-            <div class="link-site" style="display: none">
-                <nav>
-                    <ul>
-                        <li class="active"><a href="#">CBS</a></li>
-                        <li><a href="#">CBA</a></li>
-                        <li><a href="#">OAM</a></li>
-                    </ul>
-                </nav>
-            </div>
+	<div class="logo">
+		<p>
+			<img
+				src="#{request.contextPath}/resources/newTheme/image/tonghop/header.jpg"
+				alt="" />
+		</p>
+	</div>
 
-            <!-- collapse menu button -->
-            <div id="hide-menu" class="btn-header pull-right navbar-right-pdt-5">
-                <span> 
-                    <a href="javascript:void(0);" title="Collapse Menu">
-                        <i class="fa fa-reorder"></i>
-                    </a> 
-                </span>
-            </div>
-            <!-- end collapse menu -->
+	<div class="logo-mobile">
+		<p>
+			<img
+				src="#{request.contextPath}/resources/newTheme/image/tonghop/logo-mobile.png"
+				alt="" />
+		</p>
+	</div>
+	<ul class="menuheader">
+		<li><a href="/" class="home">Home</a></li>
 
-            <!-- logout button -->
-            <div class="btn-header transparent pull-right navbar-right-pdt-5">
-                <h:form id="formLogout">
-                    <p:commandLink id="btnLogout" action="#{beanLogout.logout()}" ajax="false" title="Sign Out">
-                        <i class="fa fa-sign-out"></i>
-                    </p:commandLink>
-                    <label>Logout</label>
-                </h:form>
-            </div>
-            <!-- end logout button -->
+		<li class="cate-leftpn"><a href="#" title="Quản lý bảng điểm">
+				<span class="menu-item-parent">Quản lý bảng điểm</span>
+		</a>
+			<ul>
+				<li><a
+					href="#{request.contextPath}/pages/tools/subject_dictionary.xhtml"
+					title="Từ điển môn học"><span>Từ điển môn học</span></a></li>
+				<li><a
+					href="#{request.contextPath}/pages/tools/test_score_admin.xhtml"
+					title="Danh sách điểm thi"><span>Danh sách điểm thi</span></a></li>
+				<li><a
+					href="#{request.contextPath}/pages/tools/test_score_expert.xhtml"
+					title="Danh sách điểm thi"><span>Danh sách điểm
+							thi(Chuyên viên)</span></a></li>
+			</ul></li>
+		<li class="cate-leftpn"><a href="#" title="Thanh toán ra trường">
+				<span class="menu-item-parent">Thanh toán ra trường</span>
+		</a>
+			<ul>
+				<li><a
+					href="#{request.contextPath}/pages/student/graduation_period.xhtml"
+					title="Đợt tốt nghiệp"><span>Thêm đợt tốt nghiệp</span></a></li>
+				<li><a
+					href="#{request.contextPath}/pages/student/lst_graduation_period.xhtml"
+					title="Đợt tốt nghiệp"><span>Quản lý đợt tốt nghiệp</span></a></li>
 
-            <div id="user" class="btn-header transparent pull-right navbar-right-pdt-5">
-                <span> 
-                    <a href="#" title="User Info">
-                        <i class="fa fa-user"></i>
-                    </a> 
-                </span>
-                <label>#{loginBean.rememberMe}</label>
-            </div>
+			</ul></li>
+		<li class="cate-leftpn"><a href="#" title="Catalog Management">
+				<span class="menu-item-parent">Catalog Management</span>
+		</a>
+			<ul>
+				<li><a
+					href="#{request.contextPath}/pages/catalog/student.xhtml"
+					title="Sinh viên"><span>Sinh viên</span></a></li>
 
-            <!-- fullscreen button -->
-            <div id="fullscreen" class="btn-header transparent pull-right navbar-right-pdt-5">
-                <span> <a href="javascript:void(0);" onclick="launchFullscreen(document.documentElement);" title="Full Screen"><i class="fa fa-fullscreen"></i></a> </span>
-            </div>
-            <!-- end fullscreen button -->
+			</ul></li>
+		<li class="cate-leftpn"><a href="#" title="Settings"> <span
+				class="menu-item-parent">Settings</span></a>
+			<ul>
+				<li><a
+					href="#{request.contextPath}/pages/sys/user_management.xhtml"
+					title="User"><i class="fa fa-user"></i>User Management</a></li>
+			</ul></li>
 
-            <!-- multiple lang dropdown : find all flags in the image folder -->
-            <h:form class="navbar-form navbar-right navbar-right-pdt-8">
-	            <!-- <input type="text" class="form-control" placeholder="Search..." /> -->
-	            <h:selectOneMenu value="#{userSession.language}" onchange="submit()">
-					<f:selectItem itemValue="en" itemLabel="English"/>
-	         		<f:selectItem itemValue="vi" itemLabel="Vietnamese" /> 
-				</h:selectOneMenu>
-            </h:form>
-<!--             <h:form class="navbar-form navbar-right navbar-right-pdt-8"> -->
-<!-- 	            <input type="text" class="form-control" placeholder="Search..." /> -->
-<!-- 	            <h:selectOneMenu value="#{userSession.language}"> -->
-<!-- 	            	<f:selectItem itemValue="vt" itemLabel="Viettel"/> -->
-<!-- 					<f:selectItem itemValue="cm" itemLabel="Common"/> -->
-<!-- 	         		<f:selectItem itemValue="ts" itemLabel="Test Domain" />  -->
-<!-- 				</h:selectOneMenu> -->
-<!--             </h:form> -->
-            <!-- <ul class="header-dropdown-list hidden-xs">
-                <li>
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"> <img alt="" src="#{request.contextPath}/resources/themes/smartadmin/img/flags/us.png" /> <span> US </span> <i class="fa fa-angle-down"></i> </a>
-                    <ul class="dropdown-menu pull-right">
-                        <li class="active">
-                            <a href="javascript:void(0);"><img alt="" src="#{request.contextPath}/resources/themes/smartadmin/img/flags/us.png" /> US</a>
-                        </li>
-                        <li>
-                            <a href="javascript:void(0);"><img alt="" src="#{request.contextPath}/resources/themes/smartadmin/img/flags/vn.png" /> Vietnamese</a>
-                        </li>
-                        <li>
-                            <a href="javascript:void(0);"><img alt="" src="#{request.contextPath}/resources/themes/smartadmin/img/flags/de.png" /> German</a>
-                        </li>
-                    </ul>
-                </li>
-            </ul> -->
-            <!-- end multiple lang -->
-        </div>
-        <!-- end pulled right: nav area -->
-    </header>
-    <!-- END HEADER -->
+	</ul>
+	<div class="clear"></div>
+	<div class="menuheader1">
+		<a href="javascript:showmenu()">Menu </a> <select>
+			<option value="-1">Chuy?n t?i</option>
+			<option value="/">Home</option>
+			<option value="/page/gioi-thieu/14.html">Gi?i thi?u</option>
+			<option value="#">Dành cho sinh viên</option>
+			<option value="#">Dành cho cán b?</option>
+
+			<option value="#">Dành cho gi?ng viên</option>
+
+
+			<option value="/dangky.html">Đăng nhập/ Đăng xuất</option>
+
+
+			<option value="/page/lien-he/15.html">Liên hệ</option>
+		</select>
+		<div class="clearfix"></div>
+	</div>
+	<script type="text/javascript">
+
+						function showmenu() {
+							$(".menuheader1 select").toggleClass("selectshow");
+						}
+						$(document).ready(function () {
+							$(".menuheader1 select").change(function () {
+								window.location = $(this).val();
+							});
+						});
+					</script>
+	<div class="clearfix"></div>
+</div>
+<!-- END HEADER -->
 </html>

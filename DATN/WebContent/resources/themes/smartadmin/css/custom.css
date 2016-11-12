@@ -65,13 +65,13 @@ aside nav ul li a {
 }
 
 aside nav ul li a:hover {
-	color: #00a65a !important;
+	color: #28306d !important;
 	background: #f9fafc;
 }
 
 .
 minified aside nav ul li a:hover {
-	color: #00a65a !important;
+	color: #28306d !important;
 	background: #f9fafc;
 }
 
@@ -98,7 +98,7 @@ minified aside nav ul li a:hover {
 
 #logo-group {
 	width: 220px;
-	background: #00C292;
+	background: #183287;
 	height: 55px !important;
 }
 
@@ -161,7 +161,7 @@ minified aside nav ul li a:hover {
 }
 
 .box.box-success {
-	border-top-color: #00a65a;
+	border-top-color: #28306d;
 }
 
 .box.box-default {
@@ -287,13 +287,13 @@ minified aside nav ul li a:hover {
 }
 
 .box.box-solid.box-success {
-	border: 1px solid #00a65a;
+	border: 1px solid #28306d;
 }
 
 .box.box-solid.box-success>.box-header {
 	color: #ffffff;
-	background: #00a65a;
-	background-color: #00a65a;
+	background: #28306d;
+	background-color: #28306d;
 }
 
 .box.box-solid.box-success>.box-header a, .box.box-solid.box-success>.box-header .btn
@@ -606,7 +606,7 @@ minified aside nav ul li a:hover {
 }
 
 .todo-list .success {
-	border-left-color: #00a65a;
+	border-left-color: #28306d;
 }
 
 .todo-list .primary {
@@ -644,7 +644,7 @@ minified aside nav ul li a:hover {
 }
 
 .chat .item>.online {
-	border: 2px solid #00a65a;
+	border: 2px solid #28306d;
 }
 
 .chat .item>.offline {
@@ -776,7 +776,7 @@ minified aside nav ul li a:hover {
 }
 
 .colorStrongGreen {
-	color: #009350;
+	color: #183287;
 }
 
 .textBold {
@@ -807,7 +807,7 @@ minified aside nav ul li a:hover {
 } */
 .formFieldMg input:focus, .formFieldMg select:focus, .formFieldMg input:hover,
 	.formFieldMg select:hover {
-	border: 1px solid #00a65a;
+	border: 1px solid #28306d;
 	background-color: #fafafa !important;
 }
 
@@ -820,7 +820,7 @@ minified aside nav ul li a:hover {
 }
 
 .btn-action-edit:hover {
-	background: #009350;
+	background: #183287;
 	color: #FFF;
 }
 
@@ -1004,12 +1004,12 @@ span.fullsizeCalendar input, span.inputNumCustom input {
 	white-space: nowrap;
 	vertical-align: middle;
 	cursor: pointer;
-	border: 1px solid #00c292;
+	border: 1px solid #183287;
 	-webkit-user-select: none;
 	-moz-user-select: none;
 	-ms-user-select: none;
 	-o-user-select: none;
-	background: #00c292;
+	background: #183287;
 	color: #FFF !important;
 	height: 32px !important
 }
@@ -1228,15 +1228,15 @@ button>span {
 }
 .menuleftThemeDF{
 	height: 50px;
-	border-left: 1px solid #00C292;
-	border-bottom: 1px solid #00C292;
+	border-left: 1px solid #183287;
+	border-bottom: 1px solid #183287;
 	background: #FFF;
 }
 
 .contentThemeDF{
 	height: 50px;
-	border-right: 1px solid #00C292;
-	border-bottom: 1px solid #00C292;
+	border-right: 1px solid #183287;
+	border-bottom: 1px solid #183287;
 	background: #E6EAEE;
 }
 
@@ -1294,4 +1294,8 @@ button>span {
 	border-right: 1px solid #F39A0D;
 	border-bottom: 1px solid #F39A0D;
 	background: #E6EAEE;
+}
+
+.calendarDisable button{
+	display: none !important;
 }

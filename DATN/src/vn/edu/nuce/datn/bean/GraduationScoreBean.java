@@ -81,7 +81,7 @@ public class GraduationScoreBean extends BaseController implements Serializable 
 	}
 
 	public void saveGS() {
-		graScoreDAO.saveGS(graScores);
+//		graScoreDAO.saveGS(graScores);
 		this.showMessageINFO("common.save", "Graduation Score");
 	}
 
@@ -96,7 +96,6 @@ public class GraduationScoreBean extends BaseController implements Serializable 
 		} else {
 			System.out.println("Fail");
 		}
-
 	}
 	
 

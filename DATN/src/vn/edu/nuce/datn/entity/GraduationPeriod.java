@@ -32,6 +32,9 @@ public class GraduationPeriod implements Serializable{
 	
 	@Column(name = "STATUS")
 	private Boolean status;
+	
+	@Column(name = "REMARK")
+	private String remark;
 
 	public Long getGraduationPeriodId() {
 		return graduationPeriodId;
@@ -72,4 +75,14 @@ public class GraduationPeriod implements Serializable{
 	public void setStatus(Boolean status) {
 		this.status = status;
 	}
+
+	public String getRemark() {
+		return remark;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
+	
+	
 }
