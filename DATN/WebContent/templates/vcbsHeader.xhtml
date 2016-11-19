@@ -10,8 +10,13 @@ VIETTEL PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
 	xmlns:p="http://primefaces.org/ui">
 <!-- HEADER -->
 <div id="header">
-	<a href="/dangky.html" class="btn_dangnhap_header">Ðang nh?p / Ðang
-		ký</a>
+	<a href="#" class="btn_dangnhap_header">Ðăng xuất</a>
+	<h:form class="navbar-form navbar-right navbar-right-pdt-8">
+		<h:selectOneMenu value="#{userSession.language}" onchange="submit()">
+			<f:selectItem itemValue="vi" itemLabel="Vietnamese" />
+			<f:selectItem itemValue="en" itemLabel="English" />
+		</h:selectOneMenu>
+	</h:form>
 
 	<div class="logo">
 		<p>

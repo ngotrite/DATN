@@ -29,9 +29,25 @@ public class BaseController {
 	public BaseController() {
 
 	}
-	
+
 	/**
-	 * Nampv 28082016 get Request Bean
+	 * @author TENT
+	 */
+	public void showNotification(Severity severity, String summary, String detail) {
+		FacesMessage message = new FacesMessage(severity, this.readProperties(summary), this.readProperties(detail));
+		FacesContext.getCurrentInstance().addMessage(null, message);
+	}
+
+	public void showNotificationSuccsess() {
+		this.showNotification(FacesMessage.SEVERITY_INFO, "common.success", "");
+	}
+
+	public void showNotificationFail() {
+		this.showNotification(FacesMessage.SEVERITY_WARN, "common.fail", "");
+	}
+
+	/**
+	 * Tent 19112016 get Request Bean
 	 */
 	public Object getBean(String nameBean) {
 		Map<String, Object> map = FacesContext.getCurrentInstance().getViewRoot().getViewMap();
@@ -176,7 +192,7 @@ public class BaseController {
 		mapPara.put("treeType", lstPara);
 		RequestContext.getCurrentInstance().openDialog("/pages/tree_common_dialog", options, mapPara);
 	}
-	
+
 	/***
 	 * @param treeType
 	 * @param objName

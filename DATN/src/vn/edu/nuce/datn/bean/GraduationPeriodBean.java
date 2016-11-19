@@ -39,6 +39,7 @@ public class GraduationPeriodBean extends BaseController implements Serializable
 	private GraduationPeriod graduationPeriod;
 	private GraduationPeriodDAO graduationPeriodDAO;
 	private List<GraduationPeriod> graduationPeriods;
+	private List<GraduationPeriod> filteredGPs;
 	private UploadedFile file;
 
 	private Student student;
@@ -57,8 +58,26 @@ public class GraduationPeriodBean extends BaseController implements Serializable
 		this.student = new Student();
 		this.studentDAO = new StudentDAO();
 		this.students = new ArrayList<Student>();
+		this.filteredGPs = new ArrayList<GraduationPeriod>();
 		
 		this.readOnly = true;
+	}
+	
+	public void cmdDeleteGP(GraduationPeriod graduationPeriod) {
+		graduationPeriodDAO.delete(graduationPeriod);
+		graduationPeriods.remove(graduationPeriod);
+		super.showNotificationSuccsess();
+	}
+	
+	public void showDialogGP(GraduationPeriod graduationPeriod) {
+		if (graduationPeriod == null) {
+			graduationPeriod = new GraduationPeriod();
+		}else {
+			this.graduationPeriod = graduationPeriod;
+			loadStudentByGP(this.graduationPeriod.getGraduationPeriodId());
+		}
+		RequestContext context = RequestContext.getCurrentInstance();
+		context.execute("PF('dlgGPWV').show();");
 	}
 	
 	// load list Student by Graduation Period
@@ -280,5 +299,15 @@ public class GraduationPeriodBean extends BaseController implements Serializable
 	public void setReadOnly(Boolean readOnly) {
 		this.readOnly = readOnly;
 	}
+
+	public List<GraduationPeriod> getFilteredGPs() {
+		return filteredGPs;
+	}
+
+	public void setFilteredGPs(List<GraduationPeriod> filteredGPs) {
+		this.filteredGPs = filteredGPs;
+	}
+	
+	
 	
 }

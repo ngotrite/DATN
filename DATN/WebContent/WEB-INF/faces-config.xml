@@ -8,7 +8,7 @@
 		<!-- <el-resolver> org.springframework.web.jsf.el.SpringBeanFacesELResolver 
 			</el-resolver> -->
 		<locale-config>
-			<default-locale>en</default-locale>
+			<default-locale>vi</default-locale>
 			<supported-locale>vi</supported-locale>
 		</locale-config>
 		<resource-bundle>

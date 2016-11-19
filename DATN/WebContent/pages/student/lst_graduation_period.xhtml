@@ -38,17 +38,44 @@
 
 				<p:column sortBy="#{item.startDate}" filterBy="#{item.startDate}"
 					filterMatchMode="contains" headerText="#{msg['gp.startDate']}">
-					<p:calendar effect="fold" value="#{item.startDate}" readonly="true" showOn="button" styleClass="calendarDisable">
-					<f:convertDateTime pattern="dd-MM-yyyy"/>
+					<p:calendar effect="fold" value="#{item.startDate}" readonly="true"
+						showOn="button" styleClass="calendarDisable">
+						<f:convertDateTime pattern="dd-MM-yyyy" />
 					</p:calendar>
-
 				</p:column>
 
 				<p:column sortBy="#{item.finishDate}" filterBy="#{item.finishDate}"
 					filterMatchMode="contains" headerText="#{msg['gp.finishDate']}">
-					<p:calendar effect="fold" value="#{item.finishDate}" readonly="true" showOn="button" styleClass="calendarDisable">
-					<f:convertDateTime pattern="dd-MM-yyyy"/>
+					<p:calendar effect="fold" value="#{item.finishDate}"
+						readonly="true" showOn="button" styleClass="calendarDisable">
+						<f:convertDateTime pattern="dd-MM-yyyy" />
 					</p:calendar>
+				</p:column>
+
+				<p:column headerText="#{msg['common.action']}"
+					style="text-align:center;">
+
+					<p:commandLink update="dlgGP dlgStudent"
+						actionListener="#{graPeriodBean.showDialogGP(item)}"
+						styleClass="btn btn-sm btn-action-edit colorBlue">
+						<i class="fa fa-pencil icon-only mr-0"></i>
+					</p:commandLink>
+
+					<p:commandLink update="dtGP"
+						actionListener="#{graPeriodBean.cmdDeleteGP(item)}"
+						styleClass="btn btn-sm btn-action-del colorRed">
+						<i class="fa fa-times icon-only mr-0"></i>
+						<p:confirm header="#{msg['common.delete']}"
+							message="#{msg['common.confirmDelete']}" icon="ui-icon-alert" />
+					</p:commandLink>
+
+					<f:facet name="header">
+						<p:commandButton value="#{msg['common.addNew']}" type="submit"
+							actionListener="#{graPeriodBean.showDialogGP(null)}"
+							update="dlgGP dlgStudent" styleClass="btn btn-primary">
+						</p:commandButton>
+					</f:facet>
+
 				</p:column>
 
 
@@ -85,8 +112,33 @@
 					<h:outputText value="#{item._class}" />
 				</p:column>
 
-				<p:column headerText="#{msg['common.status']}">
+				<p:column filterBy="#{item.schoolFeeStatus}" styleClass="text-center"
+					headerText="#{msg['st.schoolFeeStatus']}" filterMatchMode="equals">
+					<f:facet name="filter">
+						<p:selectOneButton onchange="PF('dtStudentWV').filter()">
+							<f:converter converterId="javax.faces.Boolean" />
+							<f:selectItem itemLabel="#{msg['common.all']}" itemValue="" />
+							<f:selectItem itemLabel="#{msg['common.finished']}" itemValue="true" />
+							<f:selectItem itemLabel="#{msg['common.unFinished']}" itemValue="false" />
+						</p:selectOneButton>
+					</f:facet>
 					<p:selectBooleanCheckbox value="#{item.schoolFeeStatus}"
+						disabled="#{graPeriodBean.readOnly}">
+						<p:ajax event="change" update="test"/>
+					</p:selectBooleanCheckbox>
+					<h:outputText id="test" value="#{item.schoolFeeStatus ? 'Finished': 'UnFinished'}" />
+				</p:column>
+
+				<p:column headerText="#{msg['st.libraryStatus']}"
+					styleClass="text-center">
+					<p:selectBooleanCheckbox value="#{item.libraryStatus}"
+						disabled="#{graPeriodBean.readOnly}">
+					</p:selectBooleanCheckbox>
+				</p:column>
+
+				<p:column headerText="#{msg['st.departmentStatus']}"
+					styleClass="text-center">
+					<p:selectBooleanCheckbox value="#{item.departmentStatus}"
 						disabled="#{graPeriodBean.readOnly}">
 					</p:selectBooleanCheckbox>
 				</p:column>
@@ -99,7 +151,206 @@
 			</p:dataTable>
 		</h:form>
 
+		<p:dialog header="#{msg['gp.graPeriod']}" modal="true" id="dlgGP"
+			resizable="false" showEffect="explode" widgetVar="dlgGPWV"
+			styleClass="dlg-center-fix">
 
+			<h:form id="form-gra-period-input" class="container-fluid">
+
+				<div class="row formFieldMg">
+					<div class="col-xs-12 col-sm-6">
+						<div class="row">
+							<div class="col-xs-12">
+								<p:outputLabel value="#{msg['gp.graPeriodName']}" />
+							</div>
+							<div class="col-xs-12">
+								<p:inputText styleClass="form-control"
+									value="#{graPeriodBean.graduationPeriod.graduationPeriodName}">
+								</p:inputText>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-xs-12">
+								<p:outputLabel value="#{msg['common.remark']}" />
+							</div>
+							<div class="col-xs-12">
+								<p:inputText styleClass="form-control"
+									value="#{graPeriodBean.graduationPeriod.remark}">
+								</p:inputText>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-xs-12 col-sm-6">
+						<div class="row">
+							<div class="col-xs-12">
+								<p:outputLabel for="maskStart" value="#{msg['gp.startDate']}" />
+							</div>
+							<div class="col-xs-12">
+								<p:calendar id="maskStart" effect="fold"
+									styleClass="fullsizeCalendar"
+									value="#{graPeriodBean.graduationPeriod.startDate}"
+									requiredMessage="#{msg['common.required']}" mask="true" />
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-xs-12">
+								<p:outputLabel for="maskFinish" value="#{msg['gp.finishDate']}" />
+							</div>
+							<div class="col-xs-12">
+								<p:calendar id="maskFinish" effect="fold"
+									styleClass="fullsizeCalendar"
+									value="#{graPeriodBean.graduationPeriod.finishDate}"
+									requiredMessage="#{msg['common.required']}" mask="true">
+								</p:calendar>
+
+							</div>
+						</div>
+					</div>
+
+				</div>
+
+				<div class="row formFieldMg">
+
+					<div class="col-xs-12 col-sm-12">
+						<div class="row">
+							<div class="col-xs-12 col-md-6">
+								<p:outputLabel value="#{msg['title.student']}"
+									styleClass="line32" />
+							</div>
+
+							<div class="col-xs-12 col-md-4">
+								<p:fileUpload fileUploadListener="#{graPeriodBean.uploadExel}"
+									mode="advanced" multiple="true" dragDropSupport="false"
+									update="form-sd-list-dlg:dtStudent" label="Import"
+									styleClass="fupload" allowTypes="/(\.|\/)(xls)$/"
+									sizeLimit="10000000"
+									invalidSizeMessage="#{msg['validate.importSize']}"
+									invalidFileMessage="#{msg['validate.importFormatXLS']}" />
+							</div>
+
+							<div class="col-xs-12 col-md-2" align="right">
+								<p:commandButton value="#{msg['common.apply']}" type="submit"
+									update="" actionListener="#{graPeriodBean.saveGraPeriod()}"
+									styleClass="btn btn-default pull-right">
+									<p:confirm header="#{msg['common.apply']}"
+										message="#{msg['common.confirm_apply']}" icon="ui-icon-alert" />
+								</p:commandButton>
+
+							</div>
+						</div>
+					</div>
+				</div>
+			</h:form>
+
+			<h:form id="form-sd-list-dlg" class="container-fluid">
+
+				<p:dataTable var="item" value="#{graPeriodBean.students}"
+					id="dtStudent" rowKey="#{item.studentId}"
+					emptyMessage="#{msg['common.noData']}" paginator="true" rows="20"
+					paginatorPosition="bottom" rowIndexVar="rowIndex"
+					widgetVar="dtStudentWV"
+					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					rowsPerPageTemplate="10,20,50,100">
+
+					<p:column style="width:10%" headerText="#{msg['common.index']}">
+						<h:outputText value="#{rowIndex + 1}" />
+					</p:column>
+
+					<p:column sortBy="#{item.studentId}" filterBy="#{item.studentId}"
+						filterMatchMode="contains" headerText="#{msg['st.studentId']}">
+						<h:outputText value="#{item.studentId}" />
+					</p:column>
+
+					<p:column sortBy="#{item.studentName}"
+						filterBy="#{item.studentName}" filterMatchMode="contains"
+						headerText="#{msg['st.studentName']}">
+						<h:outputText value="#{item.studentName}" />
+					</p:column>
+
+					<p:column sortBy="#{item._class}" filterBy="#{item._class}"
+						filterMatchMode="contains" headerText="#{msg['st.class']}">
+						<h:outputText value="#{item._class}" />
+					</p:column>
+
+					<p:column headerText="#{msg['common.action']}"
+						style="text-align:center;">
+
+						<p:commandLink update="dlgStudent"
+							actionListener="#{graPeriodBean.showDialogStudent(item)}"
+							styleClass="btn btn-sm btn-action-edit colorBlue">
+							<i class="fa fa-pencil icon-only mr-0"></i>
+						</p:commandLink>
+
+						<p:commandLink update="dtStudent"
+							actionListener="#{graPeriodBean.cmdDeleteStudent(item)}"
+							styleClass="btn btn-sm btn-action-del colorRed">
+							<i class="fa fa-times icon-only mr-0"></i>
+							<p:confirm header="#{msg['common.delete']}"
+								message="#{msg['common.confirmDelete']}" icon="ui-icon-alert" />
+						</p:commandLink>
+
+						<f:facet name="header">
+							<p:commandButton value="#{msg['common.addNew']}" type="submit"
+								actionListener="#{graPeriodBean.showDialogStudent(null)}"
+								update="dlgStudent" styleClass="btn btn-primary"
+								immediate="true">
+							</p:commandButton>
+						</f:facet>
+
+					</p:column>
+				</p:dataTable>
+			</h:form>
+
+
+		</p:dialog>
+
+		<p:dialog header="#{msg['st.student']}" modal="true" id="dlgStudent"
+			resizable="false" showEffect="fade" position="100,200"
+			widgetVar="dlgStudentWV" height="300px" width="600px">
+			<h:form id="form-dlgStudent" class="container-fluid">
+				<div class="row formFieldMg">
+					<div class="col-xs-12 col-sm-12">
+						<div class="row">
+							<div class="col-xs-12 col-md-4">
+								<p:outputLabel value="#{msg['st.studentId']}" />
+							</div>
+							<div class="col-xs-12 col-md-7">
+								<p:inputText value="#{graPeriodBean.student.studentId}"
+									styleClass="form-control"
+									requiredMessage="#{msg['common.required']}" />
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-xs-12 col-md-4">
+								<p:outputLabel value="#{msg['st.studentName']}" />
+							</div>
+							<div class="col-xs-12 col-md-7">
+								<p:inputText value="#{graPeriodBean.student.studentName}"
+									styleClass="form-control"
+									requiredMessage="#{msg['common.required']}" />
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-xs-12 col-md-4">
+								<p:outputLabel value="#{msg['st.class']}" />
+							</div>
+							<div class="col-xs-12 col-md-7">
+								<p:inputText value="#{graPeriodBean.student._class}"
+									styleClass="form-control"
+									requiredMessage="#{msg['common.required']}" />
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-xs-12 col-md-4"></div>
+						</div>
+					</div>
+				</div>
+			</h:form>
+		</p:dialog>
 	</ui:define>
 </ui:composition>
 
