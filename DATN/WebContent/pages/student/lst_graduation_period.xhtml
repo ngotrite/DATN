@@ -5,8 +5,8 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:p="http://primefaces.org/ui" xmlns:pe="http://primefaces.org/ui">
-
 <ui:composition template="../../templates/vcbsContentTemplate.xhtml">
 	<ui:define name="content">
 
@@ -21,19 +21,27 @@
 				rowsPerPageTemplate="10,20,50,100">
 
 				<p:ajax event="rowSelect" listener="#{graPeriodBean.onRowSelect}"
-					update="form-sd-list:dtStudent" />
+					update="form-sd-list form-sd-list:dtStudent" />
 				<p:ajax event="rowUnselect"
 					listener="#{graPeriodBean.onRowUnselect}"
-					update="form-sd-list:dtStudent" />
+					update="form-sd-list form-sd-list:dtStudent" />
 
 				<p:column style="width:10%" headerText="#{msg['common.index']}">
 					<h:outputText value="#{rowIndex + 1}" />
 				</p:column>
 
-				<p:column sortBy="#{item.graduationPeriodName}"
+				<p:column sortBy="#{item.graduationPeriodName}" style="width:20%"
 					filterBy="#{item.graduationPeriodName}" filterMatchMode="contains"
 					headerText="#{msg['gp.graPeriodName']}">
 					<h:outputText value="#{item.graduationPeriodName}" />
+				</p:column>
+
+				<p:column
+					sortBy="#{graPeriodBean.getStatusName(item.graduationPeriodId)}"
+					filterBy="#{graPeriodBean.getStatusName(item.graduationPeriodId)}"
+					filterMatchMode="contains" headerText="#{msg['common.status']}">
+					<h:outputText
+						value="#{graPeriodBean.getStatusName(item.graduationPeriodId)}" />
 				</p:column>
 
 				<p:column sortBy="#{item.startDate}" filterBy="#{item.startDate}"
@@ -77,31 +85,32 @@
 					</f:facet>
 
 				</p:column>
-
-
 			</p:dataTable>
+
 		</h:form>
 
 		<h:form id="form-sd-list" class="container-fluid">
 
 			<p:dataTable var="item" value="#{graPeriodBean.students}"
 				id="dtStudent" rowKey="#{item.studentId}"
+				rendered="#{graPeriodBean.students.size() > 0}"
 				emptyMessage="#{msg['common.noData']}" paginator="true" rows="20"
 				paginatorPosition="bottom" rowIndexVar="rowIndex"
 				widgetVar="dtStudentWV" editable="true" editMode="cell"
 				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 				rowsPerPageTemplate="10,20,50,100">
 
-				<p:column style="width:10%" headerText="#{msg['common.index']}">
+				<p:column style="width:5%" headerText="#{msg['common.index']}">
 					<h:outputText value="#{rowIndex + 1}" />
 				</p:column>
 
 				<p:column sortBy="#{item.studentId}" filterBy="#{item.studentId}"
-					filterMatchMode="contains" headerText="#{msg['st.studentId']}">
+					style="width:11%" filterMatchMode="contains"
+					headerText="#{msg['st.studentId']}">
 					<h:outputText value="#{item.studentId}" />
 				</p:column>
 
-				<p:column sortBy="#{item.studentName}"
+				<p:column sortBy="#{item.studentName}" style="width:12%"
 					filterBy="#{item.studentName}" filterMatchMode="contains"
 					headerText="#{msg['st.studentName']}">
 					<h:outputText value="#{item.studentName}" />
@@ -112,42 +121,122 @@
 					<h:outputText value="#{item._class}" />
 				</p:column>
 
-				<p:column filterBy="#{item.schoolFeeStatus}" styleClass="text-center"
-					headerText="#{msg['st.schoolFeeStatus']}" filterMatchMode="equals">
+				<p:column filterBy="#{item.schoolFeeStatus}"
+					styleClass="text-center" headerText="#{msg['st.schoolFeeS']}"
+					filterMatchMode="equals">
 					<f:facet name="filter">
-						<p:selectOneButton onchange="PF('dtStudentWV').filter()">
+						<p:selectOneMenu onchange="PF('dtStudentWV').filter()"
+							styleClass="form-control" style="width:100px">
 							<f:converter converterId="javax.faces.Boolean" />
 							<f:selectItem itemLabel="#{msg['common.all']}" itemValue="" />
-							<f:selectItem itemLabel="#{msg['common.finished']}" itemValue="true" />
-							<f:selectItem itemLabel="#{msg['common.unFinished']}" itemValue="false" />
-						</p:selectOneButton>
+							<f:selectItem itemLabel="#{msg['common.finished']}"
+								itemValue="true" />
+							<f:selectItem itemLabel="#{msg['common.unFinished']}"
+								itemValue="false" />
+							<p:ajax event="change" listener="#{graPeriodBean.showSumStudent()}" update="dtStudent"/>
+						</p:selectOneMenu>
 					</f:facet>
 					<p:selectBooleanCheckbox value="#{item.schoolFeeStatus}"
 						disabled="#{graPeriodBean.readOnly}">
-						<p:ajax event="change" update="test"/>
+						<p:ajax event="change"
+							update="txtSchoolFeeStatus cSchoolFeeUpdateTime"
+							listener="#{graPeriodBean.autoUpdateDate(item)}" />
 					</p:selectBooleanCheckbox>
-					<h:outputText id="test" value="#{item.schoolFeeStatus ? 'Finished': 'UnFinished'}" />
+					<h:outputText id="txtSchoolFeeStatus"
+						value="#{item.schoolFeeStatus ? 'Finished': 'UnFinished'}" />
 				</p:column>
 
-				<p:column headerText="#{msg['st.libraryStatus']}"
-					styleClass="text-center">
+				<p:column sortBy="#{item.schoolFeeUpdateTime}" style="width:12%"
+					filterBy="#{item.schoolFeeUpdateTime}" filterMatchMode="contains"
+					headerText="#{msg['st.schoolFeeUT']}">
+					<p:calendar effect="fold" value="#{item.schoolFeeUpdateTime}"
+						id="cSchoolFeeUpdateTime" disabled="true">
+						<f:convertDateTime pattern="dd-MM-yyyy" />
+					</p:calendar>
+				</p:column>
+
+				<p:column filterBy="#{item.libraryStatus}" styleClass="text-center"
+					headerText="#{msg['st.libraryS']}" filterMatchMode="equals">
+					<f:facet name="filter">
+						<p:selectOneMenu onchange="PF('dtStudentWV').filter()"
+							styleClass="form-control" style="width:100px">
+							<f:converter converterId="javax.faces.Boolean" />
+							<f:selectItem itemLabel="#{msg['common.all']}" itemValue="" />
+							<f:selectItem itemLabel="#{msg['common.finished']}"
+								itemValue="true" />
+							<f:selectItem itemLabel="#{msg['common.unFinished']}"
+								itemValue="false" />
+						</p:selectOneMenu>
+					</f:facet>
 					<p:selectBooleanCheckbox value="#{item.libraryStatus}"
 						disabled="#{graPeriodBean.readOnly}">
+						<p:ajax event="change"
+							update="txtLibraryStatus cLibraryUpdateTime"
+							listener="#{graPeriodBean.autoUpdateDate(item)}" />
 					</p:selectBooleanCheckbox>
+					<h:outputText id="txtLibraryStatus"
+						value="#{item.libraryStatus ? 'Finished': 'UnFinished'}" />
 				</p:column>
 
-				<p:column headerText="#{msg['st.departmentStatus']}"
-					styleClass="text-center">
+				<p:column sortBy="#{item.libraryUpdateTime}"
+					filterBy="#{item.libraryUpdateTime}" filterMatchMode="contains"
+					headerText="#{msg['st.libraryUT']}">
+					<p:calendar effect="fold" value="#{item.libraryUpdateTime}"
+						id="cLibraryUpdateTime" disabled="true">
+						<f:convertDateTime pattern="dd-MM-yyyy" />
+					</p:calendar>
+				</p:column>
+
+				<p:column filterBy="#{item.departmentStatus}"
+					styleClass="text-center" headerText="#{msg['st.departmentS']}"
+					filterMatchMode="equals">
+					<f:facet name="filter">
+						<p:selectOneMenu onchange="PF('dtStudentWV').filter()"
+							styleClass="form-control" style="width:100px">
+							<f:converter converterId="javax.faces.Boolean" />
+							<f:selectItem itemLabel="#{msg['common.all']}" itemValue="" />
+							<f:selectItem itemLabel="#{msg['common.finished']}"
+								itemValue="true" />
+							<f:selectItem itemLabel="#{msg['common.unFinished']}"
+								itemValue="false" />
+						</p:selectOneMenu>
+					</f:facet>
 					<p:selectBooleanCheckbox value="#{item.departmentStatus}"
 						disabled="#{graPeriodBean.readOnly}">
+						<p:ajax event="change"
+							update="txtDepartmentStatus cDepartmentUpdateTime"
+							listener="#{graPeriodBean.autoUpdateDate(item)}" />
 					</p:selectBooleanCheckbox>
+					<h:outputText id="txtDepartmentStatus"
+						value="#{item.departmentStatus ? 'Finished': 'UnFinished'}" />
 				</p:column>
 
-				<p:column headerText="#{msg['common.action']}"
-					style="text-align:center;">
-
-
+				<p:column sortBy="#{item.departmentUpdateTime}" style="width:12%"
+					filterBy="#{item.departmentUpdateTime}" filterMatchMode="contains"
+					headerText="#{msg['st.departmentUT']}">
+					<p:calendar effect="fold" value="#{item.departmentUpdateTime}"
+						id="cDepartmentUpdateTime" disabled="true">
+						<f:convertDateTime pattern="dd-MM-yyyy" />
+					</p:calendar>
 				</p:column>
+
+				<f:facet name="header">
+					<p:outputLabel value="#{msg['title.lstStudent']}"
+						style="font-weight:bold" />
+				</f:facet>
+
+				<f:facet name="footer">
+						<p:outputLabel value="#{msg['common.total']}">
+        #{fn:length(graPeriodBean.students)}
+        </p:outputLabel>
+					<p:commandButton value="#{msg['common.apply']}" type="submit"
+						actionListener="#{graPeriodBean.saveStudent}" update="dtStudent"
+						styleClass="btn btn-default pull-right">
+						<p:confirm header="#{msg['common.apply']}"
+							message="#{msg['common.confirm_apply']}" icon="ui-icon-alert" />
+					</p:commandButton>
+				</f:facet>
+
 			</p:dataTable>
 		</h:form>
 
@@ -169,16 +258,18 @@
 								</p:inputText>
 							</div>
 						</div>
+
 						<div class="row">
 							<div class="col-xs-12">
-								<p:outputLabel value="#{msg['common.remark']}" />
+								<p:outputLabel value="#{msg['common.status']}" for="isStatus" />
 							</div>
 							<div class="col-xs-12">
-								<p:inputText styleClass="form-control"
-									value="#{graPeriodBean.graduationPeriod.remark}">
-								</p:inputText>
+								<p:selectBooleanCheckbox id="isStatus"
+									value="#{graPeriodBean.graduationPeriod.status}" />
 							</div>
 						</div>
+
+
 					</div>
 
 					<div class="col-xs-12 col-sm-6">
@@ -208,6 +299,19 @@
 						</div>
 					</div>
 
+
+					<div class="col-xs-12 col-sm-12">
+						<div class="row">
+							<div class="col-xs-12">
+								<p:outputLabel value="#{msg['common.remark']}" />
+							</div>
+							<div class="col-xs-12">
+								<p:inputText styleClass="form-control"
+									value="#{graPeriodBean.graduationPeriod.remark}">
+								</p:inputText>
+							</div>
+						</div>
+					</div>
 				</div>
 
 				<div class="row formFieldMg">
@@ -231,7 +335,8 @@
 
 							<div class="col-xs-12 col-md-2" align="right">
 								<p:commandButton value="#{msg['common.apply']}" type="submit"
-									update="" actionListener="#{graPeriodBean.saveGraPeriod()}"
+									update="form-gp-list"
+									actionListener="#{graPeriodBean.saveGraPeriod()}"
 									styleClass="btn btn-default pull-right">
 									<p:confirm header="#{msg['common.apply']}"
 										message="#{msg['common.confirm_apply']}" icon="ui-icon-alert" />
@@ -244,7 +349,6 @@
 			</h:form>
 
 			<h:form id="form-sd-list-dlg" class="container-fluid">
-
 				<p:dataTable var="item" value="#{graPeriodBean.students}"
 					id="dtStudent" rowKey="#{item.studentId}"
 					emptyMessage="#{msg['common.noData']}" paginator="true" rows="20"
@@ -302,7 +406,6 @@
 				</p:dataTable>
 			</h:form>
 
-
 		</p:dialog>
 
 		<p:dialog header="#{msg['st.student']}" modal="true" id="dlgStudent"
@@ -353,5 +456,4 @@
 		</p:dialog>
 	</ui:define>
 </ui:composition>
-
 </html>

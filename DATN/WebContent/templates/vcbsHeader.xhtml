@@ -10,8 +10,8 @@ VIETTEL PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
 	xmlns:p="http://primefaces.org/ui">
 <!-- HEADER -->
 <div id="header">
-	<a href="#" class="btn_dangnhap_header">Ðăng xuất</a>
-	<h:form class="navbar-form navbar-right navbar-right-pdt-8">
+	<a href="#" class="btn_dangnhap_header"> <i class="fa fa-sign-out	"> </i> Ðăng xuất</a>
+	<h:form class="navbar-form navbar-right">
 		<h:selectOneMenu value="#{userSession.language}" onchange="submit()">
 			<f:selectItem itemValue="vi" itemLabel="Vietnamese" />
 			<f:selectItem itemValue="en" itemLabel="English" />
@@ -34,7 +34,7 @@ VIETTEL PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
 		</p>
 	</div>
 	<ul class="menuheader">
-		<li><a href="/" class="home">Home</a></li>
+		<li><a href="/" class="home">Home</a> </li>
 
 		<li class="cate-leftpn"><a href="#" title="Quản lý bảng điểm">
 				<span class="menu-item-parent">Quản lý bảng điểm</span>
@@ -81,7 +81,6 @@ VIETTEL PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
 			</ul></li>
 
 	</ul>
-	<div class="clear"></div>
 	<div class="menuheader1">
 		<a href="javascript:showmenu()">Menu </a> <select>
 			<option value="-1">Chuy?n t?i</option>
@@ -114,4 +113,12 @@ VIETTEL PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
 	<div class="clearfix"></div>
 </div>
 <!-- END HEADER -->
+
+<!-- style css -->
+<style>
+#header > :first-child{
+width: auto !important;
+margin-right: 116px !important;
+	}
+</style>
 </html>

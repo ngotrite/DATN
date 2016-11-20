@@ -54,7 +54,6 @@ public class Student implements Serializable{
 	@Column(name = "DEPARTMENT_UPDATE_TIME")
 	private Date departmentUpdateTime;
 	
-	
 	public String getStudentId() {
 		return studentId;
 	}

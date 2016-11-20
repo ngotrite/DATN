@@ -4,9 +4,11 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -45,9 +47,9 @@ public class GraduationPeriodBean extends BaseController implements Serializable
 	private Student student;
 	private List<Student> students;
 	private StudentDAO studentDAO;
-	
+
 	private Boolean readOnly;
-	
+
 	@PostConstruct
 	public void init() {
 		this.graduationPeriod = new GraduationPeriod();
@@ -59,66 +61,117 @@ public class GraduationPeriodBean extends BaseController implements Serializable
 		this.studentDAO = new StudentDAO();
 		this.students = new ArrayList<Student>();
 		this.filteredGPs = new ArrayList<GraduationPeriod>();
-		
+
 		this.readOnly = true;
+		showSumStudent();
 	}
 	
+	public String getStatusName(Long graduationPeriodId){
+		if (graduationPeriodDAO.get(graduationPeriodId) != null && graduationPeriodDAO.get(graduationPeriodId).getStatus() != null) {
+			if (graduationPeriodDAO.get(graduationPeriodId ).getStatus() == true) {
+				return readProperties("common.opened");
+			}else {
+				return readProperties("common.closed");
+			}
+		}
+		return null;
+	}
+	
+	public void saveStudent() {
+		studentDAO.saveStudents(students);
+		super.showNotificationSuccsess();
+	}
+	
+	public void showSumStudent() {
+		
+		this.showMessageINFO("Student", students.size() + "");
+	}
+
+	public void autoUpdateDate(Student student) {
+		if (student.getDepartmentStatus() != null && student.getDepartmentStatus() == true) {
+			student.setDepartmentUpdateTime(new Date());
+		} else {
+			student.setDepartmentUpdateTime(null);
+		}
+		if (student.getLibraryStatus() != null && student.getLibraryStatus() == true) {
+			student.setLibraryUpdateTime(new Date());
+		} else {
+			student.setLibraryUpdateTime(null);
+		}
+		if (student.getSchoolFeeStatus() != null && student.getSchoolFeeStatus() == true) {
+			student.setSchoolFeeUpdateTime(new Date());
+		} else {
+			student.setSchoolFeeUpdateTime(null);
+		}
+	}
+
 	public void cmdDeleteGP(GraduationPeriod graduationPeriod) {
 		graduationPeriodDAO.delete(graduationPeriod);
 		graduationPeriods.remove(graduationPeriod);
 		super.showNotificationSuccsess();
 	}
-	
+
 	public void showDialogGP(GraduationPeriod graduationPeriod) {
 		if (graduationPeriod == null) {
 			graduationPeriod = new GraduationPeriod();
-		}else {
+			this.graduationPeriod = new GraduationPeriod();
+			this.student = new Student();
+			graduationPeriod.setStatus(true);
+		} else {
 			this.graduationPeriod = graduationPeriod;
 			loadStudentByGP(this.graduationPeriod.getGraduationPeriodId());
 		}
 		RequestContext context = RequestContext.getCurrentInstance();
 		context.execute("PF('dlgGPWV').show();");
 	}
-	
+
 	// load list Student by Graduation Period
 	public List<Student> loadStudentByGP(long graduationPeriodId) {
 		students = new ArrayList<Student>();
 		students = studentDAO.findSTByGP(graduationPeriodId);
 		return students;
 	}
-	
-	public void checkTimeToDisableStatus(GraduationPeriod item){
-		if(item != null){
-			Date nowDate = new Date();
-			if(item.getStartDate().getTime() <= nowDate.getTime() && nowDate.getTime() <= item.getFinishDate().getTime()){
-				this.readOnly = false;
-			} else {
+
+	public void checkTimeToDisableStatus(GraduationPeriod item) {
+		if (item != null) {
+			if (item.getStatus() != null && item.getStatus() == true) {
+				Date nowDate = new Date();
+				if (item.getStartDate().getTime() <= nowDate.getTime()
+						&& nowDate.getTime() <= item.getFinishDate().getTime()) {
+					this.readOnly = false;
+				} else {
+					this.readOnly = true;
+				}
+			}else {
 				this.readOnly = true;
 			}
+
 		}
 	}
-	
-    public void onRowSelect(SelectEvent event) {
-        FacesMessage msg = new FacesMessage("GraduationPeriod Selected", ((GraduationPeriod) event.getObject()).getGraduationPeriodName());
-        FacesContext.getCurrentInstance().addMessage(null, msg);
-        loadStudentByGP(((GraduationPeriod) event.getObject()).getGraduationPeriodId());
-        checkTimeToDisableStatus((GraduationPeriod) event.getObject());
-    }
- 
-    public void onRowUnselect(UnselectEvent event) {
-        FacesMessage msg = new FacesMessage("GraduationPeriod Unselected", ((GraduationPeriod) event.getObject()).getGraduationPeriodName());
-        FacesContext.getCurrentInstance().addMessage(null, msg);
-        loadStudentByGP(((GraduationPeriod) event.getObject()).getGraduationPeriodId());
-    }
+
+	public void onRowSelect(SelectEvent event) {
+		FacesMessage msg = new FacesMessage("GraduationPeriod Selected",
+				((GraduationPeriod) event.getObject()).getGraduationPeriodName());
+		FacesContext.getCurrentInstance().addMessage(null, msg);
+		loadStudentByGP(((GraduationPeriod) event.getObject()).getGraduationPeriodId());
+		checkTimeToDisableStatus((GraduationPeriod) event.getObject());
+	}
+
+	public void onRowUnselect(UnselectEvent event) {
+		FacesMessage msg = new FacesMessage("GraduationPeriod Unselected",
+				((GraduationPeriod) event.getObject()).getGraduationPeriodName());
+		FacesContext.getCurrentInstance().addMessage(null, msg);
+		loadStudentByGP(((GraduationPeriod) event.getObject()).getGraduationPeriodId());
+	}
 
 	/***** DIALOG STUDENT *****/
 
 	public void showDialogStudent(Student student) {
 		if (student == null) {
 			student = new Student();
+		}else {
+			this.student = student;
 		}
-		this.student = student;
-
 		RequestContext context = RequestContext.getCurrentInstance();
 		context.execute("PF('dlgStudentWV').show();");
 
@@ -129,7 +182,7 @@ public class GraduationPeriodBean extends BaseController implements Serializable
 	private void loadStudents() {
 		students = studentDAO.findAll();
 	}
-	
+
 	public List<Student> lstStudens() {
 		students = studentDAO.findAll();
 		return students;
@@ -223,7 +276,9 @@ public class GraduationPeriodBean extends BaseController implements Serializable
 	public void saveGraPeriod() {
 		if (validateGraPeriod()) {
 			graduationPeriodDAO.saveGraPeriod(graduationPeriod, students);
-			this.showMessageINFO("common.save", "gp.graPeriod");
+			super.showNotificationSuccsess();
+			RequestContext context = RequestContext.getCurrentInstance();
+			context.execute("PF('dlgGPWV').hide();");
 		}
 
 	}
@@ -307,7 +362,5 @@ public class GraduationPeriodBean extends BaseController implements Serializable
 	public void setFilteredGPs(List<GraduationPeriod> filteredGPs) {
 		this.filteredGPs = filteredGPs;
 	}
-	
-	
-	
+
 }

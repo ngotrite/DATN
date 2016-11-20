@@ -618,7 +618,7 @@ li.open .collapse-sign {
 }
 
 .ui-datatable thead th span {
-	color: #010a70;
+/*	color: #010a70;*/
 }
 
 /* .ui-datatable thead th, .ui-datatable tr td {
@@ -680,7 +680,7 @@ select.ui-state-default {
 }
 label {
 	font-weight: bold;
-	color: #010a70;
+	/*color: #010a70;*/
 }
 .form-group>label {
 	font-weight: bold;

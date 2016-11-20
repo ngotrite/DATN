@@ -349,7 +349,8 @@ font-style: italic;
     display: inline-block;
     /* margin-right: 14px; */
     background: url(/images/menu-bg.png) no-repeat 0 5px;
-    text-transform: uppercase;
+   /* text-transform: uppercase; */
+    font-weight:bold;
 }
 .menuheader a
 { text-decoration:none;}
@@ -371,7 +372,7 @@ font-style: italic;
     padding: 2px 5px;
     background: #041F70;
     z-index: 10;
-    
+    opacity:0.8;
   display: none;
 }
 .menuheader ul ul
@@ -402,10 +403,10 @@ font-style: italic;
     
     border-bottom: 1px solid #eee;
 }
-/* .menuheader ul li:hover
+ .menuheader ul li:hover
 {
-     background:#ddd;
-} */
+     background:#0f297e ;
+} 
 .menuheader ul li a
 {
     background: transparent;

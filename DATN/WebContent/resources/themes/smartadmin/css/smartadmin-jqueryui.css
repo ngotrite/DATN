@@ -293,7 +293,7 @@ html .ui-helper-clearfix{height:1%}
 .ui-autocomplete{position:absolute;top:0;left:0;cursor:default}
 .ui-button{display:inline-block;padding-left:5px !important;padding-right:5px !important;padding-top:2px !important;padding-bottom:2px !important;margin-bottom:0;font-size:14px;font-weight:400;line-height:1em;text-align:center;white-space:nowrap;vertical-align:middle;cursor:pointer;border:1px solid #183287 !important;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;-o-user-select:none; background:#183287 !important; color:#FFF !important}
 .ui-button:focus{outline:thin dotted #333;outline:5px auto -webkit-focus-ring-color;outline-offset:-2px}
-.ui-button:focus,.ui-button:hover{color:#FFF;background-color:#183287 !important;border-color:#183287;text-decoration:none}
+.ui-button:focus,.ui-button:hover{color:#FFF;background-color:#1F67A5  !important;border-color:#183287;text-decoration:none}
 fieldset[disabled] ui-button,fieldset[disabled] ui-button.ui-state-active,fieldset[disabled] ui-button:active,fieldset[disabled] ui-button:focus,fieldset[disabled] ui-button:hover,ui-button.disabled,ui-button.disabled.active,ui-button.disabled:active,ui-button.disabled:focus,ui-button.disabled:hover,ui-button[disabled],ui-button[disabled].active,ui-button[disabled]:active,ui-button[disabled]:focus,ui-button[disabled]:hover{background-color:#fff;border-color:#ccc}
 .ui-btn-lg{padding:10px 16px;font-size:18px;line-height:1.33;border-radius:6px}
 .ui-btn-sm,.ui-btn-xs{padding:5px 10px;font-size:12px;line-height:1.5;border-radius:3px}
