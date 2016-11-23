@@ -58,19 +58,6 @@
 				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 				rowsPerPageTemplate="10,20,50,100">
 
-				<p:column selectionMode="multiple"
-					style="width:5%;text-align:center" />
-				<p:ajax event="rowSelectCheckbox" update="dtSubjectDictionary"
-					listener="#{subjectDictionaryBean.selectEvent}" />
-				<p:ajax event="rowUnselectCheckbox" update="buttonRemove"
-					listener="#{subjectDictionaryBean.selectEvent}" />
-				<p:ajax event="toggleSelect" update="buttonRemove"
-					listener="#{subjectDictionaryBean.selectEvent}" />
-				<p:ajax event="rowSelect" update="buttonRemove"
-					listener="#{subjectDictionaryBean.selectEvent}" />
-				<p:ajax event="rowUnselect" update="buttonRemove"
-					listener="#{subjectDictionaryBean.selectEvent}" />
-
 				<p:column style="width:10%" headerText="#{msg['common.index']}">
 					<h:outputText value="#{rowIndex + 1}" />
 				</p:column>
@@ -114,6 +101,19 @@
 						</p:commandButton>
 					</f:facet>
 				</p:column>
+
+				<p:column selectionMode="multiple"
+					style="width:5%;text-align:center" />
+				<p:ajax event="rowSelectCheckbox" update="dtSubjectDictionary"
+					listener="#{subjectDictionaryBean.selectEvent}" />
+				<p:ajax event="rowUnselectCheckbox" update="buttonRemove"
+					listener="#{subjectDictionaryBean.selectEvent}" />
+				<p:ajax event="toggleSelect" update="buttonRemove"
+					listener="#{subjectDictionaryBean.selectEvent}" />
+				<p:ajax event="rowSelect" update="buttonRemove"
+					listener="#{subjectDictionaryBean.selectEvent}" />
+				<p:ajax event="rowUnselect" update="buttonRemove"
+					listener="#{subjectDictionaryBean.selectEvent}" />
 
 				<f:facet name="footer">
 					<p:commandButton value="#{msg['common.deleteSelected']}"

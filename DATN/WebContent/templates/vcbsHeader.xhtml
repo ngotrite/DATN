@@ -10,7 +10,9 @@ VIETTEL PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
 	xmlns:p="http://primefaces.org/ui">
 <!-- HEADER -->
 <div id="header">
-	<a href="#" class="btn_dangnhap_header"> <i class="fa fa-sign-out	"> </i> Ðăng xuất</a>
+	<a href="#" class="btn_dangnhap_header"> <i class="fa fa-sign-out	">
+	</i> Ðăng xuất
+	</a>
 	<h:form class="navbar-form navbar-right">
 		<h:selectOneMenu value="#{userSession.language}" onchange="submit()">
 			<f:selectItem itemValue="vi" itemLabel="Vietnamese" />
@@ -34,15 +36,12 @@ VIETTEL PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
 		</p>
 	</div>
 	<ul class="menuheader">
-		<li><a href="/" class="home">Home</a> </li>
+		<li><a href="/" class="home">Home</a></li>
 
 		<li class="cate-leftpn"><a href="#" title="Quản lý bảng điểm">
 				<span class="menu-item-parent">Quản lý bảng điểm</span>
 		</a>
 			<ul>
-				<li><a
-					href="#{request.contextPath}/pages/tools/subject_dictionary.xhtml"
-					title="Từ điển môn học"><span>Từ điển môn học</span></a></li>
 				<li><a
 					href="#{request.contextPath}/pages/tools/test_score_admin.xhtml"
 					title="Danh sách điểm thi"><span>Danh sách điểm thi</span></a></li>
@@ -56,17 +55,26 @@ VIETTEL PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
 		</a>
 			<ul>
 				<li><a
-					href="#{request.contextPath}/pages/student/graduation_period.xhtml"
-					title="Đợt tốt nghiệp"><span>Thêm đợt tốt nghiệp</span></a></li>
-				<li><a
 					href="#{request.contextPath}/pages/student/lst_graduation_period.xhtml"
 					title="Đợt tốt nghiệp"><span>Quản lý đợt tốt nghiệp</span></a></li>
+				<li><a
+					href="#{request.contextPath}/pages/student/lst_graduation_period_finance.xhtml"
+					title="Tài vụ"><span>Tài vụ</span></a></li>
+				<li><a
+					href="#{request.contextPath}/pages/student/lst_graduation_period_library.xhtml"
+					title="Thư viện"><span>Thư viện</span></a></li>
+				<li><a
+					href="#{request.contextPath}/pages/student/lst_graduation_period_department.xhtml"
+					title="Khoa"><span>Khoa</span></a></li>
 
 			</ul></li>
 		<li class="cate-leftpn"><a href="#" title="Catalog Management">
 				<span class="menu-item-parent">Catalog Management</span>
 		</a>
 			<ul>
+				<li><a
+					href="#{request.contextPath}/pages/tools/subject_dictionary.xhtml"
+					title="Từ điển môn học"><span>Từ điển môn học</span></a></li>
 				<li><a
 					href="#{request.contextPath}/pages/catalog/student.xhtml"
 					title="Sinh viên"><span>Sinh viên</span></a></li>
@@ -116,9 +124,9 @@ VIETTEL PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
 
 <!-- style css -->
 <style>
-#header > :first-child{
-width: auto !important;
-margin-right: 116px !important;
-	}
+#header>:first-child {
+	width: auto !important;
+	margin-right: 116px !important;
+}
 </style>
 </html>

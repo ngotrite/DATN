@@ -43,27 +43,28 @@
 				<p:column sortBy="#{item.status}" style="width:20%"
 					filterBy="#{item.status}" filterMatchMode="contains"
 					headerText="#{msg['common.status']}">
-					<h:outputText value="#{item.status eq true ? msg['common.opened'] : msg['common.closed'] }" />
+					<h:outputText
+						value="#{item.status eq true ? msg['common.opened'] : msg['common.closed'] }" />
 				</p:column>
 
 				<p:column sortBy="#{item.startDate}" filterBy="#{item.startDate}"
 					filterMatchMode="contains" headerText="#{msg['gp.startDate']}">
 					<p:calendar effect="fold" value="#{item.startDate}" readonly="true"
-						showOn="button" styleClass="calendarDisable" >
+						showOn="button" styleClass="calendarDisable">
 						<f:convertDateTime pattern="dd-MM-yyyy" />
 					</p:calendar>
 				</p:column>
 
 				<p:column sortBy="#{item.finishDate}" filterBy="#{item.finishDate}"
 					filterMatchMode="contains" headerText="#{msg['gp.finishDate']}">
-					<p:calendar effect="fold" value="#{item.finishDate}" 
+					<p:calendar effect="fold" value="#{item.finishDate}"
 						readonly="true" showOn="button" styleClass="calendarDisable">
 						<f:convertDateTime pattern="dd-MM-yyyy" />
 					</p:calendar>
 				</p:column>
 
 				<p:column headerText="#{msg['common.action']}"
-					style="text-align:center;">
+					style="text-align:center;" rendered="false">
 
 					<p:commandLink update="dlgStudentFinnished"
 						actionListener="#{graPeriodBean.showDialogStudentFinished(item)}"
@@ -171,7 +172,7 @@
 						<p:selectOneMenu onchange="PF('dtStudentWV').filter()"
 							id="cbSchoolFeeStatus"
 							value="#{graPeriodBean.student.schoolFeeStatus}"
-							styleClass="form-control" style="width:100px">
+							styleClass="form-control" style="width:312px">
 							<f:converter converterId="javax.faces.Boolean" />
 							<f:selectItems value="#{graPeriodBean.loadComboFillter()}" />
 							<p:ajax event="change" update="dtStudent"
@@ -198,7 +199,7 @@
 				</p:column>
 
 				<p:column filterBy="#{item.libraryStatus}" styleClass="text-center"
-					filterOptions="#{graPeriodBean.lstFillter}"
+					rendered="false" filterOptions="#{graPeriodBean.lstFillter}"
 					headerText="#{msg['st.libraryS']}" filterMatchMode="equals">
 					<f:facet name="filter">
 						<p:selectOneMenu onchange="PF('dtStudentWV').filter()"
@@ -219,7 +220,7 @@
 						value="#{item.libraryStatus ? 'Finished': 'UnFinished'}" />
 				</p:column>
 
-				<p:column sortBy="#{item.libraryUpdateTime}"
+				<p:column sortBy="#{item.libraryUpdateTime}" rendered="false"
 					filterBy="#{item.libraryUpdateTime}" filterMatchMode="contains"
 					headerText="#{msg['st.libraryUT']}">
 					<p:calendar effect="fold" value="#{item.libraryUpdateTime}"
@@ -228,7 +229,7 @@
 					</p:calendar>
 				</p:column>
 
-				<p:column filterBy="#{item.departmentStatus}"
+				<p:column filterBy="#{item.departmentStatus}" rendered="false"
 					filterOptions="#{graPeriodBean.lstFillter}"
 					styleClass="text-center" headerText="#{msg['st.departmentS']}"
 					filterMatchMode="equals">
@@ -252,8 +253,8 @@
 				</p:column>
 
 				<p:column sortBy="#{item.departmentUpdateTime}" style="width:12%"
-					filterBy="#{item.departmentUpdateTime}" filterMatchMode="contains"
-					headerText="#{msg['st.departmentUT']}">
+					rendered="false" filterBy="#{item.departmentUpdateTime}"
+					filterMatchMode="contains" headerText="#{msg['st.departmentUT']}">
 					<p:calendar effect="fold" value="#{item.departmentUpdateTime}"
 						id="cDepartmentUpdateTime" disabled="true">
 						<f:convertDateTime pattern="dd-MM-yyyy" />
@@ -326,7 +327,7 @@
 								<p:outputLabel for="maskFinish" value="#{msg['gp.finishDate']}" />
 							</div>
 							<div class="col-xs-12">
-								<p:calendar id="maskFinish" effect="fold" 
+								<p:calendar id="maskFinish" effect="fold"
 									styleClass="calendarIcon" navigator="true"
 									value="#{graPeriodBean.graduationPeriod.finishDate}"
 									requiredMessage="#{msg['common.required']}">

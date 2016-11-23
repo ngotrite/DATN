@@ -46,19 +46,6 @@
 		paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 		rowsPerPageTemplate="10,20,50,100">
 
-		<p:column selectionMode="multiple" style="width:5%;text-align:center" />
-		<p:ajax event="rowSelectCheckbox" update="dtTestScore"
-			listener="#{testScoreBean.selectEvent}" />
-		<p:ajax event="rowUnselectCheckbox" update="buttonRemove"
-			listener="#{testScoreBean.selectEvent}" />
-		<p:ajax event="toggleSelect" update="buttonRemove"
-			listener="#{testScoreBean.selectEvent}" />
-		<p:ajax event="rowSelect" update="buttonRemove"
-			listener="#{testScoreBean.selectEvent}" />
-		<p:ajax event="rowUnselect" update="buttonRemove"
-			listener="#{testScoreBean.selectEvent}" />
-
-
 		<p:column style="width:5%" headerText="#{msg['common.index']}">
 			<h:outputText value="#{rowIndex + 1}" />
 		</p:column>
@@ -128,6 +115,18 @@
 
 		</p:column>
 
+		<p:column selectionMode="multiple" style="width:5%;text-align:center" />
+		<p:ajax event="rowSelectCheckbox" update="dtTestScore"
+			listener="#{testScoreBean.selectEvent}" />
+		<p:ajax event="rowUnselectCheckbox" update="buttonRemove"
+			listener="#{testScoreBean.selectEvent}" />
+		<p:ajax event="toggleSelect" update="buttonRemove"
+			listener="#{testScoreBean.selectEvent}" />
+		<p:ajax event="rowSelect" update="buttonRemove"
+			listener="#{testScoreBean.selectEvent}" />
+		<p:ajax event="rowUnselect" update="buttonRemove"
+			listener="#{testScoreBean.selectEvent}" />
+
 		<f:facet name="footer">
 			<p:commandButton value="#{msg['common.deleteSelected']}"
 				id="buttonRemove" update="dtTestScore"
@@ -140,8 +139,7 @@
 		</f:facet>
 
 	</p:dataTable>
-	<p:fileUpload
-		styleClass="hidden btn_edit_file_upload_sb"
+	<p:fileUpload styleClass="hidden btn_edit_file_upload_sb"
 		fileUploadListener="#{testScoreBean.editFileUpload}" mode="advanced"
 		dragDropSupport="true" multiple="false" auto="true" sizeLimit="999999"
 		fileLimit="60000" update="tabTestScore:form-tc-list:dtTestScore @this"

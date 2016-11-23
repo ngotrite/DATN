@@ -22,6 +22,15 @@ public class StudentDAO extends BaseDAO<Student> implements Serializable {
 		return lst;
 	}
 	
+	public List<Student> findSTFinishedByGP(Long graduationPeriodId) {
+		List<Student> lst = null;
+		String[] cols = { "graduationPeriodId" , "schoolFeeStatus", "libraryStatus" , "departmentStatus" };
+		Operator[] operators = { Operator.EQ , Operator.EQ , Operator.EQ, Operator.EQ };
+		Object[] values = { graduationPeriodId , true, true, true};
+		lst = findByConditionsWithoutDomain(cols, operators, values, "");
+		return lst;
+	}
+
 	public void saveStudents(List<Student> students) {
 		Session session = HibernateUtil.getOpenSession();
 		session.getTransaction().begin();

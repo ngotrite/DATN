@@ -49,19 +49,6 @@
 		paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 		rowsPerPageTemplate="10,20,50,100">
 
-		<p:column selectionMode="multiple" style="width:5%;text-align:center" />
-		<p:ajax event="rowSelectCheckbox" update="dtGraScore"
-			listener="#{graScoreBean.selectEvent}" />
-		<p:ajax event="rowUnselectCheckbox" update="buttonRemove"
-			listener="#{graScoreBean.selectEvent}" />
-		<p:ajax event="toggleSelect" update="buttonRemove"
-			listener="#{graScoreBean.selectEvent}" />
-		<p:ajax event="rowSelect" update="buttonRemove"
-			listener="#{graScoreBean.selectEvent}" />
-		<p:ajax event="rowUnselect" update="buttonRemove"
-			listener="#{graScoreBean.selectEvent}" />
-
-
 		<p:column style="width:5%" headerText="#{msg['common.index']}">
 			<h:outputText value="#{rowIndex + 1}" />
 		</p:column>
@@ -71,7 +58,7 @@
 			<h:outputText value="#{item.studentId}" />
 		</p:column>
 
-		
+
 
 		<p:column headerText="#{msg['common.action']}"
 			style="text-align:center; width:17%">
@@ -103,8 +90,19 @@
 					message="#{msg['common.confirmDelete']}" icon="ui-icon-alert" />
 			</p:commandLink>
 
-
 		</p:column>
+
+		<p:column selectionMode="multiple" style="width:5%;text-align:center" />
+		<p:ajax event="rowSelectCheckbox" update="dtGraScore"
+			listener="#{graScoreBean.selectEvent}" />
+		<p:ajax event="rowUnselectCheckbox" update="buttonRemove"
+			listener="#{graScoreBean.selectEvent}" />
+		<p:ajax event="toggleSelect" update="buttonRemove"
+			listener="#{graScoreBean.selectEvent}" />
+		<p:ajax event="rowSelect" update="buttonRemove"
+			listener="#{graScoreBean.selectEvent}" />
+		<p:ajax event="rowUnselect" update="buttonRemove"
+			listener="#{graScoreBean.selectEvent}" />
 
 		<f:facet name="footer">
 			<p:commandButton value="#{msg['common.deleteSelected']}"

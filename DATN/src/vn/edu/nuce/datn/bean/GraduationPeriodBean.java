@@ -4,24 +4,29 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.faces.model.SelectItem;
 
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.primefaces.component.datatable.DataTable;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.SelectEvent;
@@ -41,14 +46,17 @@ public class GraduationPeriodBean extends BaseController implements Serializable
 	private GraduationPeriod graduationPeriod;
 	private GraduationPeriodDAO graduationPeriodDAO;
 	private List<GraduationPeriod> graduationPeriods;
-	private List<GraduationPeriod> filteredGPs;
 	private UploadedFile file;
 
 	private Student student;
 	private List<Student> students;
+	private List<Student> filteredStudents;
+	private List<Student> finishedStudents;
 	private StudentDAO studentDAO;
 
 	private Boolean readOnly;
+
+	private List<SelectItem> lstFillter;
 
 	@PostConstruct
 	public void init() {
@@ -60,31 +68,62 @@ public class GraduationPeriodBean extends BaseController implements Serializable
 		this.student = new Student();
 		this.studentDAO = new StudentDAO();
 		this.students = new ArrayList<Student>();
-		this.filteredGPs = new ArrayList<GraduationPeriod>();
-
+		this.finishedStudents = new ArrayList<Student>();
 		this.readOnly = true;
-		showSumStudent();
 	}
-	
-	public String getStatusName(Long graduationPeriodId){
-		if (graduationPeriodDAO.get(graduationPeriodId) != null && graduationPeriodDAO.get(graduationPeriodId).getStatus() != null) {
-			if (graduationPeriodDAO.get(graduationPeriodId ).getStatus() == true) {
-				return readProperties("common.opened");
-			}else {
-				return readProperties("common.closed");
-			}
+
+	public void postProcessXLS(Object document) {
+		HSSFWorkbook wb = (HSSFWorkbook) document;
+		HSSFSheet sheet = wb.getSheetAt(0);
+		HSSFRow header = sheet.getRow(0);
+
+		HSSFCellStyle cellStyle = wb.createCellStyle();
+		cellStyle.setFillForegroundColor(HSSFColor.GREEN.index);
+		cellStyle.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+
+		for (int i = 0; i < header.getPhysicalNumberOfCells(); i++) {
+			HSSFCell cell = header.getCell(i);
+
+			cell.setCellStyle(cellStyle);
 		}
-		return null;
 	}
-	
+
+	// public void clearFilter() {
+	// RequestContext requestContext = RequestContext.getCurrentInstance();
+	// requestContext.execute("$('.stClearFilter').click();");
+	// loadStudentByGP(graduationPeriod.getGraduationPeriodId());
+	//
+	// }
+
+	public void resetFilters() {
+		DataTable dataTable = (DataTable) FacesContext.getCurrentInstance().getViewRoot()
+				.findComponent(":form-sd-list:dtStudent");
+		if (dataTable != null) {
+			dataTable.resetValue();
+			dataTable.reset();
+			dataTable.setFilters(null);
+			// RequestContext requestContext =
+			// RequestContext.getCurrentInstance();
+			// requestContext.execute("$('.resetFilters').click();");
+		}
+
+	}
+
+	public List<SelectItem> loadComboFillter() {
+		lstFillter = new ArrayList<SelectItem>();
+		lstFillter.add(new SelectItem("", this.readProperties("common.all")));
+		lstFillter.add(new SelectItem(true, this.readProperties("common.finished")));
+		lstFillter.add(new SelectItem(false, this.readProperties("common.unFinished")));
+		return lstFillter;
+	}
+
 	public void saveStudent() {
 		studentDAO.saveStudents(students);
 		super.showNotificationSuccsess();
 	}
-	
+
 	public void showSumStudent() {
-		
-		this.showMessageINFO("Student", students.size() + "");
+		this.showMessageINFO("Students : ", filteredStudents.size() + "");
 	}
 
 	public void autoUpdateDate(Student student) {
@@ -113,10 +152,8 @@ public class GraduationPeriodBean extends BaseController implements Serializable
 
 	public void showDialogGP(GraduationPeriod graduationPeriod) {
 		if (graduationPeriod == null) {
-			graduationPeriod = new GraduationPeriod();
 			this.graduationPeriod = new GraduationPeriod();
-			this.student = new Student();
-			graduationPeriod.setStatus(true);
+			this.students.clear();
 		} else {
 			this.graduationPeriod = graduationPeriod;
 			loadStudentByGP(this.graduationPeriod.getGraduationPeriodId());
@@ -132,20 +169,24 @@ public class GraduationPeriodBean extends BaseController implements Serializable
 		return students;
 	}
 
+	// load list Student Finished by Graduation Period
+	public List<Student> loadStudentFinishedByGP(long graduationPeriodId) {
+		finishedStudents = new ArrayList<Student>();
+		finishedStudents = studentDAO.findSTFinishedByGP(graduationPeriodId);
+		return finishedStudents;
+	}
+
 	public void checkTimeToDisableStatus(GraduationPeriod item) {
 		if (item != null) {
-			if (item.getStatus() != null && item.getStatus() == true) {
-				Date nowDate = new Date();
-				if (item.getStartDate().getTime() <= nowDate.getTime()
-						&& nowDate.getTime() <= item.getFinishDate().getTime()) {
-					this.readOnly = false;
-				} else {
-					this.readOnly = true;
-				}
-			}else {
+			Date nowDate = new Date();
+			if (item.getStartDate().getTime() <= nowDate.getTime()
+					&& nowDate.getTime() <= item.getFinishDate().getTime()) {
+				item.setStatus(true);
+				this.readOnly = false;
+			} else {
 				this.readOnly = true;
+				item.setStatus(false);
 			}
-
 		}
 	}
 
@@ -169,11 +210,32 @@ public class GraduationPeriodBean extends BaseController implements Serializable
 	public void showDialogStudent(Student student) {
 		if (student == null) {
 			student = new Student();
-		}else {
+		} else {
 			this.student = student;
 		}
 		RequestContext context = RequestContext.getCurrentInstance();
 		context.execute("PF('dlgStudentWV').show();");
+
+	}
+
+	public void cmdApplyDLGStudent() {
+		graduationPeriodDAO.saveGraPeriod(graduationPeriod, students);
+		// studentDAO.saveOrUpdate(student);
+		students.add(student);
+		RequestContext context = RequestContext.getCurrentInstance();
+		context.execute("PF('dlgStudentWV').hide();");
+
+	}
+
+	public void showDialogStudentFinished(GraduationPeriod graduationPeriod) {
+		if (graduationPeriod == null) {
+			graduationPeriod = new GraduationPeriod();
+		} else {
+			this.graduationPeriod = graduationPeriod;
+			loadStudentFinishedByGP(graduationPeriod.getGraduationPeriodId());
+		}
+		RequestContext context = RequestContext.getCurrentInstance();
+		context.execute("PF('dlgStudentFinnishedWV').show();");
 
 	}
 
@@ -185,6 +247,7 @@ public class GraduationPeriodBean extends BaseController implements Serializable
 
 	public List<Student> lstStudens() {
 		students = studentDAO.findAll();
+		readOnly = true;
 		return students;
 	}
 
@@ -279,6 +342,7 @@ public class GraduationPeriodBean extends BaseController implements Serializable
 			super.showNotificationSuccsess();
 			RequestContext context = RequestContext.getCurrentInstance();
 			context.execute("PF('dlgGPWV').hide();");
+			checkTimeToDisableStatus(graduationPeriod);
 		}
 
 	}
@@ -287,7 +351,11 @@ public class GraduationPeriodBean extends BaseController implements Serializable
 	private boolean validateGraPeriod() {
 		boolean result = true;
 		if (ValidateUtil.checkStringNullOrEmpty(graduationPeriod.getGraduationPeriodName())) {
-			this.showMessageWARN("gp.graPeriod", super.readProperties("validate.checkValueNameNull"));
+			this.showMessageWARN("", super.readProperties("validate.checkValueNameNull"));
+			result = false;
+		} else if (graduationPeriod.getStartDate() != null && graduationPeriod.getFinishDate() != null
+				&& graduationPeriod.getStartDate().getTime() >= graduationPeriod.getFinishDate().getTime()) {
+			this.showMessageWARN("", super.readProperties("validate.startDateBeforeFinishDate"));
 			result = false;
 		}
 		return result;
@@ -355,12 +423,28 @@ public class GraduationPeriodBean extends BaseController implements Serializable
 		this.readOnly = readOnly;
 	}
 
-	public List<GraduationPeriod> getFilteredGPs() {
-		return filteredGPs;
+	public List<Student> getFilteredStudents() {
+		return filteredStudents;
 	}
 
-	public void setFilteredGPs(List<GraduationPeriod> filteredGPs) {
-		this.filteredGPs = filteredGPs;
+	public void setFilteredStudents(List<Student> filteredStudents) {
+		this.filteredStudents = filteredStudents;
+	}
+
+	public List<SelectItem> getLstFillter() {
+		return lstFillter;
+	}
+
+	public void setLstFillter(List<SelectItem> lstFillter) {
+		this.lstFillter = lstFillter;
+	}
+
+	public List<Student> getFinishedStudents() {
+		return finishedStudents;
+	}
+
+	public void setFinishedStudents(List<Student> finishedStudents) {
+		this.finishedStudents = finishedStudents;
 	}
 
 }
