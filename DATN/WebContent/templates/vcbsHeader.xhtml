@@ -7,7 +7,9 @@ VIETTEL PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:p="http://primefaces.org/ui">
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
 <!-- HEADER -->
 <div id="header">
 	<a href="#" class="btn_dangnhap_header"> <i class="fa fa-sign-out	">
@@ -35,60 +37,69 @@ VIETTEL PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
 				alt="" />
 		</p>
 	</div>
-	<ul class="menuheader">
-		<li><a href="/" class="home">Home</a></li>
 
-		<li class="cate-leftpn"><a href="#" title="Quản lý bảng điểm">
-				<span class="menu-item-parent">Quản lý bảng điểm</span>
-		</a>
-			<ul>
-				<li><a
-					href="#{request.contextPath}/pages/tools/test_score_admin.xhtml"
-					title="Danh sách điểm thi"><span>Danh sách điểm thi</span></a></li>
-				<li><a
-					href="#{request.contextPath}/pages/tools/test_score_expert.xhtml"
-					title="Danh sách điểm thi"><span>Danh sách điểm
-							thi(Chuyên viên)</span></a></li>
-			</ul></li>
-		<li class="cate-leftpn"><a href="#" title="Thanh toán ra trường">
-				<span class="menu-item-parent">Thanh toán ra trường</span>
-		</a>
-			<ul>
-				<li><a
-					href="#{request.contextPath}/pages/student/lst_graduation_period.xhtml"
-					title="Đợt tốt nghiệp"><span>Quản lý đợt tốt nghiệp</span></a></li>
-				<li><a
-					href="#{request.contextPath}/pages/student/lst_graduation_period_finance.xhtml"
-					title="Tài vụ"><span>Tài vụ</span></a></li>
-				<li><a
-					href="#{request.contextPath}/pages/student/lst_graduation_period_library.xhtml"
-					title="Thư viện"><span>Thư viện</span></a></li>
-				<li><a
-					href="#{request.contextPath}/pages/student/lst_graduation_period_department.xhtml"
-					title="Khoa"><span>Khoa</span></a></li>
+				<ul class="menuheader">
+					<c:forEach var="item" items="#{userSession.lstRootMenu}"
+						varStatus="stt">
+						<li class="cate-leftpn"><c:if
+								test="${not empty item.subMenus}">
+								<a href="#"> <i class="#{item.cssClass}"></i><span
+									class="menu-item-parent" title="#{item.name}">#{item.name}</span></a>
+								<ul>
+									<c:forEach var="item2" items="#{item.subMenus}">
+										<c:if test="${not empty item2.subMenus}">
+											<li><a href="#"><i class="#{item2.cssClass}"></i>#{item2.name}</a>
+												<ul>
+													<c:forEach var="item3" items="#{item2.subMenus}"
+														varStatus="status">
+														<c:if test="${ request.requestURI.endsWith(item3.url)}">
+															<li class='active'><h:link outcome="#{item3.url}"
+																	title="#{item3.name}">
+																	<i class="#{item3.cssClass}"></i>
+														#{item3.name}</h:link></li>
+														</c:if>
+														<c:if
+															test="${ not request.requestURI.endsWith(item3.url)}">
+															<li class=''><h:link outcome="#{item3.url}"
+																	title="#{item3.name}">
+																	<i class="#{item3.cssClass}"></i>
+														#{item3.name}</h:link></li>
+														</c:if>
+													</c:forEach>
+												</ul></li>
+										</c:if>
+										<c:if test="${empty item2.subMenus}">
+											<c:if test="${ request.requestURI.endsWith(item2.url)}">
+												<li class="active" data="#{request.requestURI}"
+													data2="#{item2.url}"><h:link outcome="#{item2.url}"
+														title="#{item2.name}">
+														<i class="#{item2.cssClass}"></i>#{item2.name}</h:link></li>
+											</c:if>
+											<c:if test="${not request.requestURI.endsWith(item2.url)}">
+												<li data="#{request.requestURL.toString()}"
+													data2="#{item2.url}"><h:link outcome="#{item2.url}"
+														title="#{item2.name}">
+														<i class="#{item2.cssClass}"></i>#{item2.name}</h:link></li>
+											</c:if>
 
-			</ul></li>
-		<li class="cate-leftpn"><a href="#" title="Catalog Management">
-				<span class="menu-item-parent">Catalog Management</span>
-		</a>
-			<ul>
-				<li><a
-					href="#{request.contextPath}/pages/tools/subject_dictionary.xhtml"
-					title="Từ điển môn học"><span>Từ điển môn học</span></a></li>
-				<li><a
-					href="#{request.contextPath}/pages/catalog/student.xhtml"
-					title="Sinh viên"><span>Sinh viên</span></a></li>
+										</c:if>
+									</c:forEach>
+								</ul>
+							</c:if> <c:if test="${empty item.subMenus}">
+								<c:if test="${not empty item.url}">
+									<a href="#{request.contextPath}#{item.url}"> <i
+										class="#{item.cssClass}"></i><span class="menu-item-parent"
+										title="#{item.name}">#{item.name}</span></a>
+								</c:if>
+								<c:if test="${empty item.url}">
+									<a href="#" id="sub-#{stt.count}" title="#{item.name}"> <i
+										class="#{item.cssClass}"></i><span class="menu-item-parent"
+										title="#{item.name}">#{item.name}</span></a>
+								</c:if>
+							</c:if></li>
+					</c:forEach>
+				</ul>
 
-			</ul></li>
-		<li class="cate-leftpn"><a href="#" title="Settings"> <span
-				class="menu-item-parent">Settings</span></a>
-			<ul>
-				<li><a
-					href="#{request.contextPath}/pages/sys/user_management.xhtml"
-					title="User"><i class="fa fa-user"></i>User Management</a></li>
-			</ul></li>
-
-	</ul>
 	<div class="menuheader1">
 		<a href="javascript:showmenu()">Menu </a> <select>
 			<option value="-1">Chuy?n t?i</option>

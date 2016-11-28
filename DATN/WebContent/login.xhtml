@@ -183,17 +183,17 @@ body, html {
 		<p:growl id="msg" showDetail="true" life="3000" />
 		<div class="container">
 			<div class="card card-container">
-<!-- 				<img id="profile-img" class="profile-img-card" -->
-<!-- 					src="#{request.contextPath}/resources/img/viettel/vietnam.png" /> -->
+				<!-- 				<img id="profile-img" class="profile-img-card" -->
+				<!-- 					src="#{request.contextPath}/resources/img/viettel/vietnam.png" /> -->
 				<p id="profile-name" class="profile-name-card"></p>
 				<span id="reauth-email" class="reauth-email"></span>
 
-				<h:outputLabel value="User Name" />
+				<h:outputLabel value="#{msg['user.userName']}" />
 				<p:inputText styleClass="form-control" id="username"
 					value="#{userSession.userName}"></p:inputText>
 
 				<p:spacer></p:spacer>
-				<h:outputLabel value="Password" />
+				<h:outputLabel value="#{msg['user.password']}" />
 				<p:password id="password" value="#{userSession.password}"
 					styleClass="form-control" feedback="false"></p:password>
 
@@ -206,7 +206,6 @@ body, html {
 				<p:commandButton action="#{userSession.doLogin}" value="Login"
 					styleClass="btn btn-lg btn-primary btn-block btn-signin"
 					update="loginForm" ajax="false"></p:commandButton>
-				<a href="#" class="forgot-password"> Forgot the password? </a>
 			</div>
 		</div>
 	</h:form>

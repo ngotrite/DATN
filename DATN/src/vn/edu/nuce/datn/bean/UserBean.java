@@ -12,6 +12,10 @@ import vn.edu.nuce.datn.dao.SysRoleDAO;
 import vn.edu.nuce.datn.dao.SysUserDAO;
 import vn.edu.nuce.datn.entity.SysRole;
 import vn.edu.nuce.datn.entity.SysUser;
+import vn.edu.nuce.datn.util.CommonUtil;
+import vn.edu.nuce.datn.util.PasswordUtil;
+
+
 
 @ManagedBean(name = "userBean")
 @ViewScoped
@@ -22,9 +26,10 @@ public class UserBean extends BaseController implements Serializable {
 	 */
 	private static final long serialVersionUID = 7569728160086294584L;
 	private SysUser sysUser = new SysUser();
+	private String password;
 	private List<SysUser> listSysUser;
 	private List<SysRole> listSysRole;
-	private long roleID;
+//	private long roleID;
 	private boolean isEditing;
 
 	private SysUserDAO userDao;
@@ -43,18 +48,19 @@ public class UserBean extends BaseController implements Serializable {
 	private void init() {
 
 		sysUser = new SysUser();
+		sysUser.setIsActive(true);
 		searchRole();
 	}
 
 	private void searchUser() {
 		SysUserDAO baseDAO = new SysUserDAO();
-		listSysUser = baseDAO.findAll();
+		listSysUser = baseDAO.findAll("");
 	}
 
 	private void searchRole() {
 
 		SysRoleDAO roleDao = new SysRoleDAO();
-		listSysRole = roleDao.findAll();
+		listSysRole = roleDao.findAll("");
 	}
 
 	public void btnNew() {
@@ -71,7 +77,9 @@ public class UserBean extends BaseController implements Serializable {
 
 	public void btnSave() {
 
-		sysUser.setRole(new SysRoleDAO().get(getRoleID()));
+		if(!this.validateSave())
+			return;
+				
 		if (sysUser.getId() > 0) {
 
 			userDao.update(sysUser);
@@ -82,7 +90,51 @@ public class UserBean extends BaseController implements Serializable {
 		}
 
 		btnCancel();
+		this.showMessageINFO("common.save", " User ");
 	}
+
+	private boolean validateSave() {
+		
+		SysUser checkObj = userDao.findByUserName(sysUser.getUserName(), sysUser.getId());
+		if(checkObj != null) {
+			
+			super.showMessageERROR("common.save", " User ", "common.duplicateName");
+			return false;
+		}
+		
+		if(sysUser.getId() <= 0) {
+			// Neu them moi thi bat buoc validate password
+			
+			if(!PasswordUtil.validatePassword(password)) {
+				
+				super.showMessageERROR("common.save", " User ", "user.formatPassword");
+				return false;
+			} else {
+				String salt = PasswordUtil.getRandomSalt();
+				sysUser.setSalt(salt);
+				sysUser.setPassword(PasswordUtil.generateHash(password, salt));
+			}
+		} else {
+			// Neu update thi chi validate password khi doi password
+			
+			if(!CommonUtil.isEmpty(password)) {				
+				if(!PasswordUtil.validatePassword(password)) {
+					
+					super.showMessageERROR("common.save", " User ", "user.formatPassword");
+					return false;
+				} else {
+					String salt = PasswordUtil.getRandomSalt();
+					sysUser.setSalt(salt);
+					sysUser.setPassword(PasswordUtil.generateHash(password, salt));
+				}
+			} else {
+				// Do nothing
+			}
+		}
+		
+		return true;
+	}
+	
 
 	public void onRowSelect(SelectEvent event) {
 		// sysUser = (SysUser) event.getObject();
@@ -92,7 +144,7 @@ public class UserBean extends BaseController implements Serializable {
 	public void onRowEdit(SysUser user) {
 
 		this.sysUser = user;
-		roleID = sysUser.getRole().getId();
+//		roleID = sysUser.getRole().getId();
 		isEditing = true;
 	}
 
@@ -110,6 +162,14 @@ public class UserBean extends BaseController implements Serializable {
 		this.sysUser = sysUser;
 	}
 
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
 	public List<SysUser> getListSysUser() {
 		return listSysUser;
 	}
@@ -118,13 +178,13 @@ public class UserBean extends BaseController implements Serializable {
 		this.listSysUser = listSysUser;
 	}
 
-	public long getRoleID() {
-		return roleID;
-	}
-
-	public void setRoleID(long roleID) {
-		this.roleID = roleID;
-	}
+//	public long getRoleID() {
+//		return roleID;
+//	}
+//
+//	public void setRoleID(long roleID) {
+//		this.roleID = roleID;
+//	}
 
 	public List<SysRole> getListSysRole() {
 		return listSysRole;

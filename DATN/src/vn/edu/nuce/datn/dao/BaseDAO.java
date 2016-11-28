@@ -25,6 +25,75 @@ public abstract class BaseDAO<T> {
 	public BaseDAO() {
 
 	}
+	
+	public long getMax(String col) {
+
+		return getMax(getEntityClass(), col);
+	}
+
+	public <E> long getMax(Class<E> clazz, String col) {
+
+		Session session = HibernateUtil.getOpenSession();
+		List lst = null;
+		try {
+
+			// Criteria cri = session.createCriteria(clazz);
+			String queryString = "SELECT MAX(" + col + ") FROM " + clazz.getName();
+			Query query = session.createQuery(queryString);
+			lst = query.getResultList();
+			if (lst.size() > 0 && lst.get(0) != null)
+				return ((Number) lst.get(0)).longValue();
+			else
+				return 0;
+		} catch (Exception e) {
+			// e.printStackTrace();
+			throw e;
+		} finally {
+			session.close();
+		}
+	}
+	
+	public List<T> findAllWithoutDomain(String orders) {
+
+		Session session = HibernateUtil.getOpenSession();
+		List<T> lst = null;
+		try {
+
+			String queryString = "SELECT obj FROM " + getEntityClass().getName() + " obj ";
+			if (!CommonUtil.isEmpty(orders))
+				queryString += " ORDER BY " + orders;
+			Query query = session.createQuery(queryString);
+			lst = query.getResultList();
+		} catch (Exception e) {
+			// e.printStackTrace();
+			throw e;
+		} finally {
+			session.close();
+		}
+
+		return lst;
+	}
+	
+	public List<T> findAll(String orders) {
+
+		Session session = HibernateUtil.getOpenSession();
+		List<T> lst = null;
+		try {
+
+			String queryString = "SELECT obj FROM " + getEntityClass().getName() + " obj ";
+			if (!CommonUtil.isEmpty(orders))
+				queryString += " ORDER BY " + orders;
+			Query query = session.createQuery(queryString);
+			lst = query.getResultList();
+		} catch (Exception e) {
+			// e.printStackTrace();
+			throw e;
+		} finally {
+			session.close();
+		}
+
+		return lst;
+	}
 
 
 	public List<T> findAll() {

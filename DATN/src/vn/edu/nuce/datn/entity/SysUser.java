@@ -7,55 +7,66 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+
+
 @Entity
-@Table(name="sys_user")
-public class SysUser implements Serializable {
+@Table(name = "sys_user")
+public class SysUser extends BaseEntity implements Serializable, Cloneable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 2744751907880820211L;
 
-	@Id @GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column(name="id")
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id")
 	private long id;
-	
-	@Column(name="user_name", nullable=false, unique=true)
+
+	@Column(name = "user_name", nullable = false, unique = true)
 	private String userName;
-	
-	@Column(name="password", nullable=false)
+
+	@Column(name = "password", nullable = false)
 	private String password;
-	
-	@Column(name="first_name")
+
+	@Column(name = "first_name")
 	private String firstName;
-	
-	@Column(name="last_name")
+
+	@Column(name = "last_name")
 	private String lastName;
-	
+
 	@Transient
 	private String fullName;
-	
-	@Column(name="email")
+
+	@Column(name = "email")
 	private String email;
-	
-	@Column(name="remark")
+
+	@Column(name = "remark")
 	private String remark;
 
-	@Column(name="is_active")
+	@Column(name = "is_active")
 	private Boolean isActive;
 	
-	@ManyToOne
-	@JoinColumn(name="role_id", nullable=false)
-	private SysRole role;
-	
-	@Column(name="expire_date")
+	@Column(name = "salt")
+	private String salt;
+
+	// @ManyToOne
+	// @JoinColumn(name="role_id", nullable=false)
+	// @ExcludeFieldJson
+	// private SysRole role;
+
+	@Column(name = "expire_date")
 	private Date expireDate;
-        
+
+	@Column(name = "languague")
+	private String languague;
+
+	@Column(name = "dateformat")
+	private String dateformat;
+
 	public long getId() {
 		return id;
 	}
@@ -94,11 +105,11 @@ public class SysUser implements Serializable {
 
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
-	}	
+	}
 
 	public String getFullName() {
-		
-		if(firstName == null && lastName == null) {
+
+		if (firstName == null && lastName == null) {
 			return "";
 		} else if (firstName == null) {
 			return lastName;
@@ -110,7 +121,7 @@ public class SysUser implements Serializable {
 	}
 
 	public void setFullName(String fullName) {
-//		this.fullName = fullName;
+		// this.fullName = fullName;
 	}
 
 	public String getEmail() {
@@ -137,13 +148,13 @@ public class SysUser implements Serializable {
 		this.isActive = isActive;
 	}
 
-	public SysRole getRole() {
-		return role;
-	}
-
-	public void setRole(SysRole role) {
-		this.role = role;
-	}
+	// public SysRole getRole() {
+	// return role;
+	// }
+	//
+	// public void setRole(SysRole role) {
+	// this.role = role;
+	// }
 
 	public Date getExpireDate() {
 		return expireDate;
@@ -152,5 +163,39 @@ public class SysUser implements Serializable {
 	public void setExpireDate(Date expireDate) {
 		this.expireDate = expireDate;
 	}
-	
+
+	@Override
+	@Transient
+	public String getNodeName() {
+		return null;
+	}
+
+	@Override
+	public SysUser clone() throws CloneNotSupportedException {
+		return (SysUser) super.clone();
+	}
+
+	public String getLanguague() {
+		return languague;
+	}
+
+	public void setLanguague(String languague) {
+		this.languague = languague;
+	}
+
+	public String getDateformat() {
+		return dateformat;
+	}
+
+	public void setDateformat(String dateformat) {
+		this.dateformat = dateformat;
+	}
+
+	public String getSalt() {
+		return salt;
+	}
+
+	public void setSalt(String salt) {
+		this.salt = salt;
+	}
 }

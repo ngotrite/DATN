@@ -4,7 +4,14 @@ import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import vn.edu.nuce.datn.entity.SysUser;
+
+
 public class SessionUtils {
+	
+	public static final String SESSION_SYS_USER = "SESSION_SYS_USER";
+//	public static final String SESSION_MENUS = "SESSION_MENUS";
+	public static final String SESSION_MENUS_RESTRICT = "SESSION_MENUS_RESTRICT";
 
 	public static HttpSession getSession() {
 		return (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
@@ -13,26 +20,23 @@ public class SessionUtils {
 	public static HttpServletRequest getRequest() {
 		return (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
 	}
-
-	public static String getUserName() {
-		HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
-		return session.getAttribute("userName").toString();
-	}
-
-	public static String getUserId() {
+	
+	public static SysUser getUser() {
+		
 		HttpSession session = getSession();
-		if (session != null)
-			return String.format("%s", session.getAttribute("userId"));
-		else
+		if(session == null)
 			return null;
+		
+		return (SysUser) session.getAttribute(SESSION_SYS_USER);
 	}
-
-	public static long getDomainId() {
-		HttpSession session = getSession();
-		if (session != null)
-			return (long) session.getAttribute("domainId");
-		else
-			return -1;
+	
+	public static String getUserName() {
+		
+		SysUser sysUser = getUser();
+		if(sysUser == null)
+			return null;
+		
+		return sysUser.getUserName();
 	}
 
 	public static String getClientIpAddr(HttpServletRequest request) {

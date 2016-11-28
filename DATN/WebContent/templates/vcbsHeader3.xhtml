@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Copyright YYYY Viettel Telecom. All rights reserved.
+VIETTEL PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+<!-- HEADER -->
+<div id="header">
+	<a href="#" class="btn_dangnhap_header"> <i class="fa fa-sign-out	">
+	</i> Ðăng xuất
+	</a>
+	<h:form class="navbar-form navbar-right">
+		<h:selectOneMenu value="#{userSession.language}" onchange="submit()">
+			<f:selectItem itemValue="vi" itemLabel="Vietnamese" />
+			<f:selectItem itemValue="en" itemLabel="English" />
+		</h:selectOneMenu>
+	</h:form>
+
+	<div class="logo">
+		<p>
+			<img
+				src="#{request.contextPath}/resources/newTheme/image/tonghop/header.jpg"
+				alt="" />
+		</p>
+	</div>
+
+	<div class="logo-mobile">
+		<p>
+			<img
+				src="#{request.contextPath}/resources/newTheme/image/tonghop/logo-mobile.png"
+				alt="" />
+		</p>
+	</div>
+	<ul class="menuheader">
+		<li><a href="/" class="home">Home</a></li>
+
+		<li class="cate-leftpn"><a href="#" title="Quản lý bảng điểm">
+				<span class="menu-item-parent">Quản lý bảng điểm</span>
+		</a>
+			<ul>
+				<li><a
+					href="#{request.contextPath}/pages/tools/test_score_admin.xhtml"
+					title="Danh sách điểm thi"><span>Danh sách điểm thi</span></a></li>
+				<li><a
+					href="#{request.contextPath}/pages/tools/test_score_expert.xhtml"
+					title="Danh sách điểm thi"><span>Danh sách điểm
+							thi(Chuyên viên)</span></a></li>
+			</ul></li>
+		<li class="cate-leftpn"><a href="#" title="Thanh toán ra trường">
+				<span class="menu-item-parent">Thanh toán ra trường</span>
+		</a>
+			<ul>
+				<li><a
+					href="#{request.contextPath}/pages/student/lst_graduation_period.xhtml"
+					title="Đợt tốt nghiệp"><span>Quản lý đợt tốt nghiệp</span></a></li>
+				<li><a
+					href="#{request.contextPath}/pages/student/lst_graduation_period_finance.xhtml"
+					title="Tài vụ"><span>Tài vụ</span></a></li>
+				<li><a
+					href="#{request.contextPath}/pages/student/lst_graduation_period_library.xhtml"
+					title="Thư viện"><span>Thư viện</span></a></li>
+				<li><a
+					href="#{request.contextPath}/pages/student/lst_graduation_period_department.xhtml"
+					title="Khoa"><span>Khoa</span></a></li>
+
+			</ul></li>
+		<li class="cate-leftpn"><a href="#" title="Catalog Management">
+				<span class="menu-item-parent">Catalog Management</span>
+		</a>
+			<ul>
+				<li><a
+					href="#{request.contextPath}/pages/tools/subject_dictionary.xhtml"
+					title="Từ điển môn học"><span>Từ điển môn học</span></a></li>
+				<li><a
+					href="#{request.contextPath}/pages/catalog/student.xhtml"
+					title="Sinh viên"><span>Sinh viên</span></a></li>
+
+			</ul></li>
+		<li class="cate-leftpn"><a href="#" title="Settings"> <span
+				class="menu-item-parent">Settings</span></a>
+			<ul>
+				<li><a
+					href="#{request.contextPath}/pages/sys/user_management.xhtml"
+					title="User"><i class="fa fa-user"></i>User Management</a></li>
+			</ul></li>
+
+	</ul>
+	<div class="menuheader1">
+		<a href="javascript:showmenu()">Menu </a> <select>
+			<option value="-1">Chuy?n t?i</option>
+			<option value="/">Home</option>
+			<option value="/page/gioi-thieu/14.html">Gi?i thi?u</option>
+			<option value="#">Dành cho sinh viên</option>
+			<option value="#">Dành cho cán b?</option>
+
+			<option value="#">Dành cho gi?ng viên</option>
+
+
+			<option value="/dangky.html">Đăng nhập/ Đăng xuất</option>
+
+
+			<option value="/page/lien-he/15.html">Liên hệ</option>
+		</select>
+		<div class="clearfix"></div>
+	</div>
+	<script type="text/javascript">
+
+						function showmenu() {
+							$(".menuheader1 select").toggleClass("selectshow");
+						}
+						$(document).ready(function () {
+							$(".menuheader1 select").change(function () {
+								window.location = $(this).val();
+							});
+						});
+					</script>
+	<div class="clearfix"></div>
+</div>
+<!-- END HEADER -->
+
+<!-- style css -->
+<style>
+#header>:first-child {
+	width: auto !important;
+	margin-right: 116px !important;
+}
+</style>
+</html>

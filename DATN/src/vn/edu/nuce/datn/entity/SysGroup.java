@@ -1,4 +1,5 @@
 package vn.edu.nuce.datn.entity;
+
 import java.io.Serializable;
 
 import javax.persistence.Column;
@@ -7,17 +8,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
-
+@SuppressWarnings("serial")
 @Entity
-@Table(name="sys_role")
-public class SysRole extends BaseEntity implements Serializable {
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 5748320798053404000L;
+@Table(name="sys_group")
+public class SysGroup implements Serializable{
 	
 	@Id @GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name="id")
@@ -26,15 +21,12 @@ public class SysRole extends BaseEntity implements Serializable {
 	@Column(name="name", nullable=false, unique=true)
 	private String name;
 	
-	@Column(name="role_type")
-	private String roleType;
-	
 	@Column(name="description")
 	private String description;
 	
 	@Column(name="is_active")
 	private Boolean isActive;
-		
+
 	public long getId() {
 		return id;
 	}
@@ -59,23 +51,6 @@ public class SysRole extends BaseEntity implements Serializable {
 		this.description = description;
 	}
 
-	public String getRoleType() {
-		return roleType;
-	}
-
-	public void setRoleType(String roleType) {
-		this.roleType = roleType;
-	}
-	
-//	public Set<SysUser> getUsers() {
-//		return users;
-//	}
-//
-//	public void setUsers(Set<SysUser> users) {
-//		this.users = users;
-//	}
-	
-
 	public Boolean getIsActive() {
 		return isActive;
 	}
@@ -83,11 +58,4 @@ public class SysRole extends BaseEntity implements Serializable {
 	public void setIsActive(Boolean isActive) {
 		this.isActive = isActive;
 	}
-
-	@Override
-	@Transient
-	public String getNodeName() {
-		return null;
-	}
-
 }

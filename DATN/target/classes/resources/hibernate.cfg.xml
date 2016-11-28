@@ -17,12 +17,18 @@
 		<property name="show_sql">true</property>
 		<property name="hibernate.current_session_context_class">thread</property>
 
-		<mapping class="vn.edu.nuce.datn.entity.SysRole" />
-		<mapping class="vn.edu.nuce.datn.entity.SysUser" />
 		<mapping class="vn.edu.nuce.datn.entity.SubjectDictionary" />
 		<mapping class="vn.edu.nuce.datn.entity.TestScore" />
 		<mapping class="vn.edu.nuce.datn.entity.Student" />
 		<mapping class="vn.edu.nuce.datn.entity.GraduationScore" />
 		<mapping class="vn.edu.nuce.datn.entity.GraduationPeriod" />
+		<mapping class="vn.edu.nuce.datn.entity.SysMenu" />
+		<mapping class="vn.edu.nuce.datn.entity.SysGroup" />
+		<mapping class="vn.edu.nuce.datn.entity.SysRole" />
+		<mapping class="vn.edu.nuce.datn.entity.SysUser" />
+		<mapping class="vn.edu.nuce.datn.entity.SysUserRoleMap" />
+		<mapping class="vn.edu.nuce.datn.entity.SysUserGroupMap" />
+		<mapping class="vn.edu.nuce.datn.entity.SysRoleMenuMap" />
+		<mapping class="vn.edu.nuce.datn.entity.SysRoleGroupMap" />
 	</session-factory>
 </hibernate-configuration>
