@@ -12,7 +12,7 @@
 			<supported-locale>vi</supported-locale>
 		</locale-config>
 		<resource-bundle>
-			<base-name>resources.lang</base-name>
+			<base-name>resources.lang_vi</base-name>
 			<var>msg</var>
 		</resource-bundle>
 		<message-bundle>
