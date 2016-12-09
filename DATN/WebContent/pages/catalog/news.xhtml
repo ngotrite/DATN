@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui" xmlns:pe="http://primefaces.org/ui">
+<h:head />
+<ui:composition template="../../templates/vcbsContentTemplate.xhtml">
+	<ui:define name="content">
+		<h:form id="form-news" class="container-fluid">
+
+			<div class="row formFieldMg">
+
+
+				<div class="col-xs-12 col-sm-6 nopadding">
+					<article class="col-xs-12">
+					<div class="jarviswidget jarviswidget-color-yellow" id="wid-id-0"
+						style="margin-right: -10px;" data-widget-editbutton="false"
+						data-widget-colorbutton="false" data-widget-deletebutton="false">
+						<header> <span class="widget-icon"> <i
+							class="fa fa-table"></i>
+						</span>
+						<h2>#{msg['title.lstNews']}</h2>
+						</header>
+						<p:dataTable var="item" value="#{newsBean.lstNews}" id="dtNews"
+							rowKey="#{item.id}" emptyMessage="#{msg['common.noData']}"
+							paginator="true" rows="15" paginatorPosition="bottom"
+							rowIndexVar="rowIndex" widgetVar="dtNewsWV"
+							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							rowsPerPageTemplate="10,20,50,100">
+
+							<p:column style="width:10%" headerText="#{msg['common.index']}">
+								<h:outputText value="#{rowIndex + 1}" />
+							</p:column>
+
+							<p:column sortBy="#{item.title}" filterBy="#{item.title}"
+								filterMatchMode="contains" headerText="#{msg['news.title']}">
+								<h:outputText value="#{item.title}" />
+							</p:column>
+
+							<p:column sortBy="#{item.content}" filterBy="#{item.content}" 
+								filterMatchMode="contains" headerText="#{msg['news.Content']}">
+								<h:outputText value="#{item.content}" />
+							</p:column>
+
+							<p:column sortBy="#{item.postDate}" filterBy="#{item.postDate}" style="width:25%"
+								filterMatchMode="contains" headerText="#{msg['news.postDate']}">
+								<h:outputText value="#{item.postDate}">
+									<f:convertDateTime pattern="dd-MM-yyyy" />
+								</h:outputText>
+							</p:column>
+
+							<p:column headerText="#{msg['common.action']}"
+								style="text-align:center;">
+								<p:commandLink update="form-news"
+									actionListener="#{newsBean.cmdEdit(item)}"
+									styleClass="btn btn-sm btn-action-edit colorBlue">
+									<i class="fa fa-pencil icon-only mr-0"></i>
+								</p:commandLink>
+
+								<p:commandLink update="dtNews"
+									actionListener="#{newsBean.cmdDelele(item)}"
+									styleClass="btn btn-sm btn-action-del colorRed">
+									<i class="fa fa-times icon-only mr-0"></i>
+									<p:confirm header="#{msg['common.delete']}"
+										message="#{msg['common.confirmDelete']}" icon="ui-icon-alert" />
+								</p:commandLink>
+							</p:column>
+						</p:dataTable>
+					</div>
+					</article>
+				</div>
+
+				<div class="col-xs-12 col-sm-6 nopadding">
+					<article class="col-xs-12">
+					<div class="jarviswidget jarviswidget-color-yellow" id="wid-id-0"
+						style="margin-right: -10px;" data-widget-editbutton="false"
+						data-widget-colorbutton="false" data-widget-deletebutton="false">
+						<header> <span class="widget-icon"> <i
+							class="fa fa-table"></i>
+						</span>
+						<h2>#{msg['title.detailNews']}</h2>
+						</header>
+						<div class="col-xs-12 col-sm-6">
+
+							<div class="row">
+								<div class="col-xs-12">
+									<p:outputLabel value="#{msg['news.title']}" />
+								</div>
+								<div class="col-xs-12">
+									<p:inputText styleClass="form-control"
+										value="#{newsBean.news.title}" />
+								</div>
+							</div>
+
+						</div>
+						<div class="col-xs-12 col-sm-6">
+							<div class="row">
+								<div class="col-xs-12">
+									<p:outputLabel value="#{msg['news.postDate']}" />
+								</div>
+								<div class="col-xs-12">
+									<p:calendar value="#{newsBean.news.postDate}" />
+								</div>
+							</div>
+						</div>
+
+						<div class="col-xs-12 col-sm-12">
+							<div class="row">
+								<div class="col-xs-12 col-md-12">
+									<p:outputLabel value="#{msg['news.Content']}" />
+								</div>
+								<div class="col-xs-12 col-md-12">
+									<!-- 							<p:textEditor value="#{newsBean.news.content}" /> -->
+									<p:inputTextarea value="#{newsBean.news.content}" rows="10"
+										cols="78" />
+								</div>
+							</div>
+							<div class="row">
+								<div class="pull-right" style="padding-right: 12px"
+									align="right">
+									<p:commandButton value="#{msg['common.addNew']}"
+										action="#{newsBean.cmdAddNew()}" update="form-news"
+										styleClass="btn btn-default">
+									</p:commandButton>
+
+									<p:commandButton value="#{msg['common.apply']}"
+										update="form-news:dtNews form-news"
+										actionListener="#{newsBean.cmdApply()}"
+										styleClass="btn btn-default">
+										<p:confirm header="#{msg['common.apply']}"
+											message="#{msg['common.confirm_apply']}" icon="ui-icon-alert" />
+									</p:commandButton>
+
+									<p:commandButton value="#{msg['common.cancel']}"
+										action="#{newsBean.cmdCancel()}" update="form-news"
+										styleClass="btn btn-default">
+									</p:commandButton>
+								</div>
+							</div>
+						</div>
+					</div>
+					</article>
+				</div>
+
+
+
+
+
+			</div>
+		</h:form>
+	</ui:define>
+</ui:composition>
+</html>

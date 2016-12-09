@@ -127,5 +127,10 @@ public class SysMenu implements Serializable {
 	public void setCssClass(String cssClass) {
 		this.cssClass = cssClass;
 	}
+	
+	@Transient
+	public String getNodeName() {
+		return this.name;
+	}
 
 }

@@ -1094,7 +1094,10 @@ nav>ul>li>ul>li>a, nav>ul>li>ul>li>ul>li>a {
 	padding: 0px 10px;
 	border-width: 0 1px;
 }
-
+.ui-picklist-buttons-cell .ui-button{
+	padding-top:25px !important;
+	background-color: #fff !important;
+}
 #formRuleNode button.ui-button {
 	min-width: 41px;
 }
@@ -1631,7 +1634,7 @@ span.ui-treenode-leaf-icon{
 }
 .ui-picklist .ui-picklist-list {
 	border: 1px solid #aaa; 
-	width: 250px;
+	width: 217px;
 }
 
 li.ui-picklist-item {

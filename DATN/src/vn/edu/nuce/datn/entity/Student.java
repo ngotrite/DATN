@@ -31,7 +31,7 @@ public class Student implements Serializable{
 	private Boolean schoolFeeStatus;
 	
 	@Column(name = "SCHOOL_FEE_USER_ID")
-	private String schoolFeeUserId;
+	private Long schoolFeeUserId;
 	
 	@Column(name = "SCHOOL_FEE_UPDATE_TIME")
 	private Date schoolFeeUpdateTime;
@@ -40,7 +40,7 @@ public class Student implements Serializable{
 	private Boolean libraryStatus;
 	
 	@Column(name = "LIBRARY_USER_ID")
-	private String libraryUserId;
+	private Long libraryUserId;
 	
 	@Column(name = "LIBRARY_UPDATE_TIME")
 	private Date libraryUpdateTime;
@@ -49,7 +49,7 @@ public class Student implements Serializable{
 	private Boolean departmentStatus;
 	
 	@Column(name = "DEPARTMENT_USER_ID")
-	private String departmentUserId;
+	private Long departmentUserId;
 	
 	@Column(name = "DEPARTMENT_UPDATE_TIME")
 	private Date departmentUpdateTime;
@@ -85,10 +85,10 @@ public class Student implements Serializable{
 	public void setSchoolFeeStatus(Boolean schoolFeeStatus) {
 		this.schoolFeeStatus = schoolFeeStatus;
 	}
-	public String getSchoolFeeUserId() {
+	public Long getSchoolFeeUserId() {
 		return schoolFeeUserId;
 	}
-	public void setSchoolFeeUserId(String schoolFeeUserId) {
+	public void setSchoolFeeUserId(Long schoolFeeUserId) {
 		this.schoolFeeUserId = schoolFeeUserId;
 	}
 	public Date getSchoolFeeUpdateTime() {
@@ -103,10 +103,10 @@ public class Student implements Serializable{
 	public void setLibraryStatus(Boolean libraryStatus) {
 		this.libraryStatus = libraryStatus;
 	}
-	public String getLibraryUserId() {
+	public Long getLibraryUserId() {
 		return libraryUserId;
 	}
-	public void setLibraryUserId(String libraryUserId) {
+	public void setLibraryUserId(Long libraryUserId) {
 		this.libraryUserId = libraryUserId;
 	}
 	public Date getLibraryUpdateTime() {
@@ -121,10 +121,10 @@ public class Student implements Serializable{
 	public void setDepartmentStatus(Boolean departmentStatus) {
 		this.departmentStatus = departmentStatus;
 	}
-	public String getDepartmentUserId() {
+	public Long getDepartmentUserId() {
 		return departmentUserId;
 	}
-	public void setDepartmentUserId(String departmentUserId) {
+	public void setDepartmentUserId(Long departmentUserId) {
 		this.departmentUserId = departmentUserId;
 	}
 	public Date getDepartmentUpdateTime() {

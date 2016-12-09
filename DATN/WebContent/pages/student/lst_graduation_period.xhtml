@@ -9,7 +9,9 @@
 	xmlns:p="http://primefaces.org/ui" xmlns:pe="http://primefaces.org/ui">
 <ui:composition template="../../templates/vcbsContentTemplate.xhtml">
 	<ui:define name="content">
-
+		<style>
+#form-gp-list
+</style>
 		<h:form id="form-gp-list" class="container-fluid">
 			<p:dataTable var="item" value="#{graPeriodBean.graduationPeriods}"
 				id="dtGP" rowKey="#{item.graduationPeriodId}" selectionMode="single"
@@ -23,10 +25,9 @@
 				</f:facet>
 
 				<p:ajax event="rowSelect" listener="#{graPeriodBean.onRowSelect}"
-					oncomplete="$('#btnResetFilters').click();"
+					oncomplete="$('.btnResetFilters').click();"
 					update="form-sd-list form-sd-list:dtStudent" />
 				<p:ajax event="rowUnselect"
-					oncomplete="$('#btnResetFilters').click();"
 					listener="#{graPeriodBean.onRowUnselect}"
 					update="form-sd-list form-sd-list:dtStudent" />
 
@@ -40,26 +41,40 @@
 					<h:outputText value="#{item.graduationPeriodName}" />
 				</p:column>
 
+
 				<p:column sortBy="#{item.status}" style="width:20%"
-					filterBy="#{item.status}" filterMatchMode="contains"
+					filterBy="#{item.status}" filterMatchMode="equals"
 					headerText="#{msg['common.status']}">
-					<h:outputText value="#{item.status eq true ? msg['common.opened'] : msg['common.closed'] }" />
+					<f:facet name="filter">
+						<p:selectOneMenu onchange="PF('dtGPWV').filter()"
+							value="#{graPeriodBean.student.schoolFeeStatus}"
+							styleClass="form-control">
+							<f:converter converterId="javax.faces.Boolean" />
+							<f:selectItem itemLabel="#{msg['common.all']}"
+								noSelectionOption="true" />
+							<f:selectItem itemLabel="#{msg['common.closed']}"
+								itemValue="false" />
+							<f:selectItem itemLabel="#{msg['common.opened']}"
+								itemValue="true" />
+							<p:ajax event="change" update="dtGP" />
+						</p:selectOneMenu>
+					</f:facet>
+					<h:outputText
+						value="#{item.status eq true ? msg['common.opened'] : msg['common.closed'] }" />
 				</p:column>
 
 				<p:column sortBy="#{item.startDate}" filterBy="#{item.startDate}"
 					filterMatchMode="contains" headerText="#{msg['gp.startDate']}">
-					<p:calendar effect="fold" value="#{item.startDate}" readonly="true"
-						showOn="button" styleClass="calendarDisable" >
+					<h:outputText value="#{item.startDate}">
 						<f:convertDateTime pattern="dd-MM-yyyy" />
-					</p:calendar>
+					</h:outputText>
 				</p:column>
 
 				<p:column sortBy="#{item.finishDate}" filterBy="#{item.finishDate}"
 					filterMatchMode="contains" headerText="#{msg['gp.finishDate']}">
-					<p:calendar effect="fold" value="#{item.finishDate}" 
-						readonly="true" showOn="button" styleClass="calendarDisable">
+					<h:outputText value="#{item.finishDate}">
 						<f:convertDateTime pattern="dd-MM-yyyy" />
-					</p:calendar>
+					</h:outputText>
 				</p:column>
 
 				<p:column headerText="#{msg['common.action']}"
@@ -104,9 +119,7 @@
 		<div class="col-xs-12">
 			<p:outputLabel />
 		</div>
-		<div class="col-xs-12">
-			<p:outputLabel />
-		</div>
+
 
 		<h:form id="form-sd-list" class="container-fluid">
 
@@ -123,20 +136,13 @@
 
 				<f:facet name="header">
 					<p:outputLabel value="#{msg['title.lstStudent']}"
-						style="font-weight:bold" />
-					<p:outputLabel value="#{msg['common.total']}">
-					#{fn:length(graPeriodBean.filteredStudents)}
+						style="font-weight:bold">
 					</p:outputLabel>
 
-					<p:commandButton value="#{msg['common.viewAllStudents']}"
-						styleClass="btn btn-default pull-right"
-						actionListener="#{graPeriodBean.lstStudens()}"
-						update="form-sd-list" />
-
 					<p:commandButton value="#{msg['common.resetValue']}"
-						styleClass="btn btn-default pull-right" id="btnResetFilters"
-						actionListener="#{graPeriodBean.resetFilters()}"
-						update="form-sd-list">
+						styleClass="btn btn-default pull-right btnResetFilters hidden"
+						id="btnResetFilters" update="form-sd-list:dtStudent"
+						actionListener="#{graPeriodBean.resetFilters()}">
 					</p:commandButton>
 				</f:facet>
 
@@ -164,28 +170,25 @@
 				</p:column>
 
 				<p:column filterBy="#{item.schoolFeeStatus}"
-					filterOptions="#{graPeriodBean.lstFillter}"
 					styleClass="text-center" headerText="#{msg['st.schoolFeeS']}"
 					filterMatchMode="equals">
 					<f:facet name="filter">
 						<p:selectOneMenu onchange="PF('dtStudentWV').filter()"
-							id="cbSchoolFeeStatus"
 							value="#{graPeriodBean.student.schoolFeeStatus}"
 							styleClass="form-control" style="width:100px">
 							<f:converter converterId="javax.faces.Boolean" />
-							<f:selectItems value="#{graPeriodBean.loadComboFillter()}" />
-							<p:ajax event="change" update="dtStudent"
-								listener="#{graPeriodBean.showSumStudent()}" />
+							<f:selectItem itemLabel="Tất cả" noSelectionOption="true" />
+							<f:selectItem itemLabel="Chưa HT" itemValue="false" />
+							<f:selectItem itemLabel="Đã HT" itemValue="true" />
+							<p:ajax event="change" update="dtStudent" />
 						</p:selectOneMenu>
 					</f:facet>
 					<p:selectBooleanCheckbox value="#{item.schoolFeeStatus}"
 						disabled="#{graPeriodBean.readOnly}">
-						<p:ajax event="change"
-							update="txtSchoolFeeStatus cSchoolFeeUpdateTime"
+						<p:ajax event="change" update="cSchoolFeeUpdateTime"
+							ignoreAutoUpdate="true"
 							listener="#{graPeriodBean.autoUpdateDate(item)}" />
 					</p:selectBooleanCheckbox>
-					<h:outputText id="txtSchoolFeeStatus"
-						value="#{item.schoolFeeStatus ? 'Finished': 'UnFinished'}" />
 				</p:column>
 
 				<p:column sortBy="#{item.schoolFeeUpdateTime}" style="width:12%"
@@ -198,25 +201,23 @@
 				</p:column>
 
 				<p:column filterBy="#{item.libraryStatus}" styleClass="text-center"
-					filterOptions="#{graPeriodBean.lstFillter}"
 					headerText="#{msg['st.libraryS']}" filterMatchMode="equals">
 					<f:facet name="filter">
 						<p:selectOneMenu onchange="PF('dtStudentWV').filter()"
 							styleClass="form-control" style="width:100px">
 							<f:converter converterId="javax.faces.Boolean" />
-							<f:selectItems value="#{graPeriodBean.loadComboFillter()}" />
-							<p:ajax event="change" update="dtStudent"
-								listener="#{graPeriodBean.showSumStudent()}" />
+							<f:selectItem itemLabel="Tất cả" noSelectionOption="true" />
+							<f:selectItem itemLabel="Chưa HT" itemValue="false" />
+							<f:selectItem itemLabel="Đã HT" itemValue="true" />
+							<p:ajax event="change" update="dtStudent" />
+							<p:ajax event="change" update="dtStudent" />
 						</p:selectOneMenu>
 					</f:facet>
 					<p:selectBooleanCheckbox value="#{item.libraryStatus}"
 						disabled="#{graPeriodBean.readOnly}">
-						<p:ajax event="change"
-							update="txtLibraryStatus cLibraryUpdateTime"
+						<p:ajax event="change" update="cLibraryUpdateTime"
 							listener="#{graPeriodBean.autoUpdateDate(item)}" />
 					</p:selectBooleanCheckbox>
-					<h:outputText id="txtLibraryStatus"
-						value="#{item.libraryStatus ? 'Finished': 'UnFinished'}" />
 				</p:column>
 
 				<p:column sortBy="#{item.libraryUpdateTime}"
@@ -229,26 +230,23 @@
 				</p:column>
 
 				<p:column filterBy="#{item.departmentStatus}"
-					filterOptions="#{graPeriodBean.lstFillter}"
 					styleClass="text-center" headerText="#{msg['st.departmentS']}"
 					filterMatchMode="equals">
 					<f:facet name="filter">
 						<p:selectOneMenu onchange="PF('dtStudentWV').filter()"
 							styleClass="form-control" style="width:100px">
 							<f:converter converterId="javax.faces.Boolean" />
-							<f:selectItems value="#{graPeriodBean.loadComboFillter()}" />
-							<p:ajax event="change" update="dtStudent"
-								listener="#{graPeriodBean.showSumStudent()}" />
+							<f:selectItem itemLabel="Tất cả" noSelectionOption="true" />
+							<f:selectItem itemLabel="Chưa HT" itemValue="false" />
+							<f:selectItem itemLabel="Đã HT" itemValue="true" />
+							<p:ajax event="change" update="dtStudent" />
 						</p:selectOneMenu>
 					</f:facet>
 					<p:selectBooleanCheckbox value="#{item.departmentStatus}"
 						disabled="#{graPeriodBean.readOnly}">
-						<p:ajax event="change"
-							update="txtDepartmentStatus cDepartmentUpdateTime"
+						<p:ajax event="change" update="cDepartmentUpdateTime"
 							listener="#{graPeriodBean.autoUpdateDate(item)}" />
 					</p:selectBooleanCheckbox>
-					<h:outputText id="txtDepartmentStatus"
-						value="#{item.departmentStatus ? 'Finished': 'UnFinished'}" />
 				</p:column>
 
 				<p:column sortBy="#{item.departmentUpdateTime}" style="width:12%"
@@ -261,16 +259,43 @@
 				</p:column>
 
 				<f:facet name="footer">
-					<p:outputLabel value="#{msg['common.total']}">
+					<div class="col-xs-12 col-sm-12">
+						<div class="row">
+							<p:outputLabel value="Tổng số sinh viên trong đợt :">
 					#{fn:length(graPeriodBean.students)}
 					</p:outputLabel>
+							<h:commandButton value="#{msg['common.export']}"
+								styleClass="btn-export-zone pull-right">
+								<p:dataExporter type="xls" target="dtStudent"
+									fileName="Danh_sach_sinh_vien_theo_dot" pageOnly="true"
+									postProcessor="#{graPeriodBean.postProcessXLS}" />
+							</h:commandButton>
+							<p:commandButton value="#{msg['common.apply']}" type="submit"
+								actionListener="#{graPeriodBean.saveStudent}" update="dtStudent"
+								styleClass="btn btn-default pull-right">
+								<p:confirm header="#{msg['common.apply']}"
+									message="#{msg['common.confirm_apply']}" icon="ui-icon-alert" />
+							</p:commandButton>
+						</div>
+					
 
-					<p:commandButton value="#{msg['common.apply']}" type="submit"
-						actionListener="#{graPeriodBean.saveStudent}" update="dtStudent"
-						styleClass="btn btn-default pull-right">
-						<p:confirm header="#{msg['common.apply']}"
-							message="#{msg['common.confirm_apply']}" icon="ui-icon-alert" />
-					</p:commandButton>
+					<div class="row">
+						<p:outputLabel value="Tổng số sinh viên đã hoàn thành học phí :" />
+						<p:outputLabel value="#{graPeriodBean.countStudentsSF()}" />
+					</div>
+
+					<div class="row">
+						<p:outputLabel
+							value="Tổng số sinh viên đã hoàn thành thủ tục tại thư viện :" />
+						<p:outputLabel value="#{graPeriodBean.countStudentsL()}" />
+					</div>
+
+					<div class="row">
+						<p:outputLabel
+							value="Tổng số sinh viên đã hoàn thành thủ tục tại khoa :" />
+						<p:outputLabel value="#{graPeriodBean.countStudentsD()}" />
+					</div>
+					</div>
 				</f:facet>
 			</p:dataTable>
 
@@ -279,7 +304,15 @@
 		<p:dialog header="#{msg['gp.graPeriod']}" modal="true" id="dlgGP"
 			resizable="false" showEffect="explode" widgetVar="dlgGPWV"
 			styleClass="dlg-center-fix">
+			<style>
+#dlgGP.ui-dialog .ui-dialog-content {
+	float: right;
+}
 
+#dlgStudentFinnished.ui-dialog .ui-dialog-content {
+	float: right;
+}
+</style>
 			<h:form id="form-gra-period-input" class="container-fluid">
 
 				<div class="row formFieldMg">
@@ -314,10 +347,8 @@
 							</div>
 							<div class="col-xs-12">
 								<p:calendar id="maskStart" effect="fold"
-									styleClass="calendarIcon" navigator="true"
 									value="#{graPeriodBean.graduationPeriod.startDate}"
 									requiredMessage="#{msg['common.required']}">
-									<f:convertDateTime pattern="dd-MM-yyyy" />
 								</p:calendar>
 							</div>
 						</div>
@@ -326,11 +357,9 @@
 								<p:outputLabel for="maskFinish" value="#{msg['gp.finishDate']}" />
 							</div>
 							<div class="col-xs-12">
-								<p:calendar id="maskFinish" effect="fold" 
-									styleClass="calendarIcon" navigator="true"
+								<p:calendar id="maskFinish" effect="fold"
 									value="#{graPeriodBean.graduationPeriod.finishDate}"
 									requiredMessage="#{msg['common.required']}">
-									<f:convertDateTime pattern="dd-MM-yyyy" />
 								</p:calendar>
 
 							</div>
@@ -435,16 +464,16 @@
 		</p:dialog>
 
 		<p:dialog header="#{msg['st.student']}" modal="true" id="dlgStudent"
-			resizable="false" showEffect="fade" position="100,200"
+			resizable="false" showEffect="fade" position="243,-100"
 			widgetVar="dlgStudentWV" height="300px" width="600px">
 			<h:form id="form-dlgStudent" class="container-fluid">
 				<div class="row formFieldMg">
 					<div class="col-xs-12 col-sm-12">
 						<div class="row">
-							<div class="col-xs-12 col-md-4">
+							<div class="col-xs-12 col-md-6">
 								<p:outputLabel value="#{msg['st.studentId']}" />
 							</div>
-							<div class="col-xs-12 col-md-7">
+							<div class="col-xs-12 col-md-6">
 								<p:inputText value="#{graPeriodBean.student.studentId}"
 									styleClass="form-control"
 									requiredMessage="#{msg['common.required']}" />
@@ -452,10 +481,10 @@
 						</div>
 
 						<div class="row">
-							<div class="col-xs-12 col-md-4">
+							<div class="col-xs-12 col-md-6">
 								<p:outputLabel value="#{msg['st.studentName']}" />
 							</div>
-							<div class="col-xs-12 col-md-7">
+							<div class="col-xs-12 col-md-6">
 								<p:inputText value="#{graPeriodBean.student.studentName}"
 									styleClass="form-control"
 									requiredMessage="#{msg['common.required']}" />
@@ -463,10 +492,10 @@
 						</div>
 
 						<div class="row">
-							<div class="col-xs-12 col-md-4">
+							<div class="col-xs-12 col-md-6">
 								<p:outputLabel value="#{msg['st.class']}" />
 							</div>
-							<div class="col-xs-12 col-md-7">
+							<div class="col-xs-12 col-md-6">
 								<p:inputText value="#{graPeriodBean.student._class}"
 									styleClass="form-control"
 									requiredMessage="#{msg['common.required']}" />

@@ -7,13 +7,31 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui">
 
-<!-- <ui:include src="pages/sys/dashboard.xhtml"></ui:include> -->
-<!-- <ui:include src="/pages/student/graduation_period.xhtml"> -->
-<!-- </ui:include> -->
 <ui:composition template="templates/vcbsContentTemplate.xhtml">
 	<ui:define name="content">
-abcss
+		<h:form id="form-home" class="container-fluid" >
+			<p:repeat value="#{newsBean.lstNews}" var="item">
+				<h:panelGrid columns="2" style="width:100%"
+					columnClasses="logo,detail">
+					<p:outputPanel>
+						<h:panelGrid columns="2" cellpadding="5">
+							<h:outputText value="#{item.title}" style="font-weight: bold" />
+						</h:panelGrid>
+					</p:outputPanel>
 
+					<p:commandLink value="#{msg['news.readMore']}" actionListener="#{newsBean.cmdViewDetail(item)}"
+						update="form-home form-home-detail">
+					</p:commandLink>
+				</h:panelGrid>
+				<hr />
+			</p:repeat>
+
+		</h:form>
+
+		<ui:insert>
+			<ui:include src="/home-detail.xhtml">
+			</ui:include>
+		</ui:insert>
 	</ui:define>
 </ui:composition>
 </html>

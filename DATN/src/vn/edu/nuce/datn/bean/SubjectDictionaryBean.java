@@ -111,7 +111,7 @@ public class SubjectDictionaryBean extends BaseController implements Serializabl
 			subjectDictionaries.add(subjectDictionary);
 
 		} else {
-			System.out.println("Fail");
+			super.showNotificationFail();
 		}
 		RequestContext context = RequestContext.getCurrentInstance();
 		context.execute("PF('dlgSubjectDictionaryWV').hide();");

@@ -821,7 +821,7 @@ minified aside nav ul li a:hover {
 
 .btn-action-edit:hover {
 	background: #183287;
-	color: #FFF;
+	color: #FFF !important;
 }
 
 .btn-action-del:hover {
@@ -924,10 +924,11 @@ minified aside nav ul li a:hover {
 
 @media ( min-width : 960px) {
 	.dlg-center-fix {
-		width: 1300px !important;
+		width: 1080px !important;
 		max-width: 1300px !important;
-		min-height: 600px !important;
+		min-height: 500px !important;
 		max-height: 677px !important;
+		height: 520px !important;
 	}
 }
 
@@ -1015,7 +1016,8 @@ span.fullsizeCalendar input, span.inputNumCustom input {
 }
 
 input.btn-export-zone:hover {
-	background: rgb(51, 206, 168) !important;
+	/* background: rgb(51, 206, 168) !important; */
+	background: #1F67A5 !important;
 }
 
 .fupload .ui-fileupload-buttonbar {

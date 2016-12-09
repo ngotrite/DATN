@@ -6,231 +6,145 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui">
-<ui:composition template="../../templates/vcbsContentTemplate.xhtml">
-	<ui:define name="content">
-		<h:form id="form-menu" class="container-fluid">
-			<!-- <p:messages id="menuMessages" severity="error, warn" showDetail="true"
+<h:form id="form-menu" class="container-fluid">
+	<!-- <p:messages id="menuMessages" severity="error, warn" showDetail="true"
 		autoUpdate="true" closable="true" /> -->
-			<div class="row formFieldMg">
-				<div class="col-xs-12 col-sm-6">
-					<div class="row">
-						<div class="col-xs-12">
-							<p:outputLabel value="#{msg['menu.name']}" for="menuName" />
-						</div>
-						<div class="col-xs-12">
-							<p:inputText id="menuName" value="#{menuBean.sysMenu.name}"
-								maxlength="100" required="true"
-								requiredMessage="#{msg['common.required']}"
-								styleClass="form-control" />
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-xs-12">
-							<p:outputLabel value="#{msg['menu.path']}" for="menuPath" />
-						</div>
-						<div class="col-xs-12">
-							<p:inputText id="menuPath" value="#{menuBean.sysMenu.url}"
-								maxlength="100" styleClass="form-control" />
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-xs-12">
-							<p:outputLabel value="#{msg['menu.css']}" />
-						</div>
-						<div class="col-xs-12">
-							<p:inputText value="#{menuBean.sysMenu.cssClass}" maxlength="100"
-								styleClass="form-control" />
-						</div>
-					</div>
-				</div>
-				<div class="col-xs-12 col-sm-6">
-					<div class="row">
-						<div class="col-xs-12">
-							<p:outputLabel value="#{msg['menu.ID']}" />
-						</div>
-						<div class="col-xs-12">
-							<p:inputText value="#{menuBean.sysMenu.id}" readonly="true"
-								styleClass="form-control" />
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-xs-12">
-							<p:outputLabel value="#{msg['menu.parent']}" />
-						</div>
-						<div class="col-xs-12">
-							<h:selectOneMenu value="#{menuBean.parentId}"
-								styleClass="form-control select" filter="true"
-								filterMatchMode="startsWith">
-								<f:selectItems value="#{menuBean.listSelectItemParent}"></f:selectItems>
-							</h:selectOneMenu>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-xs-12">
-							<p:outputLabel value="#{msg['common.active']}" />
-						</div>
-						<div class="col-xs-6">
-							<p:selectBooleanCheckbox value="#{menuBean.sysMenu.isActive}">
-							</p:selectBooleanCheckbox>
-						</div>
-						<div class="col-xs-6 text-right">
-							<p:commandButton id="btnSave" value="#{msg['common.save']}"
-								actionListener="#{menuBean.btnSave}"
-								disabled="#{!menuBean.editing}"
-								update="form-menu-list:ID_MenuTable form-menu"
-								styleClass="btn btn-default">
-							</p:commandButton>
-						</div>
-					</div>
-				</div>
-			</div>
-		</h:form>
-
-
-		<h:form id="form-menu-list" class="container-fluid">
+	<div class="row formFieldMg">
+		<div class="col-xs-12 col-sm-6">
 			<div class="row">
 				<div class="col-xs-12">
-					<p:dataTable id="ID_MenuTable" var="menu"
-						value="#{menuBean.listSysMenu}" rowIndexVar="rowIndex"
-						resizableColumns="true" paginator="true" rows="20"
-						paginatorPosition="bottom" selectionMode="single"
-						rowKey="#{menu.id}"
-						rowStyleClass="#{rowIndex % 2 == 1? 'rowColorBlue': null}">
-
-						<f:facet name="header">
-							<h:outputLabel value="#{msg['menu.listChildren']}"></h:outputLabel>
-						</f:facet>
-
-						<p:column headerText="#" styleClass="widthSTTcolumn">
-							<h:outputText value="#{rowIndex+1}" />
-						</p:column>
-						<p:column headerText="#{msg['menu.name']}" sortBy="#{menu.name}"
-							styleClass="text-truncate preformatted" resizable="true"
-							filterBy="#{menu.name}" filterMatchMode="contains">
-							<h:outputText value="#{menu.name}" title="#{menu.name}" />
-						</p:column>
-						<p:column headerText="#{msg['menu.path']}" sortBy="#{menu.path}"
-							styleClass="text-truncate preformatted" resizable="true"
-							filterBy="#{menu.path}" filterMatchMode="contains">
-							<h:outputText value="#{menu.url}" title="#{menu.url}" />
-						</p:column>
-						<p:column headerText="#{msg['menu.css']}" resizable="true"
-							styleClass="text-truncate preformatted" sortBy="#{menu.cssClass}"
-							filterBy="#{menu.cssClass}" filterMatchMode="contains">
-							<h:outputText value="#{menu.cssClass}" title="#{menu.cssClass}" />
-						</p:column>
-
-						<p:column headerText="#{msg['common.action']}" resizable="false"
-							styleClass="actionColumn">
-							<p:commandLink actionListener="#{menuBean.btnShowDlg(menu)}"
-								update="formDlgMenu" oncomplete="PF('dlgMenu').show()"
-								immediate="true"
-								styleClass="btn btn-sm btn-action-edit colorStrongGreen">
-								<i class="fa fa-pencil icon-only mr-0"></i>
-							</p:commandLink>
-							<p:commandLink actionListener="#{menuBean.onRowDelete(menu)}"
-								update="ID_MenuTable" immediate="true"
-								styleClass="btn btn-sm btn-action-del colorRed">
-								<i class="fa fa-times icon-only mr-0"></i>
-								<p:confirm header="#{msg['common.delete']}"
-									message="#{msg['common.confirmDelete']}" icon="ui-icon-alert" />
-							</p:commandLink>
-
-							<f:facet name="header">
-								<p:commandButton value="#{msg['common.addChild']}"
-									actionListener="#{menuBean.btnShowDlg(menu)}"
-									update="formDlgMenu" oncomplete="PF('dlgMenu').show()"
-									immediate="true">
-								</p:commandButton>
-							</f:facet>
-						</p:column>
-					</p:dataTable>
+					<p:outputLabel value="#{msg['menu.name']}" for="menuName" />
+				</div>
+				<div class="col-xs-12">
+					<p:inputText id="menuName" value="#{menuBean.sysMenu.name}"
+						maxlength="100" required="true"
+						requiredMessage="#{msg['common.required']}"
+						styleClass="form-control" />
 				</div>
 			</div>
-		</h:form>
-
-
-		<h:form id="formDlgMenu">
-			<p:dialog header="#{msg['title.menu']}" modal="true" id="dlgMenu"
-				resizable="false" showEffect="fade" position="center"
-				widgetVar="dlgMenu" height="220px" width="800px">
-
-				<!-- <p:messages id="msgDlgMenu" severity="error,warn" showDetail="true" autoUpdate="true" closable="true" /> -->
-				<div class="row formFieldMg">
-
-					<div class="col-xs-12 col-sm-6">
-						<div class="row">
-							<div class="col-xs-12">
-								<p:outputLabel value="#{msg['menu.name']}" for="menuNameDlg" />
-							</div>
-							<div class="col-xs-12">
-								<p:inputText id="menuNameDlg"
-									value="#{menuBean.sysMenuDlg.name}" maxlength="100"
-									required="true" requiredMessage="#{msg['common.required']}"
-									styleClass="form-control" />
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-xs-12">
-								<p:outputLabel value="#{msg['menu.path']}" for="menuPathDlg" />
-							</div>
-							<div class="col-xs-12">
-								<p:inputText id="menuPathDlg" value="#{menuBean.sysMenuDlg.url}"
-									maxlength="100" styleClass="form-control" />
-							</div>
-						</div>
-					</div>
-					<div class="col-xs-12 col-sm-6">
-						<div class="row">
-							<div class="col-xs-12">
-								<p:outputLabel value="#{msg['menu.parent']}" />
-							</div>
-							<div class="col-xs-12">
-								<h:selectOneMenu value="#{menuBean.parentIdDlg}"
-									styleClass="form-control select" filter="true"
-									filterMatchMode="startsWith">
-									<f:selectItems value="#{menuBean.listSelectItemParentDlg}"></f:selectItems>
-								</h:selectOneMenu>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-xs-12">
-								<p:outputLabel value="#{msg['menu.css']}" />
-							</div>
-							<div class="col-xs-12">
-								<p:inputText value="#{menuBean.sysMenuDlg.cssClass}"
-									maxlength="100" styleClass="form-control" />
-							</div>
-						</div>
-					</div>
-					<div class="col-xs-12">
-						<div class="row">
-							<div class="col-xs-6">
-								<p:selectBooleanCheckbox value="#{menuBean.sysMenuDlg.isActive}">
-								</p:selectBooleanCheckbox>
-								<p:outputLabel value="#{msg['common.active']}" />
-							</div>
-							<div class="col-xs-6 text-right">
-								<p:commandButton value="#{msg['common.saveAndNew']}"
-									action="#{menuBean.btnSaveAndNewDlg()}" update="formDlgMenu"
-									styleClass="btn btn-default">
-								</p:commandButton>
-								<p:commandButton value="#{msg['common.save']}"
-									action="#{menuBean.btnSaveDlg()}" update=""
-									styleClass="btn btn-default">
-								</p:commandButton>
-								<p:commandButton value="#{msg['common.close']}"
-									onclick="PF('dlgMenu').hide()" styleClass="btn btn-default"
-									immediate="true">
-								</p:commandButton>
-							</div>
-						</div>
-					</div>
+			<div class="row">
+				<div class="col-xs-12">
+					<p:outputLabel value="#{msg['menu.path']}" for="menuPath" />
 				</div>
+				<div class="col-xs-12">
+					<p:inputText id="menuPath" value="#{menuBean.sysMenu.url}"
+						maxlength="100" styleClass="form-control" />
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-12">
+					<p:outputLabel value="#{msg['menu.css']}" />
+				</div>
+				<div class="col-xs-12">
+					<p:inputText value="#{menuBean.sysMenu.cssClass}" maxlength="100"
+						styleClass="form-control" />
+				</div>
+			</div>
+		</div>
+		<div class="col-xs-12 col-sm-6">
+			<div class="row">
+				<div class="col-xs-12">
+					<p:outputLabel value="#{msg['menu.ID']}" />
+				</div>
+				<div class="col-xs-12">
+					<p:inputText value="#{menuBean.sysMenu.id}" readonly="true"
+						styleClass="form-control" />
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-12">
+					<p:outputLabel value="#{msg['menu.parent']}" />
+				</div>
+				<div class="col-xs-12">
+					<h:selectOneMenu value="#{menuBean.parentId}"
+						styleClass="form-control select" filter="true"
+						filterMatchMode="startsWith">
+						<f:selectItems value="#{menuBean.listSelectItemParent}"></f:selectItems>
+					</h:selectOneMenu>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-12">
+					<p:outputLabel value="#{msg['common.active']}" />
+				</div>
+				<div class="col-xs-6">
+					<p:selectBooleanCheckbox value="#{menuBean.sysMenu.isActive}">
+					</p:selectBooleanCheckbox>
+				</div>
+				<div class="col-xs-6 text-right">
+					<p:commandButton id="btnSave" value="#{msg['common.save']}"
+						actionListener="#{menuBean.btnSave}"
+						disabled="#{!menuBean.editing}"
+						update="treeMenu form-menu-list:ID_MenuTable form-menu"
+						styleClass="btn btn-default">
+					</p:commandButton>
+				</div>
+			</div>
+		</div>
+	</div>
+</h:form>
 
-			</p:dialog>
-		</h:form>
-	</ui:define>
-</ui:composition>
+
+<h:form id="form-menu-list" class="container-fluid">
+	<div class="row">
+		<div class="col-xs-12">
+			<p:dataTable id="ID_MenuTable" var="menu"
+				value="#{menuBean.listSysMenu}" rowIndexVar="rowIndex"
+				resizableColumns="true" paginator="true" rows="20"
+				paginatorPosition="bottom" selectionMode="single"
+				rowKey="#{menu.id}"
+				rowStyleClass="#{rowIndex % 2 == 1? 'rowColorBlue': null}">
+
+				<f:facet name="header">
+					<h:outputLabel value="#{msg['menu.listChildren']}"></h:outputLabel>
+				</f:facet>
+
+				<p:column headerText="#" styleClass="widthSTTcolumn">
+					<h:outputText value="#{rowIndex+1}" />
+				</p:column>
+				<p:column headerText="#{msg['menu.name']}" sortBy="#{menu.name}"
+					styleClass="text-truncate preformatted" resizable="true" filterBy="#{menu.name}"
+					filterMatchMode="contains">
+					<h:outputText value="#{menu.name}" title="#{menu.name}" />
+				</p:column>
+				<p:column headerText="#{msg['menu.path']}" sortBy="#{menu.path}"
+					styleClass="text-truncate preformatted" resizable="true" filterBy="#{menu.path}"
+					filterMatchMode="contains">
+					<h:outputText value="#{menu.url}" title="#{menu.url}" />
+				</p:column>
+				<p:column headerText="#{msg['menu.css']}" resizable="true"
+					styleClass="text-truncate preformatted" sortBy="#{menu.cssClass}"
+					filterBy="#{menu.cssClass}" filterMatchMode="contains">
+					<h:outputText value="#{menu.cssClass}" title="#{menu.cssClass}" />
+				</p:column>
+
+				<p:column headerText="#{msg['common.action']}" resizable="false"
+					styleClass="actionColumn">
+					<p:commandLink actionListener="#{menuBean.btnShowDlg(menu)}"
+						update="formDlgMenu" oncomplete="PF('dlgMenu').show()"
+						immediate="true"
+						styleClass="btn btn-sm btn-action-edit colorStrongGreen">
+						<i class="fa fa-pencil icon-only mr-0"></i>
+					</p:commandLink>
+					<p:commandLink actionListener="#{menuBean.onRowDelete(menu)}"
+						update="treeMenu ID_MenuTable" immediate="true"
+						styleClass="btn btn-sm btn-action-del colorRed">
+						<i class="fa fa-times icon-only mr-0"></i>
+						<p:confirm header="#{msg['common.delete']}"
+							message="#{msg['common.confirmDelete']}" icon="ui-icon-alert" />
+					</p:commandLink>
+
+					<f:facet name="header">
+						<p:commandButton value="#{msg['common.addChild']}"
+							actionListener="#{menuBean.btnShowDlg(menu)}"
+							update="formDlgMenu" oncomplete="PF('dlgMenu').show()"
+							immediate="true">
+						</p:commandButton>
+					</f:facet>
+				</p:column>
+			</p:dataTable>
+		</div>
+	</div>
+</h:form>
 
 </html>

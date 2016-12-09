@@ -12,8 +12,8 @@ public class PasswordUtil {
 	private static Pattern pattern;
 	private static Matcher matcher;
 
-	private static final String PASSWORD_PATTERN = "((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%]).{8,20})";
-//	private static final String PASSWORD_PATTERN = ".*";
+//	private static final String PASSWORD_PATTERN = "((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%]).{8,20})";
+	private static final String PASSWORD_PATTERN = ".*";
 
 	/**
 	 * Validate password with regular expression

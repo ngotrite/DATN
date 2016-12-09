@@ -1,6 +1,7 @@
 package vn.edu.nuce.datn.dao;
 
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +17,7 @@ import vn.edu.nuce.datn.util.CommonUtil;
 
 
 
-public class SysUserDAO extends BaseDAO<SysUser> {
+public class SysUserDAO extends BaseDAO<SysUser> implements Serializable{
 
 	@Override
 	protected Class<SysUser> getEntityClass() {

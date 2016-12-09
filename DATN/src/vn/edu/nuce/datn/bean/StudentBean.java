@@ -9,75 +9,84 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 
-import org.primefaces.context.RequestContext;
-
+import vn.edu.nuce.datn.dao.GraduationPeriodDAO;
 import vn.edu.nuce.datn.dao.StudentDAO;
+import vn.edu.nuce.datn.entity.GraduationPeriod;
 import vn.edu.nuce.datn.entity.Student;
-import vn.edu.nuce.datn.entity.SubjectDictionary;
 
 @SuppressWarnings("serial")
 @ManagedBean(name = "studentBean")
 @ViewScoped
-public class StudentBean extends BaseController implements Serializable{
-	
+public class StudentBean extends BaseController implements Serializable {
+
 	private Student student;
 	private List<Student> students;
 	private StudentDAO studentDAO;
-	
+	private GraduationPeriod gp;
+	private List<GraduationPeriod> lstGP;
+
 	@PostConstruct
-	public void init(){
+	public void init() {
 		this.student = new Student();
 		this.studentDAO = new StudentDAO();
 		this.students = new ArrayList<Student>();
+		this.gp = new GraduationPeriod();
+		this.lstGP = new ArrayList<GraduationPeriod>();
 		loadStudents();
 	}
-	
-	/***** DIALOG STUDENT*****/
 
-	public void showDialogStudent(Student student) {
-		if (student == null) {
-			student = new Student();
+	public String getGPName(Long graduationPeriodId) {
+		GraduationPeriodDAO gPDAO = new GraduationPeriodDAO();
+		if (graduationPeriodId != null) {
+			return gPDAO.get(graduationPeriodId).getGraduationPeriodName();
 		}
-		this.student = student;
-
-		RequestContext context = RequestContext.getCurrentInstance();
-		context.execute("PF('dlgStudentWV').show();");
-
+		return null;
 	}
-	
+
 	/***** STUDENT *****/
-	
+
 	private void loadStudents() {
 		students = studentDAO.findAll();
 	}
-	
-	public void cmdDeleteStudent(Student student) {
-		studentDAO.delete(student);
-		students.remove(student);
-		this.showMessageINFO("common.delete", "Student");
-	}
-	
-	
-	//  GET SET 
+
+	// GET SET
 	public Student getStudent() {
 		return student;
 	}
+
 	public void setStudent(Student student) {
 		this.student = student;
 	}
+
 	public List<Student> getStudents() {
 		return students;
 	}
+
 	public void setStudents(List<Student> students) {
 		this.students = students;
 	}
+
 	public StudentDAO getStudentDAO() {
 		return studentDAO;
 	}
+
 	public void setStudentDAO(StudentDAO studentDAO) {
 		this.studentDAO = studentDAO;
 	}
-	
-	
 
+	public GraduationPeriod getGp() {
+		return gp;
+	}
+
+	public void setGp(GraduationPeriod gp) {
+		this.gp = gp;
+	}
+
+	public List<GraduationPeriod> getLstGP() {
+		return lstGP;
+	}
+
+	public void setLstGP(List<GraduationPeriod> lstGP) {
+		this.lstGP = lstGP;
+	}
 }
