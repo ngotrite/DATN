@@ -33,17 +33,17 @@ public class PasswordUtil {
 		return UUID.randomUUID().toString();
 	}
 	
-	public static String generateHash(String rawPass, String salt) {
+	public static String generateHash(String rawPass) {
 		
 		if(CommonUtil.isEmpty(rawPass))
 			return null;
-		if(CommonUtil.isEmpty(salt))
-			salt = "Huannn123";
+//		if(CommonUtil.isEmpty(salt))
+//			salt = "Huannn123";
 		
 		try {
 			
 			MessageDigest md = MessageDigest.getInstance("SHA-256");
-			md.update((rawPass + salt).getBytes());
+			md.update((rawPass).getBytes());
 			byte[] digest = md.digest();
 			StringBuffer sb = new StringBuffer();
 			for (byte b : digest) {

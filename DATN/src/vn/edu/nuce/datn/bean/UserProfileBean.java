@@ -105,9 +105,9 @@ public class UserProfileBean extends BaseController implements Serializable {
 				} else {
 					
 					SysUserDAO sysUserDAO = new SysUserDAO();
-					String salt = PasswordUtil.getRandomSalt();
-					sysUserPass.setSalt(salt);
-					sysUserPass.setPassword(PasswordUtil.generateHash(newPassword, salt));
+//					String salt = PasswordUtil.getRandomSalt();
+//					sysUserPass.setSalt(salt);
+					sysUserPass.setPassword(PasswordUtil.generateHash(newPassword));
 					sysUserDAO.saveOrUpdate(sysUserPass);
 					this.showMessageINFO("common.save", " Change Password ");
 					HttpSession session = SessionUtils.getSession();

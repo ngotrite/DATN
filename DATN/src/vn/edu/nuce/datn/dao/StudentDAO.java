@@ -87,7 +87,7 @@ public class StudentDAO extends BaseDAO<Student> implements Serializable {
 	
 	public int countStudentsD(Long graduationPeriodId, boolean departmentStatus) {
 		String hql = "SELECT COUNT(a) FROM Student a WHERE  a.graduationPeriodId =:graduationPeriodId ";
-		hql += " AND a.schoolFeeStatus = :schoolFeeStatus";
+		hql += " AND a.departmentStatus = :departmentStatus";
 		Session session = HibernateUtil.getOpenSession();
 		try {
 			Query<Long> query = session.createQuery(hql, Long.class);

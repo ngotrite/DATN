@@ -84,7 +84,7 @@ public class UserBean extends BaseController implements Serializable {
 
 			userDao.update(sysUser);
 		} else {
-
+			sysUser.setLanguague("vi");
 			userDao.save(sysUser);
 			listSysUser.add(sysUser);
 		}
@@ -111,8 +111,8 @@ public class UserBean extends BaseController implements Serializable {
 				return false;
 			} else {
 				String salt = PasswordUtil.getRandomSalt();
-				sysUser.setSalt(salt);
-				sysUser.setPassword(PasswordUtil.generateHash(password, salt));
+//				sysUser.setSalt(salt);
+				sysUser.setPassword(PasswordUtil.generateHash(password));
 			}
 		} else {
 			// Neu update thi chi validate password khi doi password
@@ -124,8 +124,8 @@ public class UserBean extends BaseController implements Serializable {
 					return false;
 				} else {
 					String salt = PasswordUtil.getRandomSalt();
-					sysUser.setSalt(salt);
-					sysUser.setPassword(PasswordUtil.generateHash(password, salt));
+//					sysUser.setSalt(salt);
+					sysUser.setPassword(PasswordUtil.generateHash(password));
 				}
 			} else {
 				// Do nothing

@@ -50,8 +50,8 @@ public class SysUser extends BaseEntity implements Serializable, Cloneable {
 	@Column(name = "is_active")
 	private Boolean isActive;
 	
-	@Column(name = "salt")
-	private String salt;
+//	@Column(name = "salt")
+//	private String salt;
 
 	// @ManyToOne
 	// @JoinColumn(name="role_id", nullable=false)
@@ -191,11 +191,11 @@ public class SysUser extends BaseEntity implements Serializable, Cloneable {
 		this.dateformat = dateformat;
 	}
 
-	public String getSalt() {
-		return salt;
-	}
-
-	public void setSalt(String salt) {
-		this.salt = salt;
-	}
+//	public String getSalt() {
+//		return salt;
+//	}
+//
+//	public void setSalt(String salt) {
+//		this.salt = salt;
+//	}
 }

@@ -54,7 +54,7 @@ public class UserSession extends BaseController implements Serializable {
 		boolean validate = false;
 		if(sysUser != null) {
 			
-			String hash = PasswordUtil.generateHash(password, sysUser.getSalt());
+			String hash = PasswordUtil.generateHash(password);
 			if(hash != null && hash.equals(sysUser.getPassword()))
 				validate = true;
 		}

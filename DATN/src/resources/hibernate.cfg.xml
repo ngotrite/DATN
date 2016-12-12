@@ -6,6 +6,7 @@
 	<session-factory>
 		<property name="hibernate.bytecode.use_reflection_optimizer">false</property>
 		<property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
+<!-- 		<property name="hibernate.connection.url">jdbc:mysql://localhost:8080/datn</property> -->
 <!-- 		<property name="hibernate.connection.url">jdbc:mysql://localhost:3306/datn</property> -->
 		<!-- <property name="hibernate.connection.url">jdbc:mysql://192.168.100.2:3306/ocs_0902</property> -->
 		<property name="hibernate.connection.url">jdbc:mysql://localhost:3306/datn?useUnicode=true&amp;useJDBCCompliantTimezoneS‌​hift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=UTC</property>
