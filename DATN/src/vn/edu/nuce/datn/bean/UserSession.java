@@ -120,7 +120,7 @@ public class UserSession extends BaseController implements Serializable {
 
 		ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
 		HttpServletRequest req = (HttpServletRequest) ec.getRequest();
-		ec.redirect(req.getContextPath() + "/login.xhtml");
+		ec.redirect(req.getContextPath() + "/admin/login.xhtml");
 	}
 
 	public String getDateFormat() {

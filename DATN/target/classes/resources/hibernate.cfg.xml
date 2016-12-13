@@ -33,5 +33,7 @@
 		<mapping class="vn.edu.nuce.datn.entity.SysRoleMenuMap" />
 		<mapping class="vn.edu.nuce.datn.entity.SysRoleGroupMap" />
 		<mapping class="vn.edu.nuce.datn.entity.News" />
+		<mapping class="vn.edu.nuce.datn.entity.Document" />
+		
 	</session-factory>
 </hibernate-configuration>

@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:p="http://primefaces.org/ui" xmlns:pe="http://primefaces.org/ui">
+
+<ui:composition template="../templates/vcbsContentTemplate.xhtml">
+	<ui:define name="content">
+
+		<h:form id="form-doc-list" class="container-fluid">
+			<p:dataTable var="item" value="#{documentBean.documents}"
+				id="dtDocument" rowKey="#{item.documentId}"
+				emptyMessage="#{msg['common.noData']}" paginator="true" rows="20"
+				paginatorPosition="bottom" rowIndexVar="rowIndex"
+				widgetVar="dtDocumentWV"
+				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="10,20,50,100">
+
+				<p:column style="width:5%" headerText="#{msg['common.index']}">
+					<h:outputText value="#{rowIndex + 1}" />
+				</p:column>
+
+				<p:column sortBy="#{item.documentNumber}"
+					filterBy="#{item.documentNumber}" filterMatchMode="contains"
+					headerText="#{msg['sb.subjectId']}">
+					<h:outputText value="#{item.documentNumber}" />
+				</p:column>
+
+				<p:column sortBy="#{item.remark}" filterBy="#{item.remark}"
+					filterMatchMode="contains" headerText="#{msg['doc.remark']}">
+					<h:outputText value="#{item.remark}" />
+				</p:column>
+
+				<p:column sortBy="#{item.issuanceDate}"
+					filterBy="#{item.issuanceDate}" filterMatchMode="contains"
+					headerText="#{msg['doc.issuanceDate']}">
+					<h:outputText value="#{item.issuanceDate}" />
+				</p:column>
+
+				<p:column sortBy="#{item.fileName}" filterBy="#{item.fileName}"
+					filterMatchMode="contains" headerText="#{msg['common.fileName']}">
+					<h:outputText value="#{item.fileName}" />
+				</p:column>
+
+				<p:column sortBy="#{item.filePath}" filterBy="#{item.filePath}"
+					filterMatchMode="contains" headerText="#{msg['common.filePath']}">
+					<h:outputText value="#{item.filePath}" />
+				</p:column>
+
+				<p:column sortBy="#{item.uploadDate}" filterBy="#{item.uploadDate}"
+					filterMatchMode="contains" headerText="#{msg['common.uploadDate']}">
+					<h:outputText value="#{item.uploadDate}" />
+				</p:column>
+
+				<p:column sortBy="#{item.uploadUserId}"
+					filterBy="#{item.uploadUserId}" filterMatchMode="contains"
+					headerText="#{msg['common.uploadUserId']}">
+					<h:outputText value="#{item.uploadUserId}" />
+				</p:column>
+
+				<p:column headerText="#{msg['common.action']}"
+					style="text-align:center;">
+					<f:facet name="header">
+
+					</f:facet>
+				</p:column>
+
+
+				<f:facet name="footer">
+
+				</f:facet>
+			</p:dataTable>
+		</h:form>
+
+
+		<!-- DIALOG DOCUMENT DETAIL -->
+
+		<p:dialog header="#{msg['title.docDetail']}" modal="true"
+			id="dlgSubjectDictionary" resizable="false" showEffect="fade"
+			position="100,200" widgetVar="dlgDocWV" height="300px"
+			width="600px">
+			<h:form id="form-dlg-doc" class="container-fluid">
+				<div class="row formFieldMg">
+					<div class="col-xs-12 col-sm-12">
+						<div class="row">
+							<div class="col-xs-12 col-md-4">
+								<p:outputLabel value="#{msg['doc.documentNumber']}" />
+							</div>
+							<div class="col-xs-12 col-md-7">
+								<p:inputText
+									value="#{documentBean.document.documentNumber}"
+									styleClass="form-control"/>
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-xs-12 col-md-4">
+								<p:outputLabel value="#{msg['doc.remark']}" />
+							</div>
+							<div class="col-xs-12 col-md-7">
+								<p:inputText
+									value="#{documentBean.document.}"
+									styleClass="form-control"
+									requiredMessage="#{msg['common.required']}" />
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-xs-12 col-md-4">
+								<p:outputLabel value="#{msg['sb.credit']}" />
+							</div>
+							<div class="col-xs-12 col-md-7">
+								<p:inputText
+									value="#{subjectDictionaryBean.subjectDictionary.credit}"
+									styleClass="form-control"
+									requiredMessage="#{msg['common.required']}" />
+								<pe:keyFilter regEx="/[0-9]/i" />
+							</div>
+						</div>
+
+
+						<div class="row">
+							<div class="col-xs-12 col-md-4">
+								<p:commandButton value="#{msg['common.apply']}" type="submit"
+									actionListener="#{subjectDictionaryBean.cmdApplyDLGSD()}"
+									styleClass="pull-right"
+									update="form-sd-list:dtSubjectDictionary">
+									<p:confirm header="#{msg['common.apply']}"
+										message="#{msg['common.confirm_apply']}" icon="ui-icon-alert" />
+								</p:commandButton>
+
+							</div>
+						</div>
+					</div>
+				</div>
+			</h:form>
+		</p:dialog>
+
+
+	</ui:define>
+</ui:composition>
+</html>
