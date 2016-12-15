@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:p="http://primefaces.org/ui" xmlns:pe="http://primefaces.org/ui">
+
+<ui:composition template="../templates/vcbsContentTemplate.xhtml">
+	<ui:define name="content">
+
+		<h:form id="form-cer-list" class="container-fluid">
+			<div class="row formFieldMg">
+				<div class="col-xs-12 col-sm-12">
+					<div class="row">
+						<div class="col-xs-12 col-md-6">
+							<p:outputLabel value="#{msg['title.lstCertificate']}"
+								styleClass="line32" />
+						</div>
+
+						<div class="col-xs-12 col-md-4">
+							<p:fileUpload
+								fileUploadListener="#{certificateBean.uploadExel}"
+								mode="advanced" multiple="true" dragDropSupport="false"
+								update="dtCer" label="Import" 
+								styleClass="fupload" allowTypes="/(\.|\/)(xls)$/"
+								sizeLimit="10000000"
+								invalidSizeMessage="#{msg['validate.importSize']}"
+								invalidFileMessage="#{msg['validate.importFormatXLS']}" />
+						</div>
+
+						<div class="col-xs-12 col-md-2" align="right">
+							<p:commandButton value="#{msg['common.apply']}" type="submit"
+								actionListener="#{certificateBean.saveCer()}"
+								update="form-cer-list"
+								styleClass="btn btn-default pull-right">
+								<p:confirm header="#{msg['common.apply']}"
+									message="#{msg['common.confirm_apply']}" icon="ui-icon-alert" />
+							</p:commandButton>
+
+						</div>
+					</div>
+				</div>
+				
+				<p:dataTable var="item" value="#{certificateBean.lstcertificate}"
+					id="dtCer" rowKey="#{item.studentId}"
+					emptyMessage="#{msg['common.noData']}" paginator="true" rows="20"
+					paginatorPosition="bottom" rowIndexVar="rowIndex"
+					widgetVar="dtCerWV"
+					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					rowsPerPageTemplate="10,20,50,100">
+
+					<p:column style="width:5%" headerText="#{msg['common.index']}">
+						<h:outputText value="#{rowIndex + 1}" />
+					</p:column>
+
+					<p:column sortBy="#{item.studentId}" filterBy="#{item.studentId}"
+						filterMatchMode="contains" headerText="#{msg['st.studentId']}">
+						<h:outputText value="#{item.studentId}" />
+					</p:column>
+
+					<p:column sortBy="#{item.studentName}"
+						filterBy="#{item.studentName}" filterMatchMode="contains"
+						headerText="#{msg['st.studentName']}">
+						<h:outputText value="#{item.studentName}" />
+					</p:column>
+
+					<p:column sortBy="#{item.birthday}" filterBy="#{item.birthday}"
+						filterMatchMode="contains" headerText="#{msg['cer.birthday']}">
+						<h:outputText value="#{item.birthday}" />
+					</p:column>
+
+					<p:column sortBy="#{item.birthPlace}" filterBy="#{item.birthPlace}"
+						filterMatchMode="contains" headerText="#{msg['cer.birthPlace']}">
+						<h:outputText value="#{item.birthPlace}" />
+					</p:column>
+
+					<p:column sortBy="#{item.educationSystem}"
+						filterBy="#{item.educationSystem}" filterMatchMode="contains"
+						headerText="#{msg['cer.educationSystem']}">
+						<h:outputText value="#{item.educationSystem}" />
+					</p:column>
+
+					<p:column sortBy="#{item.program}" filterBy="#{item.program}"
+						filterMatchMode="contains" headerText="#{msg['cer.program']}">
+						<h:outputText value="#{item.program}" />
+					</p:column>
+
+					<p:column sortBy="#{item.major}" filterBy="#{item.major}"
+						filterMatchMode="contains" headerText="#{msg['cer.major']}">
+						<h:outputText value="#{item.major}" />
+					</p:column>
+
+					<p:column sortBy="#{item.certificateNo}"
+						filterBy="#{item.certificateNo}" filterMatchMode="contains"
+						headerText="#{msg['cer.certificateNo']}">
+						<h:outputText value="#{item.certificateNo}" />
+					</p:column>
+
+
+					<p:column sortBy="#{item.graduationYear}"
+						filterBy="#{item.graduationYear}" filterMatchMode="contains"
+						headerText="#{msg['cer.graduationYear']}">
+						<h:outputText value="#{item.graduationYear}" />
+					</p:column>
+
+					<p:column sortBy="#{item.grade}" filterBy="#{item.grade}"
+						filterMatchMode="contains" headerText="#{msg['cer.grade']}">
+						<h:outputText value="#{item.grade}" />
+					</p:column>
+
+					<p:column sortBy="#{item.updateDate}" filterBy="#{item.updateDate}"
+						filterMatchMode="contains" headerText="#{msg['cer.updateDate']}">
+						<h:outputText value="#{item.updateDate}" />
+					</p:column>
+
+
+					<p:column headerText="#{msg['common.action']}"
+						style="text-align:center;">
+						<f:facet name="header">
+							<p:commandButton value="#{msg['common.addNew']}" type="submit"
+								actionListener="#{certificateBean.showDialogCer(null)}"
+								update="" styleClass="btn btn-primary">
+							</p:commandButton>
+						</f:facet>
+					</p:column>
+
+
+					<f:facet name="footer">
+
+					</f:facet>
+				</p:dataTable>
+			</div>
+		</h:form>
+
+
+		<!-- DIALOG CERTIFICATEDETAIL -->
+
+		<!-- 		<p:dialog header="#{msg['title.certificateDetail']}" modal="true" -->
+		<!-- 			id="dlgCer" resizable="false" showEffect="fade" position="100,200" -->
+		<!-- 			widgetVar="dlgCerWV" height="500px" width="1200px"> -->
+		<!-- 			<h:form class="container-fluid"> -->
+		<!-- 				<div class="row formFieldMg"> -->
+		<!-- 					<div class="row formFieldMg"> -->
+		<!-- 						<div class="col-xs-12 col-sm-6"> -->
+		<!-- 							<div class="row"> -->
+		<!-- 								<div class="col-xs-12"> -->
+		<!-- 									<p:outputLabel value="#{msg['doc.documentNumber']}" /> -->
+		<!-- 								</div> -->
+		<!-- 								<div class="col-xs-12"> -->
+		<!-- 									<p:inputText value="#{documentBean.document.documentNumber}" -->
+		<!-- 										styleClass="form-control" /> -->
+		<!-- 								</div> -->
+		<!-- 							</div> -->
+
+		<!-- 							<div class="row"> -->
+		<!-- 								<div class="col-xs-12"> -->
+		<!-- 									<p:outputLabel value="#{msg['doc.remark']}" /> -->
+		<!-- 								</div> -->
+		<!-- 								<div class="col-xs-12"> -->
+		<!-- 									<p:inputText value="#{documentBean.document.remark}" -->
+		<!-- 										styleClass="form-control" /> -->
+		<!-- 								</div> -->
+		<!-- 							</div> -->
+
+		<!-- 							<div class="row"> -->
+		<!-- 								<div class="col-xs-12"> -->
+		<!-- 									<p:outputLabel value="#{msg['doc.issuanceDate']}" /> -->
+		<!-- 								</div> -->
+		<!-- 								<div class="col-xs-12"> -->
+		<!-- 									<p:inputText value="#{documentBean.document.issuanceDate}" -->
+		<!-- 										styleClass="form-control" /> -->
+		<!-- 								</div> -->
+		<!-- 							</div> -->
+		<!-- 						</div> -->
+		<!-- 						<div class="col-xs-12 col-sm-6"> -->
+
+		<!-- 							<div class="row"> -->
+		<!-- 								<div class="col-xs-12"> -->
+		<!-- 									<p:outputLabel value="#{msg['common.uploadDate']}" /> -->
+		<!-- 								</div> -->
+		<!-- 								<div class="col-xs-12"> -->
+		<!-- 									<p:inputText value="#{documentBean.document.uploadDate}" -->
+		<!-- 										styleClass="form-control" /> -->
+		<!-- 								</div> -->
+		<!-- 							</div> -->
+
+		<!-- 							<div class="row"> -->
+		<!-- 								<div class="col-xs-12"> -->
+		<!-- 									<p:outputLabel value="#{msg['common.fileName']}" /> -->
+		<!-- 								</div> -->
+		<!-- 								<div class="col-xs-12"> -->
+		<!-- 									<p:inputText value="#{documentBean.document.fileName}" -->
+		<!-- 										id="fileName" styleClass="form-control" /> -->
+		<!-- 								</div> -->
+		<!-- 							</div> -->
+
+		<!-- 							<div class="row"> -->
+		<!-- 								<div class="col-xs-12"> -->
+		<!-- 									<p:outputLabel value="#{msg['common.filePath']}" /> -->
+		<!-- 								</div> -->
+		<!-- 								<div class="col-xs-12"> -->
+		<!-- 									<p:inputText value="#{documentBean.document.filePath}" -->
+		<!-- 										styleClass="form-control" id="filePath" /> -->
+		<!-- 								</div> -->
+		<!-- 							</div> -->
+		<!-- 						</div> -->
+		<!-- 						<div class="col-xs-12 col-sm-12"> -->
+		<!-- 							<div class="row"> -->
+		<!-- 								<div class="col-xs-12 col-md-10"> -->
+		<!-- 									<p:fileUpload -->
+		<!-- 										fileUploadListener="#{documentBean.handleFileUpload}" -->
+		<!-- 										mode="advanced" dragDropSupport="true" multiple="false" -->
+		<!-- 										sizeLimit="99999999" fileLimit="60000" -->
+		<!-- 										update="filePath fileName" -->
+		<!-- 										fileLimitMessage="#{msg['validate.fileLimit']}" -->
+		<!-- 										invalidSizeMessage="#{msg['validate.importSize']}" -->
+		<!-- 										invalidFileMessage="#{msg['validate.importFormatPDF']}" -->
+		<!-- 										allowTypes="/(\.|\/)(pdf)$/" /> -->
+		<!-- 								</div> -->
+
+		<!-- 								<div class="col-xs-12 col-md-2"> -->
+		<!-- 									<p:commandButton value="#{msg['common.apply']}" type="submit" -->
+		<!-- 										actionListener="#{documentBean.saveDoc()}" -->
+		<!-- 										styleClass="pull-right" update="form-doc-list:dtDocument"> -->
+		<!-- 										<p:confirm header="#{msg['common.apply']}" -->
+		<!-- 											message="#{msg['common.confirm_apply']}" icon="ui-icon-alert" /> -->
+		<!-- 									</p:commandButton> -->
+
+		<!-- 								</div> -->
+		<!-- 							</div> -->
+		<!-- 						</div> -->
+		<!-- 					</div> -->
+		<!-- 				</div> -->
+		<!-- 			</h:form> -->
+		<!-- 		</p:dialog> -->
+
+	</ui:define>
+</ui:composition>
+</html>

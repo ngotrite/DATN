@@ -1,5 +1,6 @@
 eclipse.preferences.version=1
 encoding//WebContent/resources/newTheme/css/styleSheet.css=UTF-8
 encoding//src/resources/lang.properties=UTF-8
+encoding//src/vn/edu/nuce/datn/bean/DocumentBean.java=UTF-8
 encoding//src/vn/edu/nuce/datn/bean/GraduationPeriodBean.java=UTF-8
 encoding//src/vn/edu/nuce/datn/bean/TestScoreBean.java=UTF-8

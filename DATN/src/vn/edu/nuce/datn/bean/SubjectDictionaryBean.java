@@ -82,7 +82,7 @@ public class SubjectDictionaryBean extends BaseController implements Serializabl
 	public void saveSubjectDictionary() {
 		if (checkValidSubjectDictionares()) {
 			subjectDictionaryDAO.saveSubjectDictionary(subjectDictionaries);
-			this.showMessageINFO("common.save", "Subject Dictionary");
+			super.showNotificationSuccsess();
 		}
 
 	}

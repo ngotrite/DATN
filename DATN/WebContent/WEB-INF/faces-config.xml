@@ -12,10 +12,10 @@
 			<supported-locale>en</supported-locale>
 		</locale-config>
 		<resource-bundle>
-			<base-name>resources.lang</base-name>
+			<base-name>resources.lang_vi</base-name>
 			<var>msg</var>
 		</resource-bundle>
-		<message-bundle>resources.MyMessages</message-bundle>
+		<message-bundle>resources.MyMessages_vi</message-bundle>
 		<action-listener>org.primefaces.application.DialogActionListener</action-listener>
 		<navigation-handler>
 			org.primefaces.application.DialogNavigationHandler</navigation-handler>
