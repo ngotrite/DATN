@@ -21,12 +21,10 @@
 						</div>
 
 						<div class="col-xs-12 col-md-4">
-							<p:fileUpload
-								fileUploadListener="#{certificateBean.uploadExel}"
+							<p:fileUpload fileUploadListener="#{certificateBean.uploadExel}"
 								mode="advanced" multiple="true" dragDropSupport="false"
-								update="dtCer" label="Import" 
-								styleClass="fupload" allowTypes="/(\.|\/)(xls)$/"
-								sizeLimit="10000000"
+								update="dtCer" label="Import" styleClass="fupload"
+								allowTypes="/(\.|\/)(xls)$/" sizeLimit="10000000"
 								invalidSizeMessage="#{msg['validate.importSize']}"
 								invalidFileMessage="#{msg['validate.importFormatXLS']}" />
 						</div>
@@ -34,8 +32,7 @@
 						<div class="col-xs-12 col-md-2" align="right">
 							<p:commandButton value="#{msg['common.apply']}" type="submit"
 								actionListener="#{certificateBean.saveCer()}"
-								update="form-cer-list"
-								styleClass="btn btn-default pull-right">
+								update="form-cer-list" styleClass="btn btn-default pull-right">
 								<p:confirm header="#{msg['common.apply']}"
 									message="#{msg['common.confirm_apply']}" icon="ui-icon-alert" />
 							</p:commandButton>
@@ -43,7 +40,7 @@
 						</div>
 					</div>
 				</div>
-				
+
 				<p:dataTable var="item" value="#{certificateBean.lstcertificate}"
 					id="dtCer" rowKey="#{item.studentId}"
 					emptyMessage="#{msg['common.noData']}" paginator="true" rows="20"
@@ -68,8 +65,8 @@
 					</p:column>
 
 					<p:column sortBy="#{item.birthday}" filterBy="#{item.birthday}"
-						filterMatchMode="contains" headerText="#{msg['cer.birthday']}">
-						<h:outputText value="#{item.birthday}" />
+						filterMatchMode="contains" headerText="#{msg['cer.birthday']}" >
+						<p:calendar effect="fold" value="#{item.birthday}" disabled="true"/>
 					</p:column>
 
 					<p:column sortBy="#{item.birthPlace}" filterBy="#{item.birthPlace}"
@@ -99,11 +96,15 @@
 						<h:outputText value="#{item.certificateNo}" />
 					</p:column>
 
-
 					<p:column sortBy="#{item.graduationYear}"
 						filterBy="#{item.graduationYear}" filterMatchMode="contains"
 						headerText="#{msg['cer.graduationYear']}">
 						<h:outputText value="#{item.graduationYear}" />
+					</p:column>
+
+					<p:column sortBy="#{item.issuanceDate}" filterBy="#{item.issuanceDate}"
+						filterMatchMode="contains" headerText="#{msg['cer.issuanceDate']}">
+						<p:calendar effect="fold" value="#{item.issuanceDate}" disabled="true" />
 					</p:column>
 
 					<p:column sortBy="#{item.grade}" filterBy="#{item.grade}"
@@ -113,16 +114,31 @@
 
 					<p:column sortBy="#{item.updateDate}" filterBy="#{item.updateDate}"
 						filterMatchMode="contains" headerText="#{msg['cer.updateDate']}">
-						<h:outputText value="#{item.updateDate}" />
+						<h:outputText value="#{item.updateDate}">
+							<f:convertDateTime pattern="dd-MM-yyyy" />
+						</h:outputText>
 					</p:column>
 
 
 					<p:column headerText="#{msg['common.action']}"
 						style="text-align:center;">
+						<p:commandLink update="dlgCer"
+							actionListener="#{certificateBean.showDialogCer(item)}"
+							styleClass="btn btn-sm btn-action-edit colorBlue">
+							<i class="fa fa-pencil icon-only mr-0"></i>
+						</p:commandLink>
+
+						<p:commandLink update="dtCer"
+							actionListener="#{certificateBean.cmdDeleteCer(item)}"
+							styleClass="btn btn-sm btn-action-del colorRed">
+							<i class="fa fa-times icon-only mr-0"></i>
+							<p:confirm header="#{msg['common.delete']}"
+								message="#{msg['common.confirmDelete']}" icon="ui-icon-alert" />
+						</p:commandLink>
 						<f:facet name="header">
 							<p:commandButton value="#{msg['common.addNew']}" type="submit"
 								actionListener="#{certificateBean.showDialogCer(null)}"
-								update="" styleClass="btn btn-primary">
+								update="dlgCer" styleClass="btn btn-primary">
 							</p:commandButton>
 						</f:facet>
 					</p:column>
@@ -138,104 +154,166 @@
 
 		<!-- DIALOG CERTIFICATEDETAIL -->
 
-		<!-- 		<p:dialog header="#{msg['title.certificateDetail']}" modal="true" -->
-		<!-- 			id="dlgCer" resizable="false" showEffect="fade" position="100,200" -->
-		<!-- 			widgetVar="dlgCerWV" height="500px" width="1200px"> -->
-		<!-- 			<h:form class="container-fluid"> -->
-		<!-- 				<div class="row formFieldMg"> -->
-		<!-- 					<div class="row formFieldMg"> -->
-		<!-- 						<div class="col-xs-12 col-sm-6"> -->
-		<!-- 							<div class="row"> -->
-		<!-- 								<div class="col-xs-12"> -->
-		<!-- 									<p:outputLabel value="#{msg['doc.documentNumber']}" /> -->
-		<!-- 								</div> -->
-		<!-- 								<div class="col-xs-12"> -->
-		<!-- 									<p:inputText value="#{documentBean.document.documentNumber}" -->
-		<!-- 										styleClass="form-control" /> -->
-		<!-- 								</div> -->
-		<!-- 							</div> -->
+		<p:dialog header="#{msg['title.certificateDetail']}" modal="true"
+			id="dlgCer" resizable="false" showEffect="fade" position="100,200"
+			widgetVar="dlgCerWV" height="500px" width="1200px">
+			<h:form id="form-cer-detail" class="container-fluid">
+				<div class="formFieldMg">
+					<div class="col-xs-12 col-sm-4">
+						<div class="row">
+							<div class="col-xs-12">
+								<p:outputLabel value="#{msg['st.studentId']}" for="itStudentId" />
+							</div>
+							<div class="col-xs-12">
+								<p:inputText value="#{certificateBean.certificate.studentId}"
+									styleClass="form-control" required="true" id="itStudentId" />
+							</div>
+						</div>
 
-		<!-- 							<div class="row"> -->
-		<!-- 								<div class="col-xs-12"> -->
-		<!-- 									<p:outputLabel value="#{msg['doc.remark']}" /> -->
-		<!-- 								</div> -->
-		<!-- 								<div class="col-xs-12"> -->
-		<!-- 									<p:inputText value="#{documentBean.document.remark}" -->
-		<!-- 										styleClass="form-control" /> -->
-		<!-- 								</div> -->
-		<!-- 							</div> -->
+						<div class="row">
+							<div class="col-xs-12">
+								<p:outputLabel value="#{msg['st.studentName']}" />
+							</div>
+							<div class="col-xs-12">
+								<p:inputText value="#{certificateBean.certificate.studentName}"
+									styleClass="form-control" />
+							</div>
+						</div>
 
-		<!-- 							<div class="row"> -->
-		<!-- 								<div class="col-xs-12"> -->
-		<!-- 									<p:outputLabel value="#{msg['doc.issuanceDate']}" /> -->
-		<!-- 								</div> -->
-		<!-- 								<div class="col-xs-12"> -->
-		<!-- 									<p:inputText value="#{documentBean.document.issuanceDate}" -->
-		<!-- 										styleClass="form-control" /> -->
-		<!-- 								</div> -->
-		<!-- 							</div> -->
-		<!-- 						</div> -->
-		<!-- 						<div class="col-xs-12 col-sm-6"> -->
+						<div class="row">
+							<div class="col-xs-12">
+								<p:outputLabel value="#{msg['cer.birthday']}" />
+							</div>
+							<div class="col-xs-12">
+								<p:calendar effect="fold"
+									value="#{certificateBean.certificate.birthday}">
+								</p:calendar>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-xs-12">
+								<p:outputLabel value="#{msg['cer.birthPlace']}" />
+							</div>
+							<div class="col-xs-12">
+								<p:inputText value="#{certificateBean.certificate.birthPlace}"
+									styleClass="form-control" />
+							</div>
+						</div>
+					</div>
 
-		<!-- 							<div class="row"> -->
-		<!-- 								<div class="col-xs-12"> -->
-		<!-- 									<p:outputLabel value="#{msg['common.uploadDate']}" /> -->
-		<!-- 								</div> -->
-		<!-- 								<div class="col-xs-12"> -->
-		<!-- 									<p:inputText value="#{documentBean.document.uploadDate}" -->
-		<!-- 										styleClass="form-control" /> -->
-		<!-- 								</div> -->
-		<!-- 							</div> -->
+					<div class="col-xs-12 col-sm-4">
+						<div class="row">
+							<div class="col-xs-12">
+								<p:outputLabel value="#{msg['cer.educationSystem']}" />
+							</div>
 
-		<!-- 							<div class="row"> -->
-		<!-- 								<div class="col-xs-12"> -->
-		<!-- 									<p:outputLabel value="#{msg['common.fileName']}" /> -->
-		<!-- 								</div> -->
-		<!-- 								<div class="col-xs-12"> -->
-		<!-- 									<p:inputText value="#{documentBean.document.fileName}" -->
-		<!-- 										id="fileName" styleClass="form-control" /> -->
-		<!-- 								</div> -->
-		<!-- 							</div> -->
+							<div class="col-xs-12">
+								<h:selectOneMenu effect="fold" styleClass="form-control"
+									value="#{certificateBean.certificate.educationSystem}">
+									<f:selectItems value="#{certificateBean.loadEducationSystem()}" />
+								</h:selectOneMenu>
+							</div>
+						</div>
 
-		<!-- 							<div class="row"> -->
-		<!-- 								<div class="col-xs-12"> -->
-		<!-- 									<p:outputLabel value="#{msg['common.filePath']}" /> -->
-		<!-- 								</div> -->
-		<!-- 								<div class="col-xs-12"> -->
-		<!-- 									<p:inputText value="#{documentBean.document.filePath}" -->
-		<!-- 										styleClass="form-control" id="filePath" /> -->
-		<!-- 								</div> -->
-		<!-- 							</div> -->
-		<!-- 						</div> -->
-		<!-- 						<div class="col-xs-12 col-sm-12"> -->
-		<!-- 							<div class="row"> -->
-		<!-- 								<div class="col-xs-12 col-md-10"> -->
-		<!-- 									<p:fileUpload -->
-		<!-- 										fileUploadListener="#{documentBean.handleFileUpload}" -->
-		<!-- 										mode="advanced" dragDropSupport="true" multiple="false" -->
-		<!-- 										sizeLimit="99999999" fileLimit="60000" -->
-		<!-- 										update="filePath fileName" -->
-		<!-- 										fileLimitMessage="#{msg['validate.fileLimit']}" -->
-		<!-- 										invalidSizeMessage="#{msg['validate.importSize']}" -->
-		<!-- 										invalidFileMessage="#{msg['validate.importFormatPDF']}" -->
-		<!-- 										allowTypes="/(\.|\/)(pdf)$/" /> -->
-		<!-- 								</div> -->
+						<div class="row">
+							<div class="col-xs-12">
+								<p:outputLabel value="#{msg['cer.program']}" />
+							</div>
 
-		<!-- 								<div class="col-xs-12 col-md-2"> -->
-		<!-- 									<p:commandButton value="#{msg['common.apply']}" type="submit" -->
-		<!-- 										actionListener="#{documentBean.saveDoc()}" -->
-		<!-- 										styleClass="pull-right" update="form-doc-list:dtDocument"> -->
-		<!-- 										<p:confirm header="#{msg['common.apply']}" -->
-		<!-- 											message="#{msg['common.confirm_apply']}" icon="ui-icon-alert" /> -->
-		<!-- 									</p:commandButton> -->
+							<div class="col-xs-12">
+								<h:selectOneMenu effect="fold" styleClass="form-control"
+									value="#{certificateBean.certificate.program}">
+									<f:selectItems value="#{certificateBean.loadProgram()}" />
+								</h:selectOneMenu>
+							</div>
+						</div>
 
-		<!-- 								</div> -->
-		<!-- 							</div> -->
-		<!-- 						</div> -->
-		<!-- 					</div> -->
-		<!-- 				</div> -->
-		<!-- 			</h:form> -->
-		<!-- 		</p:dialog> -->
+						<div class="row">
+							<div class="col-xs-12">
+								<p:outputLabel value="#{msg['cer.major']}" />
+							</div>
+							<div class="col-xs-12">
+								<h:selectOneMenu effect="fold" styleClass="form-control"
+									value="#{certificateBean.certificate.major}">
+									<f:selectItems value="#{certificateBean.loadMajor()}" />
+								</h:selectOneMenu>
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-xs-12">
+								<p:outputLabel value="#{msg['cer.certificateNo']}" />
+							</div>
+							<div class="col-xs-12">
+								<p:inputText
+									value="#{certificateBean.certificate.certificateNo}"
+									styleClass="form-control" />
+							</div>
+						</div>
+
+					</div>
+
+					<div class="col-xs-12 col-sm-4">
+						<div class="row">
+							<div class="col-xs-12">
+								<p:outputLabel value="#{msg['cer.graduationYear']}" />
+							</div>
+							<div class="col-xs-12">
+								<p:inputText
+									value="#{certificateBean.certificate.graduationYear}"
+									styleClass="form-control" />
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-xs-12">
+								<p:outputLabel value="#{msg['cer.issuanceDate']}" />
+							</div>
+							<div class="col-xs-12">
+								<p:calendar effect="fold"
+									value="#{certificateBean.certificate.issuanceDate}">
+								</p:calendar>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-xs-12">
+								<p:outputLabel value="#{msg['cer.grade']}" />
+							</div>
+							<div class="col-xs-12">
+								<h:selectOneMenu effect="fold" styleClass="form-control"
+									value="#{certificateBean.certificate.grade}">
+									<f:selectItems value="#{certificateBean.loadGrade()}" />
+								</h:selectOneMenu>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-xs-12">
+								<p:outputLabel value="#{msg['cer.updateDate']}"
+									for="maskUpdateDate" />
+							</div>
+							<div class="col-xs-12">
+								<p:calendar id="maskUpdateDate" effect="fold"
+									styleClass="fullsizeCalendar"
+									value="#{certificateBean.certificate.updateDate}"
+									disabled="true" mask="true" />
+							</div>
+						</div>
+					</div>
+					<div class="col-xs-12">
+						<div class="row">
+							<div class="col-xs-12 col-md-10"></div>
+							<div class="col-xs-12 col-md-2">
+								<p:commandButton value="#{msg['common.apply']}" type="submit"
+									actionListener="#{certificateBean.cmdApplyDLGCer()}"
+									styleClass="pull-right" update="form-cer-list:dtCer">
+									<p:confirm header="#{msg['common.apply']}"
+										message="#{msg['common.confirm_apply']}" icon="ui-icon-alert" />
+								</p:commandButton>
+							</div>
+						</div>
+					</div>
+				</div>
+			</h:form>
+		</p:dialog>
 
 	</ui:define>
 </ui:composition>

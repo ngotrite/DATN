@@ -2,6 +2,7 @@ package vn.edu.nuce.datn.bean;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -11,6 +12,7 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.model.SelectItem;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
@@ -18,11 +20,14 @@ import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.util.DateFormatConverter;
+import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.UploadedFile;
 
 import vn.edu.nuce.datn.dao.CertificateDAO;
 import vn.edu.nuce.datn.entity.Certificate;
+import vn.edu.nuce.datn.util.ContantsUtil;
 
 @SuppressWarnings("serial")
 @ManagedBean(name = "certificateBean")
@@ -31,26 +36,129 @@ public class CertificateBean extends BaseController implements Serializable {
 	private Certificate certificate;
 	private CertificateDAO certificateDAO;
 	private List<Certificate> lstcertificate;
+	private List<Certificate> lstCertificateHome;
 	private UploadedFile file;
-	
+
+	private List<SelectItem> lstEducationSystem;
+	private List<SelectItem> lstProgram;
+	private List<SelectItem> lstGrade;
+	private List<SelectItem> lstMajor;
+
 	@PostConstruct
-	public void innit(){
+	public void innit() {
 		this.certificate = new Certificate();
 		this.certificateDAO = new CertificateDAO();
 		this.lstcertificate = new ArrayList<Certificate>();
 		loadCer();
+		loadCerHome();
 	}
-	
+
+	public void loadCerHome() {
+		lstCertificateHome = certificateDAO.findCertificateHome(certificate.getStudentId(),
+				certificate.getStudentName(), certificate.getBirthday(), certificate.getCertificateNo());
+	}
+
+	public void cmdDeleteCer(Certificate certificate) {
+		certificateDAO.delete(certificate);
+		super.showNotificationSuccsess();
+	}
+
+	public void cmdApplyDLGCer() {
+		boolean checkNew = true;
+		for (int i = 0; i < lstcertificate.size(); i++) {
+			if (certificate.getStudentId() == (lstcertificate.get(i).getStudentId())) {
+				lstcertificate.set(i, certificate);
+				checkNew = false;
+				break;
+			}
+		}
+		if (checkNew) {
+			lstcertificate.add(certificate);
+		}
+		certificate.setUpdateDate(new Date());
+		certificateDAO.saveOrUpdate(certificate);
+		super.showNotificationSuccsess();
+		RequestContext context = RequestContext.getCurrentInstance();
+		context.execute("PF('dlgCerWV').hide();");
+		;
+	}
+
+	/*** load combo Education System ***/
+	public List<SelectItem> loadEducationSystem() {
+		lstEducationSystem = new ArrayList<SelectItem>();
+		lstEducationSystem.add(new SelectItem(ContantsUtil.EducationSystem.DAI_HOC));
+		lstEducationSystem.add(new SelectItem(ContantsUtil.EducationSystem.THAC_SY));
+		lstEducationSystem.add(new SelectItem(ContantsUtil.EducationSystem.TIEN_SY));
+		return lstEducationSystem;
+	}
+
+	/*** load combo Program ***/
+	public List<SelectItem> loadProgram() {
+		lstProgram = new ArrayList<SelectItem>();
+		lstProgram.add(new SelectItem(ContantsUtil.Program.CHINH_QUY));
+		lstProgram.add(new SelectItem(ContantsUtil.Program.LIEN_THONG));
+		lstProgram.add(new SelectItem(ContantsUtil.Program.BANG_HAI));
+		lstProgram.add(new SelectItem(ContantsUtil.Program.VUA_LAM_VUA_HOC));
+		return lstProgram;
+	}
+
+	/*** load combo Grade ***/
+	public List<SelectItem> loadGrade() {
+		lstGrade = new ArrayList<SelectItem>();
+		lstGrade.add(new SelectItem(ContantsUtil.Grade.TRUNG_BINH));
+		lstGrade.add(new SelectItem(ContantsUtil.Grade.KHA));
+		lstGrade.add(new SelectItem(ContantsUtil.Grade.GIOI));
+		lstGrade.add(new SelectItem(ContantsUtil.Grade.XUAT_SAC));
+		return lstGrade;
+	}
+
+	/*** load combo Major ***/
+	public List<SelectItem> loadMajor() {
+		lstMajor = new ArrayList<SelectItem>();
+		lstMajor.add(new SelectItem(ContantsUtil.Major.KIEN_TRUC));
+		lstMajor.add(new SelectItem(ContantsUtil.Major.QH_VUNG_VA_DO_THI));
+		lstMajor.add(new SelectItem(ContantsUtil.Major.XD_DAN_DUNG_VA_CN));
+		lstMajor.add(new SelectItem(ContantsUtil.Major.HT_KY_THUAT_TRONG_CONG_TRINH));
+		lstMajor.add(new SelectItem(ContantsUtil.Major.XD_CANG_VA_DUONG_THUY));
+		lstMajor.add(new SelectItem(ContantsUtil.Major.XD_THUY_LOI_VA_THUY_DIEN));
+		lstMajor.add(new SelectItem(ContantsUtil.Major.TIN_HOC_XAY_DUNG));
+		lstMajor.add(new SelectItem(ContantsUtil.Major.KT_XD_CONG_TRINH_GIAO_THONG));
+		lstMajor.add(new SelectItem(ContantsUtil.Major.CAP_THOAT_NUOC));
+		lstMajor.add(new SelectItem(ContantsUtil.Major.CN_KT_MOI_TRUONG));
+		lstMajor.add(new SelectItem(ContantsUtil.Major.KT_CONG_TRINH_BIEN));
+		lstMajor.add(new SelectItem(ContantsUtil.Major.CN_KT_VLXD));
+		lstMajor.add(new SelectItem(ContantsUtil.Major.CONG_NGHE_THONG_TIN));
+		lstMajor.add(new SelectItem(ContantsUtil.Major.MAY_XAY_DUNG));
+		lstMajor.add(new SelectItem(ContantsUtil.Major.CO_GIOI_HOA_XD));
+		lstMajor.add(new SelectItem(ContantsUtil.Major.KT_TRAC_DIA_VA_BAN_DO));
+		lstMajor.add(new SelectItem(ContantsUtil.Major.KINH_TE_XAY_DUNG));
+		lstMajor.add(new SelectItem(ContantsUtil.Major.KT_VA_QL_DO_THI));
+		lstMajor.add(new SelectItem(ContantsUtil.Major.KT_VA_QL__BDS));
+		return lstMajor;
+	}
+
+	/** show dialog Certificate Detail **/
+	public void showDialogCer(Certificate certificate) {
+		if (certificate == null) {
+			certificate = new Certificate();
+			certificate.setUpdateDate(new Date());
+		}
+		this.certificate = certificate;
+
+		RequestContext context = RequestContext.getCurrentInstance();
+		context.execute("PF('dlgCerWV').show();");
+	}
+
 	public void loadCer() {
 		lstcertificate = certificateDAO.findAll();
 	}
-	
+
 	public void saveCer() {
 		certificateDAO.saveCertificate(lstcertificate);
 		super.showNotificationSuccsess();
 	}
-	
-	// Upload Certificate
+
+	/** Upload Certificate **/
 	public void uploadExel(FileUploadEvent event) throws IOException {
 		file = event.getFile();
 
@@ -118,7 +226,16 @@ public class CertificateBean extends BaseController implements Serializable {
 					certificate.setStudentName((String) getCellValue(nextCell));
 					break;
 				case 2:
-					certificate.setBirthday((String) getCellValue(nextCell));
+					// certificate.setBirthday((String) getCellValue(nextCell));
+					SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+					Date updateDate = new Date();
+					try {
+						updateDate = dateFormat.parse(getCellValue(nextCell));
+						certificate.setBirthday(updateDate);
+					} catch (ParseException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					break;
 				case 3:
 					certificate.setBirthPlace((String) getCellValue(nextCell));
@@ -139,7 +256,17 @@ public class CertificateBean extends BaseController implements Serializable {
 					certificate.setGraduationYear((String) getCellValue(nextCell));
 					break;
 				case 9:
-					certificate.setIssuanceDate((String) getCellValue(nextCell));
+					// certificate.setIssuanceDate((String)
+					// getCellValue(nextCell));
+					SimpleDateFormat dateFormat1 = new SimpleDateFormat("dd/MM/yyyy");
+					Date updateDate1 = new Date();
+					try {
+						updateDate1 = dateFormat1.parse(getCellValue(nextCell));
+						certificate.setIssuanceDate(updateDate1);
+					} catch (ParseException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					break;
 				case 10:
 					certificate.setGrade((String) getCellValue(nextCell));
@@ -152,8 +279,6 @@ public class CertificateBean extends BaseController implements Serializable {
 		workbook.close();
 	}
 
-	
-	
 	public Certificate getCertificate() {
 		return certificate;
 	}
@@ -168,5 +293,13 @@ public class CertificateBean extends BaseController implements Serializable {
 
 	public void setLstcertificate(List<Certificate> lstcertificate) {
 		this.lstcertificate = lstcertificate;
+	}
+
+	public List<Certificate> getLstCertificateHome() {
+		return lstCertificateHome;
+	}
+
+	public void setLstCertificateHome(List<Certificate> lstCertificateHome) {
+		this.lstCertificateHome = lstCertificateHome;
 	}
 }
