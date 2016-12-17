@@ -23,11 +23,6 @@
 			<h:outputText value="#{rowIndex + 1}" />
 		</p:column>
 
-		<p:column sortBy="#{item.groupId}" filterBy="#{item.groupId}"
-			filterMatchMode="contains" headerText="#{msg['ts.groupName']}">
-			<h:outputText value="#{item.groupId}" />
-		</p:column>
-
 		<p:column sortBy="#{item.subjectId}" filterBy="#{item.subjectId}"
 			filterMatchMode="contains" headerText="#{msg['sb.subjectId']}">
 			<h:outputText value="#{item.subjectId}" />
@@ -44,7 +39,12 @@
 			filterMatchMode="contains" headerText="#{msg['sb.credit']}">
 			<h:outputText value="#{testScoreBean.getSubCredit(item.subjectId)}" />
 		</p:column>
-
+		
+		<p:column sortBy="#{item.groupId}" filterBy="#{item.groupId}"
+			filterMatchMode="contains" headerText="#{msg['ts.groupName']}">
+			<h:outputText value="#{item.groupId}" />
+		</p:column>
+		
 		<p:column sortBy="#{item.schoolYear}" filterBy="#{item.schoolYear}"
 			filterMatchMode="contains" headerText="#{msg['ts.schoolYear']}">
 			<h:outputText value="#{item.schoolYear}" />

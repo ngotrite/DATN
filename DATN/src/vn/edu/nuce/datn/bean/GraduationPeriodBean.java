@@ -38,6 +38,7 @@ import vn.edu.nuce.datn.dao.SysUserDAO;
 import vn.edu.nuce.datn.entity.GraduationPeriod;
 import vn.edu.nuce.datn.entity.Student;
 import vn.edu.nuce.datn.entity.SysUser;
+import vn.edu.nuce.datn.util.ContantsUtil;
 import vn.edu.nuce.datn.util.SessionUtils;
 import vn.edu.nuce.datn.util.ValidateUtil;
 
@@ -74,13 +75,29 @@ public class GraduationPeriodBean extends BaseController implements Serializable
 		this.readOnly = true;
 	}
 	
-	public String getUserName(Long id) {
-		SysUserDAO dao = new SysUserDAO();
-		id = SessionUtils.getUser().getId();
-		if (id != null) {
-			return dao.get(id).getUserName();
+	public String getUserName(Student item, String type) {
+		String userName = "";
+		switch (type) {
+		case ContantsUtil.GroupUser.DEPARTMENT:
+			if (item.getDepartmentStatus()) {
+				userName = SessionUtils.getUserName(); 
+			}
+			break;
+		case ContantsUtil.GroupUser.LIBRARY:
+			if (item.getLibraryStatus()) {
+				userName = SessionUtils.getUserName(); 
+			}
+			break;
+		case ContantsUtil.GroupUser.SCHOOLFEE:
+			if (item.getSchoolFeeStatus()) {
+				userName = SessionUtils.getUserName(); 
+			}
+			break;
+		default:
+			break;
 		}
-		return "";
+
+		return userName;
 	}
 	
 	
@@ -365,7 +382,12 @@ public class GraduationPeriodBean extends BaseController implements Serializable
 
 				switch (columnIndex) {
 				case 0:
-					student.setStudentId((String) getCellValue(nextCell));
+					String studentId = getCellValue(nextCell).toString();
+					if(studentId.indexOf(".") != -1){
+						studentId = studentId.substring(0, studentId.indexOf("."));
+					}
+					student.setStudentId(studentId);
+//					student.setStudentId((String) getCellValue(nextCell));
 					break;
 				case 1:
 					student.setStudentName((String) getCellValue(nextCell));

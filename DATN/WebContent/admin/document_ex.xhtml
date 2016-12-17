@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:p="http://primefaces.org/ui" xmlns:pe="http://primefaces.org/ui">
+
+<ui:composition template="../templates/vcbsContentTemplate.xhtml">
+	<ui:define name="content">
+
+		<h:form id="form-doc-list" class="container-fluid">
+
+			<p:outputLabel value="#{msg['title.lstDoc']}" />
+			<p:dataTable var="item" value="#{documentBean.documents}"
+				id="dtDocument" rowKey="#{item.documentId}"
+				emptyMessage="#{msg['common.noData']}" paginator="true" rows="20"
+				paginatorPosition="bottom" rowIndexVar="rowIndex"
+				widgetVar="dtDocumentWV"
+				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="10,20,50,100">
+
+				<p:column style="width:3%" headerText="#{msg['common.index']}">
+					<h:outputText value="#{rowIndex + 1}" />
+				</p:column>
+
+				<p:column sortBy="#{item.documentNumber}" style="width:10%"
+					filterBy="#{item.documentNumber}" filterMatchMode="contains"
+					headerText="#{msg['doc.documentNumber']}">
+					<h:outputText value="#{item.documentNumber}" />
+				</p:column>
+
+				<p:column sortBy="#{item.remark}" filterBy="#{item.remark}"
+					filterMatchMode="contains" headerText="#{msg['doc.remark']}">
+					<h:outputText value="#{item.remark}" />
+				</p:column>
+
+				<p:column sortBy="#{item.issuanceDate}" style="width:14%"
+					filterBy="#{item.issuanceDate}" filterMatchMode="contains"
+					headerText="#{msg['doc.issuanceDate']}">
+					<h:outputText value="#{item.issuanceDate}">
+						<f:convertDateTime pattern="dd-MM-yyyy" />
+					</h:outputText>
+				</p:column>
+
+				<p:column sortBy="#{item.fileName}" filterBy="#{item.fileName}"
+					filterMatchMode="contains" headerText="#{msg['common.fileName']}">
+					<h:outputText value="#{item.fileName}" />
+				</p:column>
+
+				<p:column sortBy="#{item.uploadDate}" filterBy="#{item.uploadDate}"
+					style="width:12%" filterMatchMode="contains"
+					headerText="#{msg['common.uploadDate']}">
+					<h:outputText value="#{item.uploadDate}">
+						<f:convertDateTime pattern="dd-MM-yyyy" />
+					</h:outputText>
+				</p:column>
+
+				<p:column headerText="#{msg['common.action']}"
+					style="text-align:center;">
+
+					<h:commandLink action="#{documentBean.newTabFilePDF(item)}"
+						target="_blank"
+						styleClass="btn btn-sm btn-action-edit colorStrongYellow">
+						<i class="fa fa-file-pdf-o"></i>
+					</h:commandLink>
+
+					<h:commandLink
+						action="#{documentBean.downloadFileDemoSignature(item)}"
+						styleClass="btn btn-sm btn-action-edit colorStrongGreen">
+						<i class="fa fa-download"></i>
+					</h:commandLink>
+
+				</p:column>
+
+				<f:facet name="header">
+					<p:outputPanel>
+						<h:outputText value="Tìm kiếm:" />
+						<p:inputText id="globalFilter"
+							onkeyup="PF('dtDocumentWV').filter()" style="width:150px"
+							placeholder="Nhập giá trị" />
+					</p:outputPanel>
+				</f:facet>
+			</p:dataTable>
+		</h:form>
+
+	</ui:define>
+</ui:composition>
+</html>

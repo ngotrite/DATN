@@ -22,7 +22,7 @@ public class Document implements Serializable {
 	private Long documentId;
 	
 	@Column(name = "DOCUMENT_NUMBER")
-	private Long documentNumber;
+	private String documentNumber;
 	
 	@Column(name = "REMARK")
 	private String remark;
@@ -50,11 +50,11 @@ public class Document implements Serializable {
 		this.documentId = documentId;
 	}
 
-	public Long getDocumentNumber() {
+	public String getDocumentNumber() {
 		return documentNumber;
 	}
 
-	public void setDocumentNumber(Long documentNumber) {
+	public void setDocumentNumber(String documentNumber) {
 		this.documentNumber = documentNumber;
 	}
 

@@ -8,8 +8,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -325,18 +327,38 @@ public class TestScoreBean extends BaseController implements Serializable {
 			FileOutputStream fos = new FileOutputStream(new File(ec.getRealPath(testScore.getFileName())));
 			byte[] data = IOUtils.toByteArray(fis);
 			fos.write(data, 0, data.length);
-			fos.close();
-			HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext()
-					.getRequest();
-			HttpServletResponse response = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext()
-					.getResponse();
-			response.sendRedirect(request.getContextPath() + "/" + testScore.getFileName());
-			return "";
+			if(isStreamClosed(fos)){
+				fos.close();
+				try {
+					TimeUnit.SECONDS.sleep(5);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext()
+						.getRequest();
+				HttpServletResponse response = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext()
+						.getResponse();
+				response.sendRedirect(request.getContextPath() + "/" + testScore.getFileName());
+				return "";
+			}
 		} catch (FileNotFoundException fnfex) {
 			return "";
 		} catch (IOException ioex) {
 			return "";
 		}
+		return "";
+	}
+	
+	public boolean isStreamClosed(FileOutputStream out){
+	    try {
+	        FileChannel fc = out.getChannel();
+	        return fc.position() >= 0L; // This may throw a ClosedChannelException.
+	    } catch (java.nio.channels.ClosedChannelException cce) {
+	        return false;
+	    } catch (IOException e) {
+	    }
+	    return true;
 	}
 
 	// **** GET SET ****//

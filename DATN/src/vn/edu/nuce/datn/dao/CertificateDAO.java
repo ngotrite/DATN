@@ -1,10 +1,12 @@
 package vn.edu.nuce.datn.dao;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Session;
+import org.hibernate.query.Query;
 
 import vn.edu.nuce.datn.db.HibernateUtil;
 import vn.edu.nuce.datn.db.Operator;
@@ -36,24 +38,65 @@ public class CertificateDAO extends BaseDAO<Certificate> implements Serializable
 
 	}
 	
+	public List<Certificate> findCertificateHomeNew(String studentId, String studentName, Date birthday, String certificateNo) {
+		List<Certificate> lstCertificate = new ArrayList<Certificate>();
+		Session session = HibernateUtil.getOpenSession();
+		StringBuilder sql = new StringBuilder();
+		
+		sql.append("FROM Certificate c");
+		
+		sql.append(" WHERE 1=1");
+		
+		if(!studentId.isEmpty()){
+			sql.append(" AND c.studentId=:studentId ");
+		}
+		
+		if(!studentName.isEmpty()){
+			sql.append(" AND c.studentName=:studentName ");
+		}
+		
+		if(birthday != null){
+			sql.append(" AND c.birthday=:birthday ");
+		}
+		
+		if(!certificateNo.isEmpty()){
+			sql.append(" AND c.certificateNo=:certificateNo ");
+		}
+		
+		Query query = session.createQuery(sql.toString());
+		
+		if(!studentId.isEmpty()){
+			query.setParameter("studentId", studentId);
+		}
+		
+		if(!studentName.isEmpty()){
+			query.setParameter("studentName", studentName);
+		}
+		
+		if(birthday != null){
+			query.setParameter("birthday", birthday);
+		}
+		
+		if(!certificateNo.isEmpty()){
+			query.setParameter("certificateNo", certificateNo);
+		}
+		
+		lstCertificate = query.getResultList();
+		
+		return lstCertificate;
+
+	}
+	
 	public List<Certificate> findCertificateHome(String studentId, String studentName, Date birthday, String certificateNo) {
 		List<Certificate> lst = null;
 		String[] cols = { "studentId" , "studentName", "birthday" , "certificateNo" };
-		Operator[] operators = { Operator.LIKE , Operator.LIKE , Operator.LIKE, Operator.LIKE };
+		Operator[] operators = { Operator.EQ , Operator.EQ , Operator.EQ, Operator.EQ };
 		Object[] values = { studentId , studentName, birthday, certificateNo};
 		lst = findByConditionsWithoutDomain(cols, operators, values, "");
 		return lst;
 	}
 	
-//	public List<Certificate> findCertificateHome(String studentId) {
-//		List<Certificate> lst = null;
-//		String[] cols = { "studentId" };
-//		Operator[] operators = { Operator.EQ };
-//		Object[] values = {studentId};
-//		lst = findByConditionsWithoutDomain(cols, operators, values, "");
-//		return lst;
-//	}
-//	
+	
 	
 	
 }

@@ -51,14 +51,14 @@
 									<h:outputText value="#{nodeData.nodeName}" title="#{nodeData}"/>
 								</p:treeNode>
 							</p:tree>
-<!-- 							<p:contextMenu for="treeTreeMenu" id="ctxMenu" widgetVar="ctxMenu" event="contextmenu"> -->
-<!-- 								<p:menuitem value="Move Up" -->
-<!-- 									actionListener="#{menuBean.moveUpTreeNode()}" -->
-<!-- 									update="treeTreeMenu" /> -->
-<!-- 								<p:menuitem value="Move Down" -->
-<!-- 									actionListener="#{menuBean.moveDownTreeNode()}" -->
-<!-- 									update="treeTreeMenu" /> -->
-<!-- 							</p:contextMenu> -->
+							<p:contextMenu id="ctxMenu" widgetVar="ctxMenu" event="contextmenu" >
+								<p:menuitem value="Move Up"
+									actionListener="#{menuBean.moveUpTreeNode()}"
+									update="treeTreeMenu" />
+								<p:menuitem value="Move Down"
+									actionListener="#{menuBean.moveDownTreeNode()}"
+									update="treeTreeMenu" />
+							</p:contextMenu>
 						</h:form>
 					</div>
 				</div>

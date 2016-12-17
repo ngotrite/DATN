@@ -170,10 +170,10 @@
 					</p:calendar>
 				</p:column>
 
-				<p:column sortBy="#{item.departmentUserId}"
-					filterBy="#{item.departmentUserId}" filterMatchMode="contains"
+				<p:column sortBy="#{graPeriodBean.getUserName(item,'DEPARTMENT')}"
+					filterBy="#{graPeriodBean.getUserName(item,'DEPARTMENT')}" filterMatchMode="contains"
 					headerText="#{msg['user.ID']}">
-					<h:outputText value="#{item.departmentUserId}"
+					<h:outputText value="#{graPeriodBean.getUserName(item,'DEPARTMENT')}"
 						id="txtdepartmentUserId" />
 				</p:column>
 				<f:facet name="footer">

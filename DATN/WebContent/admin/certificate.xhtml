@@ -49,7 +49,7 @@
 					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 					rowsPerPageTemplate="10,20,50,100">
 
-					<p:column style="width:5%" headerText="#{msg['common.index']}">
+					<p:column style="width:3%" headerText="#{msg['common.index']}">
 						<h:outputText value="#{rowIndex + 1}" />
 					</p:column>
 
@@ -65,8 +65,8 @@
 					</p:column>
 
 					<p:column sortBy="#{item.birthday}" filterBy="#{item.birthday}"
-						filterMatchMode="contains" headerText="#{msg['cer.birthday']}" >
-						<p:calendar effect="fold" value="#{item.birthday}" disabled="true"/>
+						filterMatchMode="contains" headerText="#{msg['cer.birthday']}">
+						<p:calendar effect="fold" value="#{item.birthday}" disabled="true" />
 					</p:column>
 
 					<p:column sortBy="#{item.birthPlace}" filterBy="#{item.birthPlace}"
@@ -102,9 +102,11 @@
 						<h:outputText value="#{item.graduationYear}" />
 					</p:column>
 
-					<p:column sortBy="#{item.issuanceDate}" filterBy="#{item.issuanceDate}"
-						filterMatchMode="contains" headerText="#{msg['cer.issuanceDate']}">
-						<p:calendar effect="fold" value="#{item.issuanceDate}" disabled="true" />
+					<p:column sortBy="#{item.issuanceDate}"
+						filterBy="#{item.issuanceDate}" filterMatchMode="contains"
+						headerText="#{msg['cer.issuanceDate']}">
+						<p:calendar effect="fold" value="#{item.issuanceDate}"
+							disabled="true" />
 					</p:column>
 
 					<p:column sortBy="#{item.grade}" filterBy="#{item.grade}"
@@ -120,7 +122,7 @@
 					</p:column>
 
 
-					<p:column headerText="#{msg['common.action']}"
+					<p:column headerText="#{msg['common.action']}" 
 						style="text-align:center;">
 						<p:commandLink update="dlgCer"
 							actionListener="#{certificateBean.showDialogCer(item)}"
@@ -136,7 +138,7 @@
 								message="#{msg['common.confirmDelete']}" icon="ui-icon-alert" />
 						</p:commandLink>
 						<f:facet name="header">
-							<p:commandButton value="#{msg['common.addNew']}" type="submit"
+							<p:commandButton type="submit" value="+"
 								actionListener="#{certificateBean.showDialogCer(null)}"
 								update="dlgCer" styleClass="btn btn-primary">
 							</p:commandButton>
@@ -145,7 +147,15 @@
 
 
 					<f:facet name="footer">
-
+						<div class="col-xs-12 col-md-10"></div>
+						<div class="col-xs-12 col-md-2">
+							<h:commandButton value="#{msg['common.export']}"
+								styleClass="btn-export-zone pull-right">
+								<p:dataExporter type="xls" target="dtCer"
+									fileName="Danh_sach_van_bang" pageOnly="true"
+									postProcessor="#{certificateBean.postProcessXLS}" />
+							</h:commandButton>
+						</div>
 					</f:facet>
 				</p:dataTable>
 			</div>
@@ -301,6 +311,7 @@
 					<div class="col-xs-12">
 						<div class="row">
 							<div class="col-xs-12 col-md-10"></div>
+
 							<div class="col-xs-12 col-md-2">
 								<p:commandButton value="#{msg['common.apply']}" type="submit"
 									actionListener="#{certificateBean.cmdApplyDLGCer()}"

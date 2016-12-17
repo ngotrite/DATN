@@ -20,13 +20,13 @@
 				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 				rowsPerPageTemplate="10,20,50,100">
 
-				<p:column style="width:5%" headerText="#{msg['common.index']}">
+				<p:column style="width:3%" headerText="#{msg['common.index']}">
 					<h:outputText value="#{rowIndex + 1}" />
 				</p:column>
 
-				<p:column sortBy="#{item.documentNumber}"
+				<p:column sortBy="#{item.documentNumber}" style="width:10%"
 					filterBy="#{item.documentNumber}" filterMatchMode="contains"
-					headerText="#{msg['sb.subjectId']}">
+					headerText="#{msg['doc.documentNumber']}">
 					<h:outputText value="#{item.documentNumber}" />
 				</p:column>
 
@@ -35,10 +35,12 @@
 					<h:outputText value="#{item.remark}" />
 				</p:column>
 
-				<p:column sortBy="#{item.issuanceDate}"
+				<p:column sortBy="#{item.issuanceDate}" style="width:14%"
 					filterBy="#{item.issuanceDate}" filterMatchMode="contains"
 					headerText="#{msg['doc.issuanceDate']}">
-					<h:outputText value="#{item.issuanceDate}" />
+					<h:outputText value="#{item.issuanceDate}">
+						<f:convertDateTime pattern="dd-MM-yyyy" />
+					</h:outputText>
 				</p:column>
 
 				<p:column sortBy="#{item.fileName}" filterBy="#{item.fileName}"
@@ -46,24 +48,48 @@
 					<h:outputText value="#{item.fileName}" />
 				</p:column>
 
-				<p:column sortBy="#{item.filePath}" filterBy="#{item.filePath}"
-					filterMatchMode="contains" headerText="#{msg['common.filePath']}">
-					<h:outputText value="#{item.filePath}" />
-				</p:column>
-
-				<p:column sortBy="#{item.uploadDate}" filterBy="#{item.uploadDate}"
+				<p:column sortBy="#{item.uploadDate}" filterBy="#{item.uploadDate}" style="width:12%"
 					filterMatchMode="contains" headerText="#{msg['common.uploadDate']}">
-					<h:outputText value="#{item.uploadDate}" />
+					<h:outputText value="#{item.uploadDate}">
+						<f:convertDateTime pattern="dd-MM-yyyy" />
+					</h:outputText>
 				</p:column>
 
-				<p:column sortBy="#{item.uploadUserId}"
-					filterBy="#{item.uploadUserId}" filterMatchMode="contains"
+				<p:column sortBy="#{documentBean.getUserName(item)}" style="width:12%"
+					filterBy="#{documentBean.getUserName(item)}" filterMatchMode="contains"
 					headerText="#{msg['common.uploadUserId']}">
-					<h:outputText value="#{item.uploadUserId}" />
+					<h:outputText value="#{documentBean.getUserName(item)}" />
 				</p:column>
 
 				<p:column headerText="#{msg['common.action']}"
 					style="text-align:center;">
+
+					<h:commandLink action="#{documentBean.newTabFilePDF(item)}"
+						target="_blank"
+						styleClass="btn btn-sm btn-action-edit colorStrongYellow">
+						<i class="fa fa-file-pdf-o"></i>
+					</h:commandLink>
+
+					<h:commandLink
+						action="#{documentBean.downloadFileDemoSignature(item)}"
+						styleClass="btn btn-sm btn-action-edit colorStrongGreen">
+						<i class="fa fa-download"></i>
+					</h:commandLink>
+
+					<p:commandLink actionListener="#{documentBean.showDialogDoc(item)}"
+						update="form-doc-list dtDocument dlgDoc"
+						styleClass="btn btn-sm btn-action-edit colorBlue">
+						<i class="fa fa-pencil icon-only mr-0"></i>
+					</p:commandLink>
+
+					<p:commandLink update="dtDocument"
+						actionListener="#{documentBean.deleteDoc(item)}"
+						styleClass="btn btn-sm btn-action-del colorRed">
+						<i class="fa fa-times icon-only mr-0"></i>
+						<p:confirm header="#{msg['common.delete']}"
+							message="#{msg['common.confirmDelete']}" icon="ui-icon-alert" />
+					</p:commandLink>
+
 					<f:facet name="header">
 						<p:commandButton value="#{msg['common.addNew']}" type="submit"
 							actionListener="#{documentBean.showDialogDoc(null)}"
@@ -72,7 +98,9 @@
 					</f:facet>
 				</p:column>
 
-
+				<f:facet name="header">
+					<p:outputLabel value="#{msg['title.lstDoc']}"/>
+				</f:facet>
 				<f:facet name="footer">
 
 				</f:facet>
@@ -110,11 +138,14 @@
 
 						<div class="row">
 							<div class="col-xs-12">
-								<p:outputLabel value="#{msg['doc.issuanceDate']}" />
+								<p:outputLabel value="#{msg['doc.issuanceDate']}"
+									for="maskIssuanceDate" />
 							</div>
 							<div class="col-xs-12">
-								<p:inputText value="#{documentBean.document.issuanceDate}"
-									styleClass="form-control" />
+								<p:calendar id="maskIssuanceDate" effect="fold"
+									value="#{documentBean.document.issuanceDate}"
+									requiredMessage="#{msg['common.required']}">
+								</p:calendar>
 							</div>
 						</div>
 					</div>
@@ -122,11 +153,14 @@
 
 						<div class="row">
 							<div class="col-xs-12">
-								<p:outputLabel value="#{msg['common.uploadDate']}" />
+								<p:outputLabel value="#{msg['common.uploadDate']}"
+									for="clUploadDate" />
 							</div>
 							<div class="col-xs-12">
 								<p:inputText value="#{documentBean.document.uploadDate}"
-									styleClass="form-control" />
+									disabled="true" styleClass="form-control" id="clUploadDate">
+									<f:convertDateTime pattern="dd-MM-yyyy" />
+								</p:inputText>
 							</div>
 						</div>
 
@@ -136,7 +170,7 @@
 							</div>
 							<div class="col-xs-12">
 								<p:inputText value="#{documentBean.document.fileName}"
-									id="fileName" styleClass="form-control" />
+									id="fileName" styleClass="form-control" disabled="true" />
 							</div>
 						</div>
 
@@ -146,7 +180,7 @@
 							</div>
 							<div class="col-xs-12">
 								<p:inputText value="#{documentBean.document.filePath}"
-									styleClass="form-control" id="filePath" />
+									disabled="true" styleClass="form-control" id="filePath" />
 							</div>
 						</div>
 					</div>
@@ -157,13 +191,13 @@
 									fileUploadListener="#{documentBean.handleFileUpload}"
 									mode="advanced" dragDropSupport="true" multiple="false"
 									sizeLimit="99999999" fileLimit="60000"
-									update="filePath fileName"
+									update="filePath fileName clUploadDate"
 									fileLimitMessage="#{msg['validate.fileLimit']}"
 									invalidSizeMessage="#{msg['validate.importSize']}"
 									invalidFileMessage="#{msg['validate.importFormatPDF']}"
 									allowTypes="/(\.|\/)(pdf)$/" />
 							</div>
-	
+
 							<div class="col-xs-12 col-md-2">
 								<p:commandButton value="#{msg['common.apply']}" type="submit"
 									actionListener="#{documentBean.saveDoc()}"

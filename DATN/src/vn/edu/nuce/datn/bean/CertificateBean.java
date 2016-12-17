@@ -14,7 +14,12 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.model.SelectItem;
 
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Row;
@@ -53,13 +58,34 @@ public class CertificateBean extends BaseController implements Serializable {
 		loadCerHome();
 	}
 
+	public void postProcessXLS(Object document) {
+		HSSFWorkbook wb = (HSSFWorkbook) document;
+		HSSFSheet sheet = wb.getSheetAt(0);
+		HSSFRow header = sheet.getRow(0);
+
+		HSSFCellStyle cellStyle = wb.createCellStyle();
+		cellStyle.setFillForegroundColor(HSSFColor.GREEN.index);
+		cellStyle.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+
+		for (int i = 0; i < header.getPhysicalNumberOfCells(); i++) {
+			HSSFCell cell = header.getCell(i);
+
+			cell.setCellStyle(cellStyle);
+		}
+	}
+
 	public void loadCerHome() {
-		lstCertificateHome = certificateDAO.findCertificateHome(certificate.getStudentId(),
-				certificate.getStudentName(), certificate.getBirthday(), certificate.getCertificateNo());
+		if (certificate.getStudentId() != null || certificate.getStudentName() != null
+				|| certificate.getBirthday() != null || certificate.getCertificateNo() != null) {
+			lstCertificateHome = certificateDAO.findCertificateHomeNew(certificate.getStudentId(),
+					certificate.getStudentName(), certificate.getBirthday(), certificate.getCertificateNo());
+		}
+
 	}
 
 	public void cmdDeleteCer(Certificate certificate) {
 		certificateDAO.delete(certificate);
+		lstcertificate.remove(certificate);
 		super.showNotificationSuccsess();
 	}
 
@@ -220,13 +246,16 @@ public class CertificateBean extends BaseController implements Serializable {
 
 				switch (columnIndex) {
 				case 0:
-					certificate.setStudentId((String) getCellValue(nextCell));
+					String studentId = getCellValue(nextCell).toString();
+					if(studentId.indexOf(".") != -1){
+						studentId = studentId.substring(0, studentId.indexOf("."));
+					}
+					certificate.setStudentId(studentId);
 					break;
 				case 1:
 					certificate.setStudentName((String) getCellValue(nextCell));
 					break;
 				case 2:
-					// certificate.setBirthday((String) getCellValue(nextCell));
 					SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 					Date updateDate = new Date();
 					try {
@@ -250,10 +279,19 @@ public class CertificateBean extends BaseController implements Serializable {
 					certificate.setMajor((String) getCellValue(nextCell));
 					break;
 				case 7:
-					certificate.setCertificateNo((String) getCellValue(nextCell));
+					String certificateNo = getCellValue(nextCell).toString();
+					if(certificateNo.indexOf(".") != -1){
+						certificateNo = certificateNo.substring(0, certificateNo.indexOf("."));
+					}
+					certificate.setCertificateNo(certificateNo);
 					break;
 				case 8:
-					certificate.setGraduationYear((String) getCellValue(nextCell));
+					String graduationYear = getCellValue(nextCell).toString();
+					if(graduationYear.indexOf(".") != -1){
+						graduationYear = graduationYear.substring(0, graduationYear.indexOf("."));
+					}
+					certificate.setGraduationYear(graduationYear);
+//					certificate.setGraduationYear((String) getCellValue(nextCell));
 					break;
 				case 9:
 					// certificate.setIssuanceDate((String)
