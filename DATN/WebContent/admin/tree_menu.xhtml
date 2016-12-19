@@ -40,9 +40,9 @@
 								<p:ajax event="expand" listener="#{menuBean.onNodeExpand}" />
 								<p:ajax event="collapse" listener="#{menuBean.onNodeCollapse}" update="treeTreeMenu"/>
 								<p:ajax event="select" listener="#{menuBean.onNodeSelect}" update="menuContent" />
-								<p:ajax event="contextMenu" update="treeTreeMenu"
-									oncomplete="PF('ctxMenu').show()"
-									listener="#{menuBean.onNodeSelectContext}" /> 
+									<p:ajax event="contextMenu" update="treeTreeMenu"
+										oncomplete="PF('ctxMenu').show()"
+										listener="#{menuBean.onNodeSelectContext}" /> 
 	
 								<p:treeNode icon="category-icon">
 									<h:outputText value="#{nodeData.nodeName}" title="#{nodeData}"/>
@@ -51,7 +51,7 @@
 									<h:outputText value="#{nodeData.nodeName}" title="#{nodeData}"/>
 								</p:treeNode>
 							</p:tree>
-							<p:contextMenu id="ctxMenu" widgetVar="ctxMenu" event="contextmenu" >
+							<p:contextMenu  id="ctxMenu" widgetVar="ctxMenu" event="contextmenu" >
 								<p:menuitem value="Move Up"
 									actionListener="#{menuBean.moveUpTreeNode()}"
 									update="treeTreeMenu" />

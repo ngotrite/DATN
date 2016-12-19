@@ -8,8 +8,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -25,7 +27,12 @@ import org.apache.poi.util.IOUtils;
 import org.primefaces.event.FileUploadEvent;
 
 import vn.edu.nuce.datn.dao.GraduationScoreDAO;
+import vn.edu.nuce.datn.dao.StudentDAO;
+import vn.edu.nuce.datn.dao.SubjectDictionaryDAO;
 import vn.edu.nuce.datn.entity.GraduationScore;
+import vn.edu.nuce.datn.entity.Student;
+import vn.edu.nuce.datn.util.ContantsUtil;
+import vn.edu.nuce.datn.util.SessionUtils;
 
 @SuppressWarnings("serial")
 @ManagedBean(name = "graScoreBean")
@@ -44,7 +51,30 @@ public class GraduationScoreBean extends BaseController implements Serializable 
 		this.graScoreDAO = new GraduationScoreDAO();
 		loadGraScores();
 	}
-	
+
+	public String viewInfoStu(GraduationScore item, String type) {
+		StudentDAO studentDAO = new StudentDAO();
+		// if (item.getStudentId() != null &&
+		// studentDAO.checkStudentId(item.getStudentId())) {
+		// return studentDAO.get(item.getStudentId()).get_class();
+		// } else {
+		// return "";
+		// }
+		if (item.getStudentId() != null && studentDAO.checkStudentId(item.getStudentId())) {
+			switch (type) {
+			case ContantsUtil.InfoStu.STUDENT_NAME:
+				return studentDAO.get(item.getStudentId()).get_class();
+			case ContantsUtil.InfoStu._CLASS:
+				return studentDAO.get(item.getStudentId()).get_class();
+			default:
+				break;
+			}
+			return "";
+		}
+		return "";
+
+	}
+
 	/***** SELECTION DELETE *****/
 
 	public void selectEvent(AjaxBehaviorEvent event) {
@@ -81,13 +111,13 @@ public class GraduationScoreBean extends BaseController implements Serializable 
 	}
 
 	public void saveGS() {
-//		graScoreDAO.saveGS(graScores);
+		// graScoreDAO.saveGS(graScores);
 		this.showMessageINFO("common.save", "Graduation Score");
 	}
 
 	// DEL 1 Graduation Score
 	public void cmdDeleteGS(GraduationScore graScore) {
-		if (graScore.getStudentId()!= null) {
+		if (graScore.getStudentId() != null) {
 			graScoreDAO.delete(graScore);
 			graScores.remove(graScore);
 			File file = new File(graScore.getFilePath());
@@ -97,7 +127,6 @@ public class GraduationScoreBean extends BaseController implements Serializable 
 			System.out.println("Fail");
 		}
 	}
-	
 
 	// Upload File PDF
 	public void handleFileUpload(FileUploadEvent event) {
@@ -156,18 +185,39 @@ public class GraduationScoreBean extends BaseController implements Serializable 
 			FileOutputStream fos = new FileOutputStream(new File(ec.getRealPath(graScore.getFileName())));
 			byte[] data = IOUtils.toByteArray(fis);
 			fos.write(data, 0, data.length);
-			fos.close();
-			HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext()
-					.getRequest();
-			HttpServletResponse response = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext()
-					.getResponse();
-			response.sendRedirect(request.getContextPath() + "/" + graScore.getFileName());
-			return "";
+			if (isStreamClosed(fos)) {
+				fos.close();
+				try {
+					TimeUnit.SECONDS.sleep(5);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext()
+						.getRequest();
+				HttpServletResponse response = (HttpServletResponse) FacesContext.getCurrentInstance()
+						.getExternalContext().getResponse();
+				response.sendRedirect(request.getContextPath() + "/" + graScore.getFileName());
+				return "";
+			}
 		} catch (FileNotFoundException fnfex) {
 			return "";
 		} catch (IOException ioex) {
 			return "";
 		}
+		return "";
+	}
+
+	public boolean isStreamClosed(FileOutputStream out) {
+		try {
+			FileChannel fc = out.getChannel();
+			return fc.position() >= 0L; // This may throw a
+										// ClosedChannelException.
+		} catch (java.nio.channels.ClosedChannelException cce) {
+			return false;
+		} catch (IOException e) {
+		}
+		return true;
 	}
 
 	private GraduationScore selectedGraScore;
@@ -244,9 +294,7 @@ public class GraduationScoreBean extends BaseController implements Serializable 
 		}
 	}
 
-
-	
-	//*** GET SET ***//
+	// *** GET SET ***//
 	public GraduationScore getGraScore() {
 		return graScore;
 	}

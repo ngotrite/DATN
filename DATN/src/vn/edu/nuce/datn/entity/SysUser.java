@@ -32,13 +32,13 @@ public class SysUser extends BaseEntity implements Serializable, Cloneable {
 	@Column(name = "password", nullable = false)
 	private String password;
 
-	@Column(name = "first_name")
-	private String firstName;
+//	@Column(name = "first_name")
+//	private String firstName;
+//
+//	@Column(name = "last_name")
+//	private String lastName;
 
-	@Column(name = "last_name")
-	private String lastName;
-
-	@Transient
+	@Column(name = "full_name")
 	private String fullName;
 
 	@Column(name = "email")
@@ -46,6 +46,9 @@ public class SysUser extends BaseEntity implements Serializable, Cloneable {
 
 	@Column(name = "remark")
 	private String remark;
+	
+//	@Column(name = "mobile")
+//	private String mobile;
 
 	@Column(name = "is_active")
 	private Boolean isActive;
@@ -58,8 +61,8 @@ public class SysUser extends BaseEntity implements Serializable, Cloneable {
 	// @ExcludeFieldJson
 	// private SysRole role;
 
-	@Column(name = "expire_date")
-	private Date expireDate;
+//	@Column(name = "expire_date")
+//	private Date expireDate;
 
 	@Column(name = "languague")
 	private String languague;
@@ -91,37 +94,45 @@ public class SysUser extends BaseEntity implements Serializable, Cloneable {
 		this.userName = userName;
 	}
 
-	public String getFirstName() {
-		return firstName;
-	}
+//	public String getFirstName() {
+//		return firstName;
+//	}
+//
+//	public void setFirstName(String firstName) {
+//		this.firstName = firstName;
+//	}
+//
+//	public String getLastName() {
+//		return lastName;
+//	}
+//
+//	public void setLastName(String lastName) {
+//		this.lastName = lastName;
+//	}
 
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-
-	public String getLastName() {
-		return lastName;
-	}
-
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
-
+//	public String getFullName() {
+//
+//		if (firstName == null && lastName == null) {
+//			return "";
+//		} else if (firstName == null) {
+//			return lastName;
+//		} else if (lastName == null) {
+//			return firstName;
+//		} else {
+//			return this.firstName + " " + this.lastName;
+//		}
+//	}
+//
+//	public void setFullName(String fullName) {
+//		// this.fullName = fullName;
+//	}
+	
 	public String getFullName() {
-
-		if (firstName == null && lastName == null) {
-			return "";
-		} else if (firstName == null) {
-			return lastName;
-		} else if (lastName == null) {
-			return firstName;
-		} else {
-			return this.firstName + " " + this.lastName;
-		}
+		return fullName;
 	}
 
 	public void setFullName(String fullName) {
-		// this.fullName = fullName;
+		this.fullName = fullName;
 	}
 
 	public String getEmail() {
@@ -139,6 +150,14 @@ public class SysUser extends BaseEntity implements Serializable, Cloneable {
 	public void setRemark(String remark) {
 		this.remark = remark;
 	}
+	
+//	public String getMobile() {
+//		return mobile;
+//	}
+//
+//	public void setMobile(String mobile) {
+//		this.mobile = mobile;
+//	}
 
 	public Boolean getIsActive() {
 		return isActive;
@@ -156,13 +175,13 @@ public class SysUser extends BaseEntity implements Serializable, Cloneable {
 	// this.role = role;
 	// }
 
-	public Date getExpireDate() {
-		return expireDate;
-	}
-
-	public void setExpireDate(Date expireDate) {
-		this.expireDate = expireDate;
-	}
+//	public Date getExpireDate() {
+//		return expireDate;
+//	}
+//
+//	public void setExpireDate(Date expireDate) {
+//		this.expireDate = expireDate;
+//	}
 
 	@Override
 	@Transient

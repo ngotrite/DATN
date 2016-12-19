@@ -19,7 +19,7 @@
 					update="tabTestScore:form-tc-list:dtTestScore @this"
 					fileLimitMessage="#{msg['validate.fileLimit']}"
 					invalidSizeMessage="#{msg['validate.importSize']}"
-					invalidFileMessage="#{msg['validate.importFormatXLS']}"
+					invalidFileMessage="#{msg['validate.importFormatPDF']}"
 					allowTypes="/(\.|\/)(pdf)$/" />
 			</div>
 			<div class="col-xs-12 col-md-2">
@@ -55,16 +55,16 @@
 			<h:outputText value="#{item.subjectId}" />
 		</p:column>
 
-		<p:column sortBy="#{testScoreBean.getSubjectName(item.subjectId)}"
-			filterBy="#{testScoreBean.getSubjectName(item.subjectId)}"
+		<p:column sortBy="#{testScoreBean.viewInfoSub(item.subjectId, 'SUB_NAME')}"
+			filterBy="#{testScoreBean.viewInfoSub(item.subjectId, 'SUB_NAME')}"
 			filterMatchMode="contains" headerText="#{msg['sb.subject']}">
-			<h:outputText value="#{testScoreBean.getSubjectName(item.subjectId)}" />
+			<h:outputText value="#{testScoreBean.viewInfoSub(item.subjectId, 'SUB_NAME')}" />
 		</p:column>
 
-		<p:column sortBy="#{testScoreBean.getSubCredit(item.subjectId)}"
-			filterBy="#{testScoreBean.getSubCredit(item.subjectId)}"
+		<p:column sortBy="#{testScoreBean.viewInfoSub(item.subjectId, 'CREDIT')}"
+			filterBy="#{testScoreBean.viewInfoSub(item.subjectId, 'CREDIT')}"
 			filterMatchMode="contains" headerText="#{msg['sb.credit']}">
-			<h:outputText value="#{testScoreBean.getSubCredit(item.subjectId)}" />
+			<h:outputText value="#{testScoreBean.viewInfoSub(item.subjectId, 'CREDIT')}" />
 		</p:column>
 
 		<p:column sortBy="#{item.groupId}" filterBy="#{item.groupId}"

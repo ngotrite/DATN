@@ -31,6 +31,8 @@ public class UserBean extends BaseController implements Serializable {
 	private List<SysRole> listSysRole;
 //	private long roleID;
 	private boolean isEditing;
+	
+	private String pass;
 
 	private SysUserDAO userDao;
 
@@ -110,8 +112,6 @@ public class UserBean extends BaseController implements Serializable {
 				super.showMessageERROR("common.save", " User ", "user.formatPassword");
 				return false;
 			} else {
-				String salt = PasswordUtil.getRandomSalt();
-//				sysUser.setSalt(salt);
 				sysUser.setPassword(PasswordUtil.generateHash(password));
 			}
 		} else {
@@ -123,13 +123,15 @@ public class UserBean extends BaseController implements Serializable {
 					super.showMessageERROR("common.save", " User ", "user.formatPassword");
 					return false;
 				} else {
-					String salt = PasswordUtil.getRandomSalt();
-//					sysUser.setSalt(salt);
 					sysUser.setPassword(PasswordUtil.generateHash(password));
 				}
 			} else {
 				// Do nothing
 			}
+		}
+		if (!password.equals(pass)) {
+//			super.showMessageINFO(actionKey, objName);
+			return false;
 		}
 		
 		return true;
@@ -137,14 +139,11 @@ public class UserBean extends BaseController implements Serializable {
 	
 
 	public void onRowSelect(SelectEvent event) {
-		// sysUser = (SysUser) event.getObject();
-		// roleID = sysUser.getRole().getId();
 	}
 
 	public void onRowEdit(SysUser user) {
 
 		this.sysUser = user;
-//		roleID = sysUser.getRole().getId();
 		isEditing = true;
 	}
 
@@ -201,4 +200,14 @@ public class UserBean extends BaseController implements Serializable {
 	public void setEditing(boolean isEditing) {
 		this.isEditing = isEditing;
 	}
+
+	public String getPass() {
+		return pass;
+	}
+
+	public void setPass(String pass) {
+		this.pass = pass;
+	}
+	
+	
 }

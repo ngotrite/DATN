@@ -58,5 +58,15 @@ public class ContantsUtil {
 		public static final String LIBRARY= "LIBRARY";
 		public static final String SCHOOLFEE= "SCHOOLFEE";
 	}
+	
+	public class InfoStu{
+		public static final String STUDENT_NAME= "STUDENT_NAME";
+		public static final String _CLASS= "_CLASS";
+	}
+	
+	public class InfoSub{
+		public static final String SUB_NAME= "SUB_NAME";
+		public static final String CREDIT= "CREDIT";
+	}
 
 }

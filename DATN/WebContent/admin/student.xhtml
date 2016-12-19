@@ -91,10 +91,10 @@
 			<p:overlayPanel widgetVar="carOP" showEffect="fade" hideEffect="fade"
 				dismissable="false" showCloseIcon="true" showEvent="mouseover"
 				hideEvent="mousedown">
-				<p:outputPanel id="carDetail" style="text-align:center;">
+				<p:outputPanel id="carDetail" style="text-align:left;">
 					<p:panelGrid columns="2"
 						rendered="#{not empty studentBean.student}"
-						columnClasses="label,value">
+						columnClasses="value,value">
 						<h:outputText value="#{msg['common.ID']}" />
 						<h:outputText value="#{studentBean.student.studentId}" />
 

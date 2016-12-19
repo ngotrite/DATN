@@ -208,7 +208,7 @@ public class DocumentBean extends BaseController implements Serializable {
 
 			document.setFilePath(file.getPath());
 			document.setFileName(file.getName());
-			document.setUploadDate(new Date());
+			
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -219,6 +219,7 @@ public class DocumentBean extends BaseController implements Serializable {
 	public void showDialogDoc(Document document) {
 		if (document == null) {
 			this.document = new Document();
+			this.document.setUploadDate(new Date());
 		} else {
 			this.document = document;
 		}

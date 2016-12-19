@@ -48,15 +48,17 @@
 					<h:outputText value="#{item.fileName}" />
 				</p:column>
 
-				<p:column sortBy="#{item.uploadDate}" filterBy="#{item.uploadDate}" style="width:12%"
-					filterMatchMode="contains" headerText="#{msg['common.uploadDate']}">
+				<p:column sortBy="#{item.uploadDate}" filterBy="#{item.uploadDate}"
+					style="width:12%" filterMatchMode="contains"
+					headerText="#{msg['common.uploadDate']}">
 					<h:outputText value="#{item.uploadDate}">
 						<f:convertDateTime pattern="dd-MM-yyyy" />
 					</h:outputText>
 				</p:column>
 
-				<p:column sortBy="#{documentBean.getUserName(item)}" style="width:12%"
-					filterBy="#{documentBean.getUserName(item)}" filterMatchMode="contains"
+				<p:column sortBy="#{documentBean.getUserName(item)}"
+					style="width:12%" filterBy="#{documentBean.getUserName(item)}"
+					filterMatchMode="contains"
 					headerText="#{msg['common.uploadUserId']}">
 					<h:outputText value="#{documentBean.getUserName(item)}" />
 				</p:column>
@@ -99,7 +101,7 @@
 				</p:column>
 
 				<f:facet name="header">
-					<p:outputLabel value="#{msg['title.lstDoc']}"/>
+					<p:outputLabel value="#{msg['title.lstDoc']}" />
 				</f:facet>
 				<f:facet name="footer">
 
@@ -136,18 +138,6 @@
 							</div>
 						</div>
 
-						<div class="row">
-							<div class="col-xs-12">
-								<p:outputLabel value="#{msg['doc.issuanceDate']}"
-									for="maskIssuanceDate" />
-							</div>
-							<div class="col-xs-12">
-								<p:calendar id="maskIssuanceDate" effect="fold"
-									value="#{documentBean.document.issuanceDate}"
-									requiredMessage="#{msg['common.required']}">
-								</p:calendar>
-							</div>
-						</div>
 					</div>
 					<div class="col-xs-12 col-sm-6">
 
@@ -166,23 +156,18 @@
 
 						<div class="row">
 							<div class="col-xs-12">
-								<p:outputLabel value="#{msg['common.fileName']}" />
+								<p:outputLabel value="#{msg['doc.issuanceDate']}"
+									for="maskIssuanceDate" />
 							</div>
 							<div class="col-xs-12">
-								<p:inputText value="#{documentBean.document.fileName}"
-									id="fileName" styleClass="form-control" disabled="true" />
+								<p:calendar id="maskIssuanceDate" effect="fold"
+									value="#{documentBean.document.issuanceDate}"
+									requiredMessage="#{msg['common.required']}">
+								</p:calendar>
 							</div>
 						</div>
 
-						<div class="row">
-							<div class="col-xs-12">
-								<p:outputLabel value="#{msg['common.filePath']}" />
-							</div>
-							<div class="col-xs-12">
-								<p:inputText value="#{documentBean.document.filePath}"
-									disabled="true" styleClass="form-control" id="filePath" />
-							</div>
-						</div>
+
 					</div>
 					<div class="col-xs-12 col-sm-12">
 						<div class="row">
@@ -190,8 +175,7 @@
 								<p:fileUpload
 									fileUploadListener="#{documentBean.handleFileUpload}"
 									mode="advanced" dragDropSupport="true" multiple="false"
-									sizeLimit="99999999" fileLimit="60000"
-									update="filePath fileName clUploadDate"
+									sizeLimit="99999999" fileLimit="60000" update="@this"
 									fileLimitMessage="#{msg['validate.fileLimit']}"
 									invalidSizeMessage="#{msg['validate.importSize']}"
 									invalidFileMessage="#{msg['validate.importFormatPDF']}"

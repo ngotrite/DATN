@@ -26,7 +26,18 @@
 			<h:outputText value="#{item.studentId}" />
 		</p:column>
 
-		
+		<p:column sortBy="#{graScoreBean.viewInfoStu(item, 'STUDENT_NAME')}"
+			filterBy="#{graScoreBean.viewInfoStu(item, 'STUDENT_NAME')}"
+			filterMatchMode="contains" headerText="#{msg['st.studentName']}">
+			<h:outputText
+				value="#{graScoreBean.viewInfoStu(item, 'STUDENT_NAME')}" />
+		</p:column>
+
+		<p:column sortBy="#{graScoreBean.viewInfoStu(item, '_CLASS')}"
+			filterBy="#{graScoreBean.viewInfoStu(item, '_CLASS')}"
+			filterMatchMode="contains" headerText="#{msg['st.class']}">
+			<h:outputText value="#{graScoreBean.viewInfoStu(item, '_CLASS')}" />
+		</p:column>
 
 		<p:column headerText="#{msg['common.action']}"
 			style="text-align:center; width:17%">

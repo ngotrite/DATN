@@ -9,7 +9,6 @@ import org.hibernate.query.Query;
 import vn.edu.nuce.datn.db.HibernateUtil;
 import vn.edu.nuce.datn.db.Operator;
 import vn.edu.nuce.datn.entity.Student;
-import vn.edu.nuce.datn.entity.SubjectDictionary;
 
 @SuppressWarnings("serial")
 public class StudentDAO extends BaseDAO<Student> implements Serializable {
@@ -117,6 +116,18 @@ public class StudentDAO extends BaseDAO<Student> implements Serializable {
 		} finally {
 			session.close();
 		}
+	}
+	
+	public boolean checkStudentId(String studentId) {
+		List<Student> lst = null;
+		String[] cols = { "studentId"};
+		Operator[] operators = { Operator.EQ};
+		Object[] values = { studentId  };
+		lst = findByConditionsWithoutDomain(cols, operators, values, "");
+		if (lst != null && lst.size() > 0) {
+			return true;
+		}
+		return false;
 	}
 	
 	@Override

@@ -37,12 +37,24 @@ public class UserSession extends BaseController implements Serializable {
 	private SysUserDAO userDao;
 	private SysMenuDAO menuDao;
 	private List<SysMenu> lstRootMenu;
+	
 
 	public UserSession() {
-
+		locale = new Locale("vi");
 		userDao = new SysUserDAO();
 		menuDao = new SysMenuDAO();
 		lstRootMenu = new ArrayList<>();
+		createDefaultMenu();
+	}
+
+
+	private void createDefaultMenu() {
+		SysMenu sysMenu = new SysMenu();
+		sysMenu.setName("Trang chủ");
+		sysMenu.setIsActive(true);
+		sysMenu.setPath("/");
+		sysMenu.setUrl("/home.xhtml");
+		lstRootMenu.add(sysMenu);
 	}
 
 
@@ -117,7 +129,7 @@ public class UserSession extends BaseController implements Serializable {
 		HttpSession session = SessionUtils.getSession();
 		session.invalidate();
 		lstRootMenu.clear();
-
+		createDefaultMenu();
 		ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
 		HttpServletRequest req = (HttpServletRequest) ec.getRequest();
 		ec.redirect(req.getContextPath() + "/admin/login.xhtml");

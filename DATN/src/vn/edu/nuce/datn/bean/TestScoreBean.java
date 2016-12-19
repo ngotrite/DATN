@@ -11,6 +11,7 @@ import java.io.Serializable;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PostConstruct;
@@ -31,6 +32,8 @@ import vn.edu.nuce.datn.dao.SubjectDictionaryDAO;
 import vn.edu.nuce.datn.dao.TestScoreDAO;
 import vn.edu.nuce.datn.entity.SubjectDictionary;
 import vn.edu.nuce.datn.entity.TestScore;
+import vn.edu.nuce.datn.util.ContantsUtil;
+import vn.edu.nuce.datn.util.ResourceBundleUtil;
 import vn.edu.nuce.datn.util.ValidateUtil;
 
 @SuppressWarnings("serial")
@@ -68,17 +71,26 @@ public class TestScoreBean extends BaseController implements Serializable {
 
 	/***** TEST SCORE *****/
 
-	public String getSubjectName(String subjectId) {
+	public String viewInfoSub(String subjectId, String type) {
 		SubjectDictionaryDAO subjectDictionaryDAO = new SubjectDictionaryDAO();
-		return subjectDictionaryDAO.get(subjectId).getSubject();
-
+		if (subjectId != null && subjectDictionaryDAO.checkSubjectId(subjectId)) {
+			switch (type) {
+			case ContantsUtil.InfoSub.SUB_NAME:
+				return subjectDictionaryDAO.get(subjectId).getSubject();
+			case ContantsUtil.InfoSub.CREDIT:
+				return subjectDictionaryDAO.get(subjectId).getCredit().toString();
+			default:
+				break;
+			}
+		}
+		return "";
 	}
 
-	public Long getSubCredit(String subjectId) {
-		SubjectDictionaryDAO subjectDictionaryDAO = new SubjectDictionaryDAO();
-		return subjectDictionaryDAO.get(subjectId).getCredit();
-
-	}
+//	public Long getSubCredit(String subjectId) {
+//		SubjectDictionaryDAO subjectDictionaryDAO = new SubjectDictionaryDAO();
+//		return subjectDictionaryDAO.get(subjectId).getCredit();
+//
+//	}
 
 	public void saveTS() {
 		testScoreDAO.saveTS(testScores);
@@ -194,7 +206,7 @@ public class TestScoreBean extends BaseController implements Serializable {
 		FacesContext.getCurrentInstance().addMessage(null, message);
 		try {
 			String fileName = event.getFile().getFileName();
-			File file = new File("E:\\test\\" + fileName);
+			File file = new File(ResourceBundleUtil.getString("link") + fileName);
 
 			InputStream inputStream = event.getFile().getInputstream();
 			OutputStream outputStream = new FileOutputStream(file);
@@ -327,7 +339,7 @@ public class TestScoreBean extends BaseController implements Serializable {
 			FileOutputStream fos = new FileOutputStream(new File(ec.getRealPath(testScore.getFileName())));
 			byte[] data = IOUtils.toByteArray(fis);
 			fos.write(data, 0, data.length);
-			if(isStreamClosed(fos)){
+			if (isStreamClosed(fos)) {
 				fos.close();
 				try {
 					TimeUnit.SECONDS.sleep(5);
@@ -337,8 +349,8 @@ public class TestScoreBean extends BaseController implements Serializable {
 				}
 				HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext()
 						.getRequest();
-				HttpServletResponse response = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext()
-						.getResponse();
+				HttpServletResponse response = (HttpServletResponse) FacesContext.getCurrentInstance()
+						.getExternalContext().getResponse();
 				response.sendRedirect(request.getContextPath() + "/" + testScore.getFileName());
 				return "";
 			}
@@ -349,16 +361,17 @@ public class TestScoreBean extends BaseController implements Serializable {
 		}
 		return "";
 	}
-	
-	public boolean isStreamClosed(FileOutputStream out){
-	    try {
-	        FileChannel fc = out.getChannel();
-	        return fc.position() >= 0L; // This may throw a ClosedChannelException.
-	    } catch (java.nio.channels.ClosedChannelException cce) {
-	        return false;
-	    } catch (IOException e) {
-	    }
-	    return true;
+
+	public boolean isStreamClosed(FileOutputStream out) {
+		try {
+			FileChannel fc = out.getChannel();
+			return fc.position() >= 0L; // This may throw a
+										// ClosedChannelException.
+		} catch (java.nio.channels.ClosedChannelException cce) {
+			return false;
+		} catch (IOException e) {
+		}
+		return true;
 	}
 
 	// **** GET SET ****//
