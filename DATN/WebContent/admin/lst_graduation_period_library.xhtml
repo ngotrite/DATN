@@ -168,12 +168,13 @@
 					</p:calendar>
 				</p:column>
 
-				<p:column sortBy="#{item.libraryUserId}"
-					filterBy="#{item.libraryUserId}" filterMatchMode="contains"
-					headerText="#{msg['user.ID']}">
-					<h:outputText value="#{item.libraryUserId}" id="txtlibraryUserId" />
+				<p:column sortBy="#{graPeriodBean.getUserName(item,'LIBRARY')}"
+					filterBy="#{graPeriodBean.getUserName(item,'LIBRARY')}"
+					filterMatchMode="contains" headerText="#{msg['user.acc']}">
+					<h:outputText
+						value="#{graPeriodBean.getUserName(item,'LIBRARY')}"
+						id="txtlibraryUserId" />
 				</p:column>
-
 
 				<f:facet name="footer">
 					<div class="col-xs-12 col-sm-12">

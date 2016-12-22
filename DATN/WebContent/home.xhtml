@@ -7,18 +7,40 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui">
 
-<ui:composition template="templates/vcbsContentTemplate.xhtml">
+<ui:composition template="templates/vcbsContentTemplateHome.xhtml">
 	<ui:define name="content">
 		<h:form id="form-home" class="container-fluid">
 			<div class="formFieldMg">
-				<div class="col-xs-12 col-sm-2"></div>
-				<div class="col-xs-12 col-sm-8">
+				<div class="col-xs-12 col-sm-2">
 					<div class="row">
 						<div class="col-xs-12 col-md-3">
-							<p:outputLabel value="#{msg['st.studentId']}" />
-							<br />
-							<p:outputLabel value="#{msg['common.or']}" />
-
+							<p:outputLabel />
+						</div>
+						<br />
+						<p:outputLabel value="#{msg['common.or']}" styleClass="pull-right" />
+						<div class="col-xs-12 col-md-5"></div>
+					</div>
+					<div class="row">
+						<div class="col-xs-12 col-md-3">
+							<p:outputLabel />
+						</div>
+						<br />
+						<p:outputLabel value="#{msg['common.and']}"
+							styleClass="pull-right" />
+						<div class="col-xs-12 col-md-5"></div>
+					</div>
+					<div class="row">
+						<div class="col-xs-12 col-md-3">
+							<p:outputLabel />
+						</div>
+							<p:outputLabel value="#{msg['common.or']}" styleClass="pull-right" />
+						<div class="col-xs-12 col-md-5"></div>
+					</div>
+				</div>
+				<div class="col-xs-12 col-sm-8">
+					<div class="row">
+						<div class="col-xs-12 col-md-4">
+							<p:outputLabel value="#{msg['cer.studentID']}" />
 						</div>
 						<div class="col-xs-12 col-md-5">
 							<p:inputText value="#{certificateBean.certificate.studentId}"
@@ -26,10 +48,8 @@
 						</div>
 					</div>
 					<div class="row">
-						<div class="col-xs-12 col-md-3">
-							<p:outputLabel value="#{msg['st.studentName']}" />
-							<br />
-							<p:outputLabel value="#{msg['common.or']}" />
+						<div class="col-xs-12 col-md-4">
+							<p:outputLabel value="#{msg['st.studentNameHome']}" />
 						</div>
 						<div class="col-xs-12 col-md-5">
 							<p:inputText value="#{certificateBean.certificate.studentName}"
@@ -37,10 +57,8 @@
 						</div>
 					</div>
 					<div class="row">
-						<div class="col-xs-12 col-md-3">
+						<div class="col-xs-12 col-md-4">
 							<p:outputLabel value="#{msg['cer.birthday']}" />
-							<br />
-							<p:outputLabel value="#{msg['common.or']}" />
 						</div>
 						<div class="col-xs-12 col-md-5">
 							<p:calendar effect="fold"
@@ -49,7 +67,7 @@
 						</div>
 					</div>
 					<div class="row">
-						<div class="col-xs-12 col-md-3">
+						<div class="col-xs-12 col-md-4">
 							<p:outputLabel value="#{msg['cer.certificateNo']}" />
 						</div>
 						<div class="col-xs-12 col-md-5">
@@ -86,64 +104,48 @@
 						<h:outputText value="#{rowIndex + 1}" />
 					</p:column>
 
-					<p:column sortBy="#{item.studentId}" filterBy="#{item.studentId}"
-						filterMatchMode="contains" headerText="#{msg['st.studentId']}">
+					<p:column headerText="#{msg['cer.stID']}">
 						<h:outputText value="#{item.studentId}" />
 					</p:column>
 
-					<p:column sortBy="#{item.studentName}"
-						filterBy="#{item.studentName}" filterMatchMode="contains"
-						headerText="#{msg['st.studentName']}">
+					<p:column headerText="#{msg['st.studentName']}">
 						<h:outputText value="#{item.studentName}" />
 					</p:column>
 
-					<p:column sortBy="#{item.birthday}" filterBy="#{item.birthday}"
-						filterMatchMode="contains" headerText="#{msg['cer.birthday']}">
+					<p:column headerText="#{msg['cer.birthday']}">
 						<p:calendar effect="fold" value="#{item.birthday}" disabled="true" />
 					</p:column>
 
-					<p:column sortBy="#{item.birthPlace}" filterBy="#{item.birthPlace}"
-						filterMatchMode="contains" headerText="#{msg['cer.birthPlace']}">
+					<p:column headerText="#{msg['cer.birthPlace']}">
 						<h:outputText value="#{item.birthPlace}" />
 					</p:column>
 
-					<p:column sortBy="#{item.educationSystem}"
-						filterBy="#{item.educationSystem}" filterMatchMode="contains"
-						headerText="#{msg['cer.educationSystem']}">
+					<p:column headerText="#{msg['cer.educationSystem']}">
 						<h:outputText value="#{item.educationSystem}" />
 					</p:column>
 
-					<p:column sortBy="#{item.program}" filterBy="#{item.program}"
-						filterMatchMode="contains" headerText="#{msg['cer.program']}">
+					<p:column headerText="#{msg['cer.program']}">
 						<h:outputText value="#{item.program}" />
 					</p:column>
 
-					<p:column sortBy="#{item.major}" filterBy="#{item.major}"
-						filterMatchMode="contains" headerText="#{msg['cer.major']}">
+					<p:column headerText="#{msg['cer.major']}">
 						<h:outputText value="#{item.major}" />
 					</p:column>
 
-					<p:column sortBy="#{item.certificateNo}"
-						filterBy="#{item.certificateNo}" filterMatchMode="contains"
-						headerText="#{msg['cer.certificateNo']}">
+					<p:column headerText="#{msg['cer.certificateNo']}">
 						<h:outputText value="#{item.certificateNo}" />
 					</p:column>
 
-					<p:column sortBy="#{item.graduationYear}"
-						filterBy="#{item.graduationYear}" filterMatchMode="contains"
-						headerText="#{msg['cer.graduationYear']}">
+					<p:column headerText="#{msg['cer.graduationYear']}">
 						<h:outputText value="#{item.graduationYear}" />
 					</p:column>
 
-					<p:column sortBy="#{item.issuanceDate}"
-						filterBy="#{item.issuanceDate}" filterMatchMode="contains"
-						headerText="#{msg['cer.issuanceDate']}">
+					<p:column headerText="#{msg['cer.issuanceDate']}">
 						<p:calendar effect="fold" value="#{item.issuanceDate}"
 							disabled="true" />
 					</p:column>
 
-					<p:column sortBy="#{item.grade}" filterBy="#{item.grade}"
-						filterMatchMode="contains" headerText="#{msg['cer.grade']}">
+					<p:column headerText="#{msg['cer.grade']}">
 						<h:outputText value="#{item.grade}" />
 					</p:column>
 

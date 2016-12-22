@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui" xmlns:pe="http://primefaces.org/ui">
+<h:head />
+<ui:composition template="../templates/vcbsContentTemplate.xhtml">
+	<ui:define name="content">
+		<h:form id="form-major" class="container-fluid">
+
+			<div class="row formFieldMg">
+
+
+				<div class="col-xs-12 col-sm-6 nopadding">
+					<article class="col-xs-12">
+					<div class="jarviswidget jarviswidget-color-yellow" id="wid-id-0"
+						style="margin-right: -10px;" data-widget-editbutton="false"
+						data-widget-colorbutton="false" data-widget-deletebutton="false">
+						<header> <span class="widget-icon"> <i
+							class="fa fa-table"></i>
+						</span>
+						<h2>#{msg['title.lstMajor']}</h2>
+						</header>
+						<p:dataTable var="item" value="#{majorBean.lstMajor}" id="dtMajor"
+							rowKey="#{item.id}" emptyMessage="#{msg['common.noData']}"
+							paginator="true" rows="15" paginatorPosition="bottom"
+							rowIndexVar="rowIndex" widgetVar="dtMajorWV"
+							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							rowsPerPageTemplate="10,20,50,100">
+
+							<p:column style="width:10%" headerText="#{msg['common.index']}">
+								<h:outputText value="#{rowIndex + 1}" />
+							</p:column>
+
+							<p:column sortBy="#{item.majorId}" filterBy="#{item.majorId}"
+								filterMatchMode="contains" headerText="#{msg['major.id']}">
+								<h:outputText value="#{item.majorId}" />
+							</p:column>
+
+							<p:column sortBy="#{item.majorName}" filterBy="#{item.majorName}"
+								filterMatchMode="contains" headerText="#{msg['major.name']}">
+								<h:outputText value="#{item.majorName}" />
+							</p:column>
+
+							<p:column headerText="#{msg['common.action']}"
+								style="text-align:center;">
+								<p:commandLink update="form-major" resetValues="true" process="@this"
+									actionListener="#{majorBean.editMajor(item)}"
+									styleClass="btn btn-sm btn-action-edit colorBlue">
+									<i class="fa fa-pencil icon-only mr-0"></i>
+								</p:commandLink>
+
+								<p:commandLink update="dtMajor" resetValues="true" process="@this"
+									actionListener="#{majorBean.deleleMajor(item)}"
+									styleClass="btn btn-sm btn-action-del colorRed">
+									<i class="fa fa-times icon-only mr-0"></i>
+									<p:confirm header="#{msg['common.delete']}"
+										message="#{msg['common.confirmDelete']}" icon="ui-icon-alert" />
+								</p:commandLink>
+							</p:column>
+						</p:dataTable>
+					</div>
+					</article>
+				</div>
+
+				<div class="col-xs-12 col-sm-6 nopadding">
+					<article class="col-xs-12">
+					<div class="jarviswidget jarviswidget-color-yellow" id="wid-id-0"
+						style="margin-right: -10px;" data-widget-editbutton="false"
+						data-widget-colorbutton="false" data-widget-deletebutton="false">
+						<header> <span class="widget-icon"> <i
+							class="fa fa-table"></i>
+						</span>
+						<h2>#{msg['title.majorDetail']}</h2>
+						</header>
+						<div class="col-xs-12 col-sm-6">
+
+							<div class="row">
+								<div class="col-xs-12">
+									<p:outputLabel value="#{msg['major.id']}" for="majorId"/>
+								</div>
+								<div class="col-xs-12">
+									<p:inputText styleClass="form-control" required="true" id="majorId"
+										value="#{majorBean.major.majorId}" />
+								</div>
+							</div>
+
+						</div>
+						<div class="col-xs-12 col-sm-6">
+							<div class="row">
+								<div class="col-xs-12">
+									<p:outputLabel value="#{msg['major.name']}" for="majorName"/>
+								</div>
+								<div class="col-xs-12">
+									<p:inputText value="#{majorBean.major.majorName}" id="majorName" required="true" styleClass="form-control"/>
+								</div>
+							</div>
+						</div>
+
+						<div class="col-xs-12 col-sm-12">
+							<div class="row">
+								<div class="pull-right" style="padding-right: 12px"
+									align="right">
+									<p:commandButton value="#{msg['common.addNew']}" resetValues="true" process="@this"
+										action="#{majorBean.addNewMajor()}" update="form-major"
+										styleClass="btn btn-default">
+									</p:commandButton>
+
+									<p:commandButton value="#{msg['common.apply']}"
+										update="form-major:dtMajor form-major"
+										actionListener="#{majorBean.applyMajor()}"
+										styleClass="btn btn-default">
+										<p:confirm header="#{msg['common.apply']}"
+											message="#{msg['common.confirm_apply']}" icon="ui-icon-alert" />
+									</p:commandButton>
+
+									<p:commandButton value="#{msg['common.cancel']}" resetValues="true" process="@this"
+										action="#{majorBean.cancelMajor()}" update="form-major"
+										styleClass="btn btn-default">
+									</p:commandButton>
+								</div>
+							</div>
+						</div>
+					</div>
+					</article>
+				</div>
+			</div>
+		</h:form>
+	</ui:define>
+</ui:composition>
+</html>

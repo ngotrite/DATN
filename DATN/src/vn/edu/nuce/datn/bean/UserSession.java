@@ -109,7 +109,7 @@ public class UserSession extends BaseController implements Serializable {
 
 			ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
 			HttpServletRequest req = (HttpServletRequest) ec.getRequest();
-			ec.redirect(req.getContextPath() + "/home.xhtml");
+			ec.redirect(req.getContextPath() + "/admin/document_ex.xhtml");
 //			ec.redirect(req.getContextPath() + "/pages/student/graduation_period.xhtml");
 
 			// return "home";

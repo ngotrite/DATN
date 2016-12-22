@@ -41,6 +41,9 @@ public class Document implements Serializable {
 	
 	@Column(name = "UPLOAD_USER_ID")
 	private Long uploadUserId;
+	
+	@Column(name = "NUMBER_DOWNLOAD")
+	private Long numberDL;
 
 	public Long getDocumentId() {
 		return documentId;
@@ -105,6 +108,12 @@ public class Document implements Serializable {
 	public void setUploadUserId(Long uploadUserId) {
 		this.uploadUserId = uploadUserId;
 	}
-	
-	
+
+	public Long getNumberDL() {
+		return numberDL;
+	}
+
+	public void setNumberDL(Long numberDL) {
+		this.numberDL = numberDL;
+	}
 }

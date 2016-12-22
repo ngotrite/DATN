@@ -3,16 +3,22 @@ package vn.edu.nuce.datn.bean;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 
+import org.primefaces.context.RequestContext;
+
 import vn.edu.nuce.datn.dao.GraduationPeriodDAO;
 import vn.edu.nuce.datn.dao.StudentDAO;
 import vn.edu.nuce.datn.entity.GraduationPeriod;
 import vn.edu.nuce.datn.entity.Student;
+import vn.edu.nuce.datn.entity.SubjectDictionary;
+import vn.edu.nuce.datn.util.ContantsUtil;
+import vn.edu.nuce.datn.util.SessionUtils;
 
 @SuppressWarnings("serial")
 @ManagedBean(name = "studentBean")
@@ -42,7 +48,22 @@ public class StudentBean extends BaseController implements Serializable {
 		}
 		return null;
 	}
-
+	
+	public Date getGPInfo(Long graduationPeriodId, String type) {
+		GraduationPeriodDAO gPDAO = new GraduationPeriodDAO();
+		if (graduationPeriodId != null) {
+			switch (type) {
+			case ContantsUtil.GraP.START_DATE:
+				return gPDAO.get(graduationPeriodId).getStartDate();
+			case ContantsUtil.GraP.FINISH_DATE:
+				return gPDAO.get(graduationPeriodId).getFinishDate();
+			default:
+				break;
+			}
+		}
+		return null;
+	}
+	
 	/***** STUDENT *****/
 
 	private void loadStudents() {

@@ -6,11 +6,11 @@
 	<session-factory>
 		<property name="hibernate.bytecode.use_reflection_optimizer">false</property>
 		<property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
-<!-- 		<property name="hibernate.connection.url">jdbc:mysql://localhost:3306/datn</property> -->
+		<property name="hibernate.connection.url">jdbc:mysql://localhost:3306/datn</property>
 		<!-- <property name="hibernate.connection.url">jdbc:mysql://192.168.100.2:3306/ocs_0902</property> -->
-		<property name="hibernate.connection.url">jdbc:mysql://localhost:3306/datn?useUnicode=true&amp;useJDBCCompliantTimezoneS‌​hift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=UTC</property>
+<!-- 		<property name="hibernate.connection.url">jdbc:mysql://localhost:3306/datn?useUnicode=true&amp;useJDBCCompliantTimezoneS‌​hift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=UTC</property> -->
 		<property name="hibernate.connection.username">root</property>
-		<property name="hibernate.connection.password">123456</property>
+		<property name="hibernate.connection.password"></property>
 		<property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
 		<property name="hibernate.hbm2ddlR.auto">update</property>
 		<property name="hibernate.default_schema">datn</property>
@@ -36,5 +36,6 @@
 		<mapping class="vn.edu.nuce.datn.entity.News" />
 		<mapping class="vn.edu.nuce.datn.entity.Document" />
 		<mapping class="vn.edu.nuce.datn.entity.Certificate" />
+		<mapping class="vn.edu.nuce.datn.entity.Major" />
 	</session-factory>
 </hibernate-configuration>

@@ -29,8 +29,7 @@ import org.primefaces.event.FileUploadEvent;
 
 import vn.edu.nuce.datn.dao.DocumentDAO;
 import vn.edu.nuce.datn.entity.Document;
-import vn.edu.nuce.datn.entity.Student;
-import vn.edu.nuce.datn.util.ContantsUtil;
+import vn.edu.nuce.datn.util.ResourceBundleUtil;
 import vn.edu.nuce.datn.util.SessionUtils;
 
 @SuppressWarnings("serial")
@@ -57,36 +56,19 @@ public class DocumentBean extends BaseController implements Serializable {
 	}
 
 	// DEL 1 Doc
-	public Boolean deleteDoc(Document document) {
-		boolean result;
-		if (document.getDocumentId() != null) {
-			File file = new File(document.getFilePath());
-			if (file.exists()) {
-				if (file.delete()) {
-					documentDAO.delete(document);
-					if (documentDAO.get(document.getDocumentId()) == null) {
-						documents.remove(document);
-						result = true;
-						super.showNotificationSuccsess();
-					} else {
-						result = false;
-						// System.out.println("xóa dữ liệu trên cơ sở dữ liệu
-						// gặp lỗi");
-					}
-				} else {
-					result = false;
-					// System.out.println("xoa file k thành công");
-				}
-			} else {
-				result = false;
-				// System.out.println("file k tồn tại");
+	public void deleteDoc(Document document) {
+		try {
+			if (document.getDocumentId() != null) {
+				documentDAO.delete(document);
+				documents.remove(document);
+				File file = new File(document.getFilePath());
+				file.delete();
+				super.showNotificationSuccsess();
 			}
-		} else {
-			result = false;
-			// System.out.println("id k tồn tại ");
+		} catch (Exception e) {
+			e.printStackTrace();
+			super.showNotificationFail();
 		}
-		return result;
-
 	}
 
 	// DownLoad File PDF
@@ -128,27 +110,19 @@ public class DocumentBean extends BaseController implements Serializable {
 			FileOutputStream fos = new FileOutputStream(new File(ec.getRealPath(document.getFileName())));
 			byte[] data = IOUtils.toByteArray(fis);
 			fos.write(data, 0, data.length);
-			if (isStreamClosed(fos)) {
-				fos.close();
-				try {
-					TimeUnit.SECONDS.sleep(5);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext()
-						.getRequest();
-				HttpServletResponse response = (HttpServletResponse) FacesContext.getCurrentInstance()
-						.getExternalContext().getResponse();
-				response.sendRedirect(request.getContextPath() + "/" + document.getFileName());
-				return "";
-			}
+			fos.close();
+			HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext()
+					.getRequest();
+			HttpServletResponse response = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext()
+					.getResponse();
+			response.sendRedirect(request.getContextPath() + ResourceBundleUtil.getString("link.document") + document.getFileName());
+			
+			return "";
 		} catch (FileNotFoundException fnfex) {
 			return "";
 		} catch (IOException ioex) {
 			return "";
 		}
-		return "";
 	}
 
 	public boolean isStreamClosed(FileOutputStream out) {
@@ -164,22 +138,42 @@ public class DocumentBean extends BaseController implements Serializable {
 	}
 
 	public void saveDoc() {
-		boolean checkNew = true;
-		for (int i = 0; i < documents.size(); i++) {
-			if (document.getDocumentId() == (documents.get(i).getDocumentId())) {
-				documents.set(i, document);
-				checkNew = false;
-				break;
+		if (validateDoc()) {
+			boolean checkNew = true;
+			for (int i = 0; i < documents.size(); i++) {
+				if (document.getDocumentId() == (documents.get(i).getDocumentId())) {
+					documents.set(i, document);
+					checkNew = false;
+					break;
+				}
 			}
+			if (checkNew) {
+				documents.add(document);
+				document.setUploadUserId(SessionUtils.getUser().getId());
+			}
+			documentDAO.saveOrUpdate(document);
+			super.showNotificationSuccsess();
+			RequestContext context = RequestContext.getCurrentInstance();
+			context.execute("PF('dlgDocWV').hide();");
 		}
-		if (checkNew) {
-			documents.add(document);
-			document.setUploadUserId(SessionUtils.getUser().getId());
+	}
+
+	public boolean validateDoc() {
+		boolean result = true;
+		// if (!documentDAO.checkName(document)) {
+		// FacesContext context = FacesContext.getCurrentInstance();
+		// context.addMessage(null,
+		// new FacesMessage(FacesMessage.SEVERITY_WARN, "",
+		// this.readProperties("common.alreadyExists")));
+		// result = false;
+		// }
+		if (document.getFileName() == null || document.getFilePath() == null) {
+			FacesContext context = FacesContext.getCurrentInstance();
+			context.addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_WARN, "", this.readProperties("validate.upLoad")));
+			result = false;
 		}
-		documentDAO.saveOrUpdate(document);
-		super.showNotificationSuccsess();
-		RequestContext context = RequestContext.getCurrentInstance();
-		context.execute("PF('dlgDocWV').hide();");
+		return result;
 	}
 
 	// Upload File PDF
@@ -189,8 +183,10 @@ public class DocumentBean extends BaseController implements Serializable {
 
 		try {
 			String fileName = event.getFile().getFileName();
-
-			File file = new File("E:\\test\\" + fileName);
+			// E:\GitHub\DATN\DATN\WebContent\pdf
+			// File file = new File("E:\\test\\" + fileName);
+			
+			File file = new File(ResourceBundleUtil.getString("server.path.document") + fileName);
 
 			InputStream inputStream = event.getFile().getInputstream();
 			OutputStream outputStream = new FileOutputStream(file);
@@ -208,7 +204,7 @@ public class DocumentBean extends BaseController implements Serializable {
 
 			document.setFilePath(file.getPath());
 			document.setFileName(file.getName());
-			
+			document.setNumberDL(0L);
 
 		} catch (IOException e) {
 			e.printStackTrace();

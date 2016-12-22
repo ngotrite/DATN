@@ -32,6 +32,7 @@ import vn.edu.nuce.datn.dao.SubjectDictionaryDAO;
 import vn.edu.nuce.datn.entity.GraduationScore;
 import vn.edu.nuce.datn.entity.Student;
 import vn.edu.nuce.datn.util.ContantsUtil;
+import vn.edu.nuce.datn.util.ResourceBundleUtil;
 import vn.edu.nuce.datn.util.SessionUtils;
 
 @SuppressWarnings("serial")
@@ -117,15 +118,19 @@ public class GraduationScoreBean extends BaseController implements Serializable 
 
 	// DEL 1 Graduation Score
 	public void cmdDeleteGS(GraduationScore graScore) {
-		if (graScore.getStudentId() != null) {
-			graScoreDAO.delete(graScore);
-			graScores.remove(graScore);
-			File file = new File(graScore.getFilePath());
-			file.delete();
-			this.showMessageINFO("common.delete", "Test Score");
-		} else {
-			System.out.println("Fail");
+		try {
+			if (graScore.getStudentId() != null) {
+				graScoreDAO.delete(graScore);
+				graScores.remove(graScore);
+				File file = new File(graScore.getFilePath());
+				file.delete();
+				super.showNotificationSuccsess();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			super.showNotificationFail();
 		}
+
 	}
 
 	// Upload File PDF
@@ -136,7 +141,7 @@ public class GraduationScoreBean extends BaseController implements Serializable 
 		try {
 			String fileName = event.getFile().getFileName();
 
-			File file = new File("E:\\test\\" + fileName);
+			File file = new File(ResourceBundleUtil.getString("server.path.document") + fileName);
 
 			InputStream inputStream = event.getFile().getInputstream();
 			OutputStream outputStream = new FileOutputStream(file);
@@ -197,7 +202,7 @@ public class GraduationScoreBean extends BaseController implements Serializable 
 						.getRequest();
 				HttpServletResponse response = (HttpServletResponse) FacesContext.getCurrentInstance()
 						.getExternalContext().getResponse();
-				response.sendRedirect(request.getContextPath() + "/" + graScore.getFileName());
+				response.sendRedirect(request.getContextPath() + ResourceBundleUtil.getString("link.document") + graScore.getFileName());
 				return "";
 			}
 		} catch (FileNotFoundException fnfex) {
@@ -231,7 +236,7 @@ public class GraduationScoreBean extends BaseController implements Serializable 
 		FacesContext.getCurrentInstance().addMessage(null, message);
 		try {
 			String fileName = event.getFile().getFileName();
-			File file = new File("E:\\test\\" + fileName);
+			File file = new File(ResourceBundleUtil.getString("server.path.document") + fileName);
 
 			InputStream inputStream = event.getFile().getInputstream();
 			OutputStream outputStream = new FileOutputStream(file);

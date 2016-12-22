@@ -171,10 +171,12 @@
 					</p:calendar>
 				</p:column>
 
-				<p:column sortBy="#{item.schoolFeeUserId}"
-					filterBy="#{item.schoolFeeUserId}" filterMatchMode="contains"
-					headerText="#{msg['user.ID']}">
-					<h:outputText value="#{item.schoolFeeUserId}"
+
+				<p:column sortBy="#{graPeriodBean.getUserName(item,'SCHOOLFEE')}"
+					filterBy="#{graPeriodBean.getUserName(item,'SCHOOLFEE')}"
+					filterMatchMode="contains" headerText="#{msg['user.acc']}">
+					<h:outputText
+						value="#{graPeriodBean.getUserName(item,'SCHOOLFEE')}"
 						id="txtschoolFeeUserId" />
 				</p:column>
 

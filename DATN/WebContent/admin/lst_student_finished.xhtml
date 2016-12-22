@@ -23,8 +23,8 @@
 				<h:outputText value="#{rowIndex + 1}" />
 			</p:column>
 
-			<p:column sortBy="#{item.studentId}" filterBy="#{item.studentId}"
-				style="width:11%" filterMatchMode="contains"
+			<p:column sortBy="#{item.studentId}" filterBy="#{item.studentId}" 
+				style="width:20%" filterMatchMode="contains"
 				headerText="#{msg['st.studentId']}">
 				<h:outputText value="#{item.studentId}" />
 			</p:column>
@@ -34,7 +34,7 @@
 				<h:outputText value="#{item.studentName}" />
 			</p:column>
 
-			<p:column sortBy="#{item._class}" filterBy="#{item._class}"
+			<p:column sortBy="#{item._class}" filterBy="#{item._class}" style="width:20%"
 				filterMatchMode="contains" headerText="#{msg['st.class']}">
 				<h:outputText value="#{item._class}" />
 			</p:column>

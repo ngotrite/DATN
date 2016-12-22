@@ -17,7 +17,6 @@ import javax.servlet.http.HttpSession;
 
 import vn.edu.nuce.datn.entity.SysMenu;
 
-
 @WebFilter(filterName = "AuthFilter", urlPatterns = { "*.xhtml", "*.jsf" })
 public class AuthorizationFilter implements Filter {
 
@@ -39,70 +38,70 @@ public class AuthorizationFilter implements Filter {
 			HttpSession ses = reqt.getSession(false);
 
 			String reqURI = reqt.getRequestURI();
-			if (reqURI.endsWith(reqt.getContextPath() + "/") || reqURI.endsWith(reqt.getContextPath() + "/home.xhtml") || reqURI.indexOf("/login.xhtml") >= 0 || reqURI.indexOf("/errorRole.xhtml") >= 0
+			if (reqURI.endsWith(reqt.getContextPath() + "/") || reqURI.endsWith(reqt.getContextPath() + "/home.xhtml")
+					|| reqURI.indexOf("/login.xhtml") >= 0 || reqURI.indexOf("/errorRole.xhtml") >= 0
 					|| reqURI.indexOf("/resources/") >= 0 || reqURI.contains("javax.faces.resource")) {
 
 				chain.doFilter(request, response);
-			} else if(ses != null && ses.getAttribute(SessionUtils.SESSION_SYS_USER) != null) {
-				
+			} else if (ses != null && ses.getAttribute(SessionUtils.SESSION_SYS_USER) != null) {
+
 				boolean auth = true;
 				List<SysMenu> lstMenuRestrict = (List<SysMenu>) ses.getAttribute(SessionUtils.SESSION_MENUS_RESTRICT);
-				if(lstMenuRestrict == null) {
-					// Do nothing				
+				if (lstMenuRestrict == null) {
+					// Do nothing
 				} else {
-					
+
 					String contextPath = reqt.getContextPath();
-					if(contextPath.equals(reqURI) 
-							|| (contextPath + "/").equals(reqURI)
+					if (contextPath.equals(reqURI) || (contextPath + "/").equals(reqURI)
 							|| reqURI.indexOf("/home.xhtml") >= 0) {
 						// Do nothing
 					} else {
-						
+
 						// Todo: Not elegant
-						if("GET".equals(reqt.getMethod())) {
-							// Chi han che truy cap doi voi cac menu da duoc khai bao va khong duoc assign cho user
-							
+						if ("GET".equals(reqt.getMethod())) {
+							// Chi han che truy cap doi voi cac menu da duoc
+							// khai bao va khong duoc assign cho user
+
 							String treeType = reqt.getParameter("treeType");
-							for(SysMenu menuRestrict : lstMenuRestrict) {
-								
-								if(CommonUtil.isEmpty(menuRestrict.getUrl()) 
-										|| "/".equals(menuRestrict.getUrl()) 
+							for (SysMenu menuRestrict : lstMenuRestrict) {
+
+								if (CommonUtil.isEmpty(menuRestrict.getUrl()) || "/".equals(menuRestrict.getUrl())
 										|| "/home.xhtml".equals(menuRestrict.getUrl()))
 									continue;
-								
-								if(!CommonUtil.isEmpty(treeType)) {									
-									if(menuRestrict.getUrl() != null && menuRestrict.getUrl().contains(treeType)) {
+
+								if (!CommonUtil.isEmpty(treeType)) {
+									if (menuRestrict.getUrl() != null && menuRestrict.getUrl().contains(treeType)) {
 										auth = false;
 										break;
-									}									
-								} else if(reqURI.indexOf(menuRestrict.getUrl()) >= 0) {									
+									}
+								} else if (reqURI.indexOf(menuRestrict.getUrl()) >= 0) {
 									auth = false;
 									break;
 								}
-							}	
-						}							
+							}
+						}
 					}
 				}
-				
-				if(auth) {
+
+				if (auth) {
 					chain.doFilter(request, response);
 				} else {
-					resp.sendRedirect(reqt.getContextPath() + "/errorRole.xhtml");	
+					resp.sendRedirect(reqt.getContextPath() + "/errorRole.xhtml");
 				}
 			} else {
 
 				if (isAJAXRequest(reqt)) {
 
 					StringBuilder sb = new StringBuilder();
-                    sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?><partial-response><redirect url=\"")
-                        .append(reqt.getContextPath() + "/login.xhtml").append("\"></redirect></partial-response>");
-                    resp.setHeader("Cache-Control", "no-cache");
-                    resp.setCharacterEncoding("UTF-8");
-                    resp.setContentType("text/xml");
-                    PrintWriter pw = response.getWriter();
-                    pw.println(sb.toString());
-                    pw.flush();
-                    return;
+					sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?><partial-response><redirect url=\"")
+							.append(reqt.getContextPath() + "/login.xhtml").append("\"></redirect></partial-response>");
+					resp.setHeader("Cache-Control", "no-cache");
+					resp.setCharacterEncoding("UTF-8");
+					resp.setContentType("text/xml");
+					PrintWriter pw = response.getWriter();
+					pw.println(sb.toString());
+					pw.flush();
+					return;
 				}
 				resp.sendRedirect(reqt.getContextPath() + "/admin/login.xhtml");
 			}
@@ -112,7 +111,7 @@ public class AuthorizationFilter implements Filter {
 	}
 
 	private boolean isAJAXRequest(HttpServletRequest request) {
-		
+
 		boolean check = false;
 		String facesRequest = request.getHeader("Faces-Request");
 		if (facesRequest != null && facesRequest.equals("partial/ajax")) {

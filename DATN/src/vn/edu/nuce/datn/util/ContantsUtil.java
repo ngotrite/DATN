@@ -68,5 +68,11 @@ public class ContantsUtil {
 		public static final String SUB_NAME= "SUB_NAME";
 		public static final String CREDIT= "CREDIT";
 	}
-
+	
+	
+	public class GraP{
+		public static final String GRA_PERIOD_NAME= "GRA_PERIOD_NAME";
+		public static final String START_DATE= "START_DATE";
+		public static final String FINISH_DATE= "FINISH_DATE";
+	}
 }

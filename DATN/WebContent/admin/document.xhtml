@@ -56,6 +56,11 @@
 					</h:outputText>
 				</p:column>
 
+<!-- 				<p:column sortBy="#{item.numberDL}" filterBy="#{item.numberDL}" -->
+<!-- 					filterMatchMode="contains" headerText="#{msg['common.numberDL']}"> -->
+<!-- 					<h:outputText value="#{item.numberDL}" /> -->
+<!-- 				</p:column> -->
+
 				<p:column sortBy="#{documentBean.getUserName(item)}"
 					style="width:12%" filterBy="#{documentBean.getUserName(item)}"
 					filterMatchMode="contains"
@@ -113,18 +118,32 @@
 		<!-- DIALOG DOCUMENT DETAIL -->
 
 		<p:dialog header="#{msg['title.docDetail']}" modal="true" id="dlgDoc"
-			resizable="false" showEffect="fade" position="100,200"
-			widgetVar="dlgDocWV" height="300px" width="600px">
+			resizable="false" showEffect="fade" widgetVar="dlgDocWV"
+			styleClass="dlg-center-fix">
+			<style>
+#dlgDoc.dlg-center-fix {
+	height: 305px !important;
+	width: 730px !important;
+	min-height: 305px !important;
+}
+
+#dlgDoc.ui-dialog .ui-dialog-content {
+	overflow: initial;
+}
+</style>
 			<h:form id="form-dlg-doc" class="container-fluid">
 				<div class="row formFieldMg">
 					<div class="col-xs-12 col-sm-6">
 						<div class="row">
 							<div class="col-xs-12">
-								<p:outputLabel value="#{msg['doc.documentNumber']}" />
+								<p:outputLabel value="#{msg['doc.documentNumber']}"
+									for="txtDocumentNumber" />
 							</div>
 							<div class="col-xs-12">
 								<p:inputText value="#{documentBean.document.documentNumber}"
-									styleClass="form-control" />
+									required="true" id="txtDocumentNumber"
+									styleClass="form-control"
+									requiredMessage="#{msg['common.required']}" />
 							</div>
 						</div>
 

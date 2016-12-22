@@ -1,18 +1,26 @@
 package vn.edu.nuce.datn.bean;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
@@ -30,9 +38,15 @@ import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.UploadedFile;
 
+import net.sf.jasperreports.engine.JasperReport;
 import vn.edu.nuce.datn.dao.CertificateDAO;
+import vn.edu.nuce.datn.dao.GraduationPeriodDAO;
+import vn.edu.nuce.datn.dao.MajorDAO;
 import vn.edu.nuce.datn.entity.Certificate;
+import vn.edu.nuce.datn.entity.Major;
+import vn.edu.nuce.datn.entity.ReportResultDTO;
 import vn.edu.nuce.datn.util.ContantsUtil;
+import vn.edu.nuce.datn.util.ReportUtils;
 
 @SuppressWarnings("serial")
 @ManagedBean(name = "certificateBean")
@@ -48,14 +62,150 @@ public class CertificateBean extends BaseController implements Serializable {
 	private List<SelectItem> lstProgram;
 	private List<SelectItem> lstGrade;
 	private List<SelectItem> lstMajor;
+	private List<Major> majors;
+	private MajorDAO majorDAO;
 
 	@PostConstruct
 	public void innit() {
 		this.certificate = new Certificate();
 		this.certificateDAO = new CertificateDAO();
 		this.lstcertificate = new ArrayList<Certificate>();
+		this.majors = new ArrayList<Major>();
+		this.majorDAO = new MajorDAO();
 		loadCer();
-		loadCerHome();
+		loadMajors();
+	}
+
+	public String getMajorName(Long majorId) {
+		MajorDAO majorDAO = new MajorDAO();
+		if (majorId != null) {
+			return majorDAO.get(majorId).getMajorName();
+		}
+		return null;
+	}
+
+	public String createReportForGHBSError(String type, Long toYear) throws IOException {
+		byte[] report = null;
+		Map<String, Object> reportHeader = new HashMap<>();
+		ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
+		HttpServletRequest request = (HttpServletRequest) ec.getRequest();
+		this.majors = majorDAO.findAll();
+		String reportName = "TKSLTN";
+
+		String jasperPath = request.getSession().getServletContext().getRealPath("/jasper/" + reportName + ".jasper");
+		String jrxmlPath = request.getSession().getServletContext().getRealPath("/jasper/" + reportName + ".jrxml");
+		if (this.majors.size() > 0) {
+			try {
+				List<ReportResultDTO> resultList = new ArrayList<>();
+				Long dataYear1 = 0l;
+				Long dataYear2 = 0l;
+				Long dataYear3 = 0l;
+				Long dataYear4 = 0l;
+				Long dataYear5 = 0l;
+				for (Major major : this.majors) {
+					resultList.add(new ReportResultDTO());
+					resultList.get(resultList.size() - 1).setMajorName(major.getMajorName());
+
+					dataYear1 = certificateDAO.countCer(String.valueOf(toYear - 4), major.getId());
+					if (dataYear1 != null) {
+						resultList.get(resultList.size() - 1).setIssDate1(dataYear1.toString());
+					} else {
+						resultList.get(resultList.size() - 1).setIssDate1("0");
+					}
+
+					dataYear2 = certificateDAO.countCer(String.valueOf(toYear - 3), major.getId());
+					if (dataYear2 != null) {
+						resultList.get(resultList.size() - 1).setIssDate2(dataYear2.toString());
+					} else {
+						resultList.get(resultList.size() - 1).setIssDate2("0");
+					}
+
+					dataYear3 = certificateDAO.countCer(String.valueOf(toYear - 2), major.getId());
+					if (dataYear3 != null) {
+						resultList.get(resultList.size() - 1).setIssDate3(dataYear3.toString());
+					} else {
+						resultList.get(resultList.size() - 1).setIssDate3("0");
+					}
+
+					dataYear4 = certificateDAO.countCer(String.valueOf(toYear - 1), major.getId());
+					if (dataYear4 != null) {
+						resultList.get(resultList.size() - 1).setIssDate4(dataYear4.toString());
+					} else {
+						resultList.get(resultList.size() - 1).setIssDate4("0");
+					}
+
+					dataYear5 = certificateDAO.countCer(String.valueOf(toYear), major.getId());
+					if (dataYear5 != null) {
+						resultList.get(resultList.size() - 1).setIssDate5(dataYear5.toString());
+					} else {
+						resultList.get(resultList.size() - 1).setIssDate5("0");
+					}
+				}
+
+				Long totalDataYear1 = 0l;
+				Long totalDataYear2 = 0l;
+				Long totalDataYear3 = 0l;
+				Long totalDataYear4 = 0l;
+				Long totalDataYear5 = 0l;
+
+				if (resultList.size() > 0) {
+					for (int i = 0; i < resultList.size(); i++) {
+						totalDataYear1 += Long.valueOf(resultList.get(i).getIssDate1());
+						totalDataYear2 += Long.valueOf(resultList.get(i).getIssDate2());
+						totalDataYear3 += Long.valueOf(resultList.get(i).getIssDate3());
+						totalDataYear4 += Long.valueOf(resultList.get(i).getIssDate4());
+						totalDataYear5 += Long.valueOf(resultList.get(i).getIssDate5());
+					}
+				}
+
+				reportHeader.put("sum_nam1", String.valueOf(totalDataYear1));
+				reportHeader.put("sum_nam2", String.valueOf(totalDataYear2));
+				reportHeader.put("sum_nam3", String.valueOf(totalDataYear3));
+				reportHeader.put("sum_nam4", String.valueOf(totalDataYear4));
+				reportHeader.put("sum_nam5", String.valueOf(totalDataYear5));
+
+				reportHeader.put("in_nam1", String.valueOf(toYear - 4));
+				reportHeader.put("in_nam2", String.valueOf(toYear - 3));
+				reportHeader.put("in_nam3", String.valueOf(toYear - 2));
+				reportHeader.put("in_nam4", String.valueOf(toYear - 1));
+				reportHeader.put("in_nam5", String.valueOf(toYear));
+
+				JasperReport jasperReport = ReportUtils.getCompiledFile(jasperPath, jrxmlPath);
+
+				if (type.equalsIgnoreCase("PDF")) {
+					report = ReportUtils.generateReportPDF(resultList, reportHeader, jasperReport);
+				} else if (type.equalsIgnoreCase("EXCEL")) {
+					reportHeader.put("IS_IGNORE_PAGINATION", Boolean.TRUE);
+					report = ReportUtils.generateReportExcel(reportHeader, jasperReport, resultList);
+				}
+
+				if (report != null) {
+					try {
+						String fileName = "ThongKeSoLieu.xls";
+						ec.responseReset();
+						ec.setResponseContentType("application/vnd.ms-excel");
+						// The Save As popup magic is done here. You can give it
+						// any file name you want, this only won't work in MSIE,
+						// it will use current request URL as file name instead.
+						ec.setResponseHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
+						try (OutputStream fileOut = ec.getResponseOutputStream()) {
+							fileOut.write(report);
+							fileOut.flush();
+						}
+						FacesContext.getCurrentInstance().responseComplete();
+					} catch (FileNotFoundException ex) {
+						ex.getMessage();
+					}
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return "";
+	}
+
+	public void loadMajors() {
+		majors = majorDAO.findAll();
 	}
 
 	public void postProcessXLS(Object document) {
@@ -75,12 +225,26 @@ public class CertificateBean extends BaseController implements Serializable {
 	}
 
 	public void loadCerHome() {
-		if (certificate.getStudentId() != null || certificate.getStudentName() != null
-				|| certificate.getBirthday() != null || certificate.getCertificateNo() != null) {
-			lstCertificateHome = certificateDAO.findCertificateHomeNew(certificate.getStudentId(),
-					certificate.getStudentName(), certificate.getBirthday(), certificate.getCertificateNo());
+		if (validateSearchCer()) {
+			if (certificate.getStudentId() != null || certificate.getStudentName() != null
+					|| certificate.getBirthday() != null || certificate.getCertificateNo() != null) {
+				lstCertificateHome = certificateDAO.findCertificateHomeNew(certificate.getStudentId(),
+						certificate.getStudentName(), certificate.getBirthday(), certificate.getCertificateNo());
+			}
 		}
 
+	}
+
+	public boolean validateSearchCer() {
+		boolean result = true;
+		if (certificate.getStudentId() == "" && certificate.getStudentName() == "" && certificate.getBirthday() == null
+				&& certificate.getCertificateNo() == "") {
+			FacesContext context = FacesContext.getCurrentInstance();
+			context.addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_WARN, "", this.readProperties("cer.checkNullAll")));
+			result = false;
+		}
+		return result;
 	}
 
 	public void cmdDeleteCer(Certificate certificate) {
@@ -170,7 +334,6 @@ public class CertificateBean extends BaseController implements Serializable {
 			certificate.setUpdateDate(new Date());
 		}
 		this.certificate = certificate;
-
 		RequestContext context = RequestContext.getCurrentInstance();
 		context.execute("PF('dlgCerWV').show();");
 	}
@@ -247,7 +410,7 @@ public class CertificateBean extends BaseController implements Serializable {
 				switch (columnIndex) {
 				case 0:
 					String studentId = getCellValue(nextCell).toString();
-					if(studentId.indexOf(".") != -1){
+					if (studentId.indexOf(".") != -1) {
 						studentId = studentId.substring(0, studentId.indexOf("."));
 					}
 					certificate.setStudentId(studentId);
@@ -280,18 +443,19 @@ public class CertificateBean extends BaseController implements Serializable {
 					break;
 				case 7:
 					String certificateNo = getCellValue(nextCell).toString();
-					if(certificateNo.indexOf(".") != -1){
+					if (certificateNo.indexOf(".") != -1) {
 						certificateNo = certificateNo.substring(0, certificateNo.indexOf("."));
 					}
 					certificate.setCertificateNo(certificateNo);
 					break;
 				case 8:
 					String graduationYear = getCellValue(nextCell).toString();
-					if(graduationYear.indexOf(".") != -1){
+					if (graduationYear.indexOf(".") != -1) {
 						graduationYear = graduationYear.substring(0, graduationYear.indexOf("."));
 					}
 					certificate.setGraduationYear(graduationYear);
-//					certificate.setGraduationYear((String) getCellValue(nextCell));
+					// certificate.setGraduationYear((String)
+					// getCellValue(nextCell));
 					break;
 				case 9:
 					// certificate.setIssuanceDate((String)
@@ -340,4 +504,13 @@ public class CertificateBean extends BaseController implements Serializable {
 	public void setLstCertificateHome(List<Certificate> lstCertificateHome) {
 		this.lstCertificateHome = lstCertificateHome;
 	}
+
+	public List<Major> getMajors() {
+		return majors;
+	}
+
+	public void setMajors(List<Major> majors) {
+		this.majors = majors;
+	}
+
 }

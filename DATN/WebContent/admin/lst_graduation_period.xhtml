@@ -464,8 +464,19 @@
 		</p:dialog>
 
 		<p:dialog header="#{msg['st.student']}" modal="true" id="dlgStudent"
-			resizable="false" showEffect="fade" position="243,-100"
-			widgetVar="dlgStudentWV" height="300px" width="600px">
+			resizable="false" showEffect="fade" styleClass="dlg-center-fix"
+			widgetVar="dlgStudentWV">
+			<style>
+			#dlgStudent.dlg-center-fix{
+			height: 287px !important;
+width: 480px !important;
+min-height: 287px !important;
+			}
+			#dlgStudent.ui-dialog .ui-dialog-content{
+			overflow: initial;
+			
+			}
+			</style>
 			<h:form id="form-dlgStudent" class="container-fluid">
 				<div class="row formFieldMg">
 					<div class="col-xs-12 col-sm-12">
@@ -503,7 +514,7 @@
 						</div>
 
 						<div class="row">
-							<div class="col-xs-12 col-md-4">
+							<div class="col-xs-12 col-md-4 pull-right">
 								<p:commandButton value="#{msg['common.apply']}" type="submit"
 									actionListener="#{graPeriodBean.cmdApplyDLGStudent()}"
 									styleClass="pull-right" update="form-sd-list-dlg:dtStudent">

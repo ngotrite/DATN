@@ -43,7 +43,7 @@
 					</p:commandLink>
 				</p:column>
 
-				<p:column sortBy="#{item.studentName}" style="width:30%"
+				<p:column sortBy="#{item.studentName}" style="width:25%"
 					filterBy="#{item.studentName}" filterMatchMode="contains"
 					headerText="#{msg['st.studentName']}">
 					<h:outputText value="#{item.studentName}" />
@@ -54,30 +54,51 @@
 					<h:outputText value="#{item._class}" />
 				</p:column>
 
-				<p:column sortBy="#{studentBean.getGPName(item.graduationPeriodId)}"
+				<p:column
+					sortBy="#{studentBean.getGPName(item.graduationPeriodId)}"
 					filterBy="#{studentBean.getGPName(item.graduationPeriodId)}"
 					filterMatchMode="contains" headerText="#{msg['gp.graPeriodName']}">
 					<h:outputText
 						value="#{studentBean.getGPName(item.graduationPeriodId)}" />
 				</p:column>
 
-<!-- 				<p:column sortBy="#{studentBean.getGPName(item.graduationPeriodId)}" -->
-<!-- 					filterBy="#{studentBean.getGPName(item.graduationPeriodId)}" -->
-<!-- 					filterMatchMode="contains" headerText="#{msg['gp.graPeriodName']}"> -->
-<!-- 					<p:commandLink update=":form-list:gpDetail" -->
-<!-- 						value="#{studentBean.getGPName(item.graduationPeriodId)}" -->
-<!-- 						oncomplete="PF('gpWV').show('#{component.clientId}')"> -->
-<!-- 						<f:setPropertyActionListener value="#{item}" -->
-<!-- 							target="#{studentBean.gp}" /> -->
-<!-- 					</p:commandLink> -->
-<!-- 					<p:commandButton id="movieBtn" update="form-list:moviePanel" -->
-<!-- 						oncomplete="PF('gpWV').show('#{component.clientId}')" -->
-<!-- 						value="#{studentBean.getGPName(item.graduationPeriodId)}" -->
-<!-- 						type="button"> -->
-<!-- 						<f:setPropertyActionListener value="#{item.graduationPeriodId}" -->
-<!-- 							target="#{studentBean.lstGP}" /> -->
-<!-- 					</p:commandButton> -->
-<!-- 				</p:column> -->
+				<p:column
+					sortBy="#{studentBean.getGPInfo(item.graduationPeriodId,'START_DATE')}"
+					filterBy="#{studentBean.getGPInfo(item.graduationPeriodId, 'START_DATE')}"
+					filterMatchMode="contains" headerText="#{msg['gp.startDate']}">
+					<h:outputText
+						value="#{studentBean.getGPInfo(item.graduationPeriodId, 'START_DATE')}">
+						<f:convertDateTime pattern="dd-MM-yyyy" />
+					</h:outputText>
+				</p:column>
+
+				<p:column
+					sortBy="#{studentBean.getGPInfo(item.graduationPeriodId,'FINISH_DATE')}"
+					filterBy="#{studentBean.getGPInfo(item.graduationPeriodId, 'FINISH_DATE')}"
+					filterMatchMode="contains" headerText="#{msg['gp.finishDate']}">
+					<h:outputText
+						value="#{studentBean.getGPInfo(item.graduationPeriodId, 'FINISH_DATE')}">
+						<f:convertDateTime pattern="dd-MM-yyyy" />
+					</h:outputText>
+				</p:column>
+
+				<!-- 				<p:column sortBy="#{studentBean.getGPName(item.graduationPeriodId)}" -->
+				<!-- 					filterBy="#{studentBean.getGPName(item.graduationPeriodId)}" -->
+				<!-- 					filterMatchMode="contains" headerText="#{msg['gp.graPeriodName']}"> -->
+				<!-- 					<p:commandLink update=":form-list:gpDetail" -->
+				<!-- 						value="#{studentBean.getGPName(item.graduationPeriodId)}" -->
+				<!-- 						oncomplete="PF('gpWV').show('#{component.clientId}')"> -->
+				<!-- 						<f:setPropertyActionListener value="#{item}" -->
+				<!-- 							target="#{studentBean.gp}" /> -->
+				<!-- 					</p:commandLink> -->
+				<!-- 					<p:commandButton id="movieBtn" update="form-list:moviePanel" -->
+				<!-- 						oncomplete="PF('gpWV').show('#{component.clientId}')" -->
+				<!-- 						value="#{studentBean.getGPName(item.graduationPeriodId)}" -->
+				<!-- 						type="button"> -->
+				<!-- 						<f:setPropertyActionListener value="#{item.graduationPeriodId}" -->
+				<!-- 							target="#{studentBean.lstGP}" /> -->
+				<!-- 					</p:commandButton> -->
+				<!-- 				</p:column> -->
 
 
 				<f:facet name="footer">
