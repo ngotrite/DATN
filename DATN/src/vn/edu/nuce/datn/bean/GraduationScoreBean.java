@@ -190,27 +190,19 @@ public class GraduationScoreBean extends BaseController implements Serializable 
 			FileOutputStream fos = new FileOutputStream(new File(ec.getRealPath(graScore.getFileName())));
 			byte[] data = IOUtils.toByteArray(fis);
 			fos.write(data, 0, data.length);
-			if (isStreamClosed(fos)) {
-				fos.close();
-				try {
-					TimeUnit.SECONDS.sleep(5);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext()
-						.getRequest();
-				HttpServletResponse response = (HttpServletResponse) FacesContext.getCurrentInstance()
-						.getExternalContext().getResponse();
-				response.sendRedirect(request.getContextPath() + ResourceBundleUtil.getString("link.document") + graScore.getFileName());
-				return "";
-			}
+			fos.close();
+			HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext()
+					.getRequest();
+			HttpServletResponse response = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext()
+					.getResponse();
+			response.sendRedirect(
+					request.getContextPath() + ResourceBundleUtil.getString("link.document") + graScore.getFileName());
+			return "";
 		} catch (FileNotFoundException fnfex) {
 			return "";
 		} catch (IOException ioex) {
 			return "";
 		}
-		return "";
 	}
 
 	public boolean isStreamClosed(FileOutputStream out) {
