@@ -94,7 +94,7 @@ public class AuthorizationFilter implements Filter {
 
 					StringBuilder sb = new StringBuilder();
 					sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?><partial-response><redirect url=\"")
-							.append(reqt.getContextPath() + "/login.xhtml").append("\"></redirect></partial-response>");
+							.append(reqt.getContextPath() + "/admin/login.xhtml").append("\"></redirect></partial-response>");
 					resp.setHeader("Cache-Control", "no-cache");
 					resp.setCharacterEncoding("UTF-8");
 					resp.setContentType("text/xml");

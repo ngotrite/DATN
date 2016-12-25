@@ -115,8 +115,10 @@ public class DocumentBean extends BaseController implements Serializable {
 					.getRequest();
 			HttpServletResponse response = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext()
 					.getResponse();
-			response.sendRedirect(request.getContextPath() + ResourceBundleUtil.getString("link.document") + document.getFileName());
-			
+//			response.sendRedirect(request.getContextPath() + ResourceBundleUtil.getString("link.document") + document.getFileName());
+			response.sendRedirect(request.getContextPath() + "/" + document.getFileName());
+			document.setNumberDL(document.getNumberDL() + 1L);
+			documentDAO.saveOrUpdate(document);
 			return "";
 		} catch (FileNotFoundException fnfex) {
 			return "";
@@ -178,15 +180,13 @@ public class DocumentBean extends BaseController implements Serializable {
 
 	// Upload File PDF
 	public void handleFileUpload(FileUploadEvent event) {
-		FacesMessage message = new FacesMessage("Succesful", event.getFile().getFileName() + " is uploaded.");
-		FacesContext.getCurrentInstance().addMessage(null, message);
-
 		try {
 			String fileName = event.getFile().getFileName();
 			// E:\GitHub\DATN\DATN\WebContent\pdf
 			// File file = new File("E:\\test\\" + fileName);
-			
-			File file = new File(ResourceBundleUtil.getString("server.path.document") + fileName);
+
+//			File file = new File(ResourceBundleUtil.getString("server.path.document") + fileName);
+			File file = new File(ResourceBundleUtil.getString("local.path.document") + fileName);
 
 			InputStream inputStream = event.getFile().getInputstream();
 			OutputStream outputStream = new FileOutputStream(file);
@@ -205,6 +205,9 @@ public class DocumentBean extends BaseController implements Serializable {
 			document.setFilePath(file.getPath());
 			document.setFileName(file.getName());
 			document.setNumberDL(0L);
+			
+			FacesMessage message = new FacesMessage("Succesful", event.getFile().getFileName() + " is uploaded.");
+			FacesContext.getCurrentInstance().addMessage(null, message);
 
 		} catch (IOException e) {
 			e.printStackTrace();

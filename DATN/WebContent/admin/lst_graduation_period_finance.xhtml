@@ -94,7 +94,7 @@
 		<h:form id="form-sd-list" class="container-fluid">
 
 			<p:dataTable var="item" value="#{graPeriodBean.students}"
-				id="dtStudent" rowKey="#{item.studentId}"
+				id="dtStudent" rowKey="#{item.studentId}" selectionMode="single"
 				disabledSelection="#{graPeriodBean.readOnly == true}"
 				filteredValue="#{graPeriodBean.filteredStudents}"
 				rendered="#{graPeriodBean.students.size() > 0}"
@@ -165,10 +165,14 @@
 				<p:column sortBy="#{item.schoolFeeUpdateTime}" style="width:20%"
 					filterBy="#{item.schoolFeeUpdateTime}" filterMatchMode="contains"
 					headerText="#{msg['st.schoolFeeUT']}">
-					<p:calendar effect="fold" value="#{item.schoolFeeUpdateTime}"
-						id="cSchoolFeeUpdateTime" disabled="true">
+<!-- 					<p:calendar effect="fold" value="#{item.schoolFeeUpdateTime}" -->
+<!-- 						id="cSchoolFeeUpdateTime" disabled="true"> -->
+<!-- 						<f:convertDateTime pattern="dd-MM-yyyy" /> -->
+<!-- 					</p:calendar> -->
+					<h:outputText value="#{item.schoolFeeUpdateTime}"
+						id="cSchoolFeeUpdateTime">
 						<f:convertDateTime pattern="dd-MM-yyyy" />
-					</p:calendar>
+					</h:outputText>
 				</p:column>
 
 

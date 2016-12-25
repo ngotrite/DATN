@@ -14,7 +14,7 @@
 			<div class="row formFieldMg">
 
 
-				<div class="col-xs-12 col-sm-6 nopadding">
+				<div class="col-xs-12 col-sm-8 nopadding">
 					<article class="col-xs-12">
 					<div class="jarviswidget jarviswidget-color-yellow" id="wid-id-0"
 						style="margin-right: -10px;" data-widget-editbutton="false"
@@ -24,7 +24,7 @@
 						</span>
 						<h2>#{msg['title.lstMajor']}</h2>
 						</header>
-						<p:dataTable var="item" value="#{majorBean.lstMajor}" id="dtMajor"
+						<p:dataTable var="item" value="#{majorBean.lstMajor}" id="dtMajor" selectionMode="single"
 							rowKey="#{item.id}" emptyMessage="#{msg['common.noData']}"
 							paginator="true" rows="15" paginatorPosition="bottom"
 							rowIndexVar="rowIndex" widgetVar="dtMajorWV"
@@ -66,7 +66,7 @@
 					</article>
 				</div>
 
-				<div class="col-xs-12 col-sm-6 nopadding">
+				<div class="col-xs-12 col-sm-4 nopadding">
 					<article class="col-xs-12">
 					<div class="jarviswidget jarviswidget-color-yellow" id="wid-id-0"
 						style="margin-right: -10px;" data-widget-editbutton="false"

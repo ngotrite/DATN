@@ -1536,3 +1536,7 @@ notifyNew = {
 function backtotop(){
 	$("html, body").animate({ scrollTop: 0 }, "slow");
 }
+
+function reloadPage(){
+	window.location.reload();
+}

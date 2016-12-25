@@ -132,8 +132,17 @@
 
 		<p:dialog header="#{msg['sb.subjectDictionary']}" modal="true"
 			id="dlgSubjectDictionary" resizable="false" showEffect="fade"
-			position="100,200" widgetVar="dlgSubjectDictionaryWV" height="300px"
-			width="600px">
+			 widgetVar="dlgSubjectDictionaryWV" styleClass="dlg-center-fix">
+			 <style>
+			 #dlgSubjectDictionary.dlg-center-fix {
+    height: 287px !important;
+    width: 480px !important;
+    min-height: 287px !important;
+}
+			#dlgSubjectDictionary.ui-dialog .ui-dialog-content {
+	overflow: initial ;
+}
+						 </style>
 			<h:form id="form-geonet" class="container-fluid">
 				<div class="row formFieldMg">
 					<div class="col-xs-12 col-sm-12">
@@ -141,7 +150,7 @@
 							<div class="col-xs-12 col-md-4">
 								<p:outputLabel value="#{msg['sb.subjectId']}" />
 							</div>
-							<div class="col-xs-12 col-md-7">
+							<div class="col-xs-12 col-md-8">
 								<p:inputText
 									readonly="#{subjectDictionaryBean.subjectDictionary.subjectId ne null}"
 									value="#{subjectDictionaryBean.subjectDictionary.subjectId}"
@@ -154,7 +163,7 @@
 							<div class="col-xs-12 col-md-4">
 								<p:outputLabel value="#{msg['sb.subject']}" />
 							</div>
-							<div class="col-xs-12 col-md-7">
+							<div class="col-xs-12 col-md-8">
 								<p:inputText
 									value="#{subjectDictionaryBean.subjectDictionary.subject}"
 									styleClass="form-control"
@@ -166,7 +175,7 @@
 							<div class="col-xs-12 col-md-4">
 								<p:outputLabel value="#{msg['sb.credit']}" />
 							</div>
-							<div class="col-xs-12 col-md-7">
+							<div class="col-xs-12 col-md-8">
 								<p:inputText
 									value="#{subjectDictionaryBean.subjectDictionary.credit}"
 									styleClass="form-control"
@@ -177,7 +186,7 @@
 
 
 						<div class="row">
-							<div class="col-xs-12 col-md-4">
+							<div class="col-xs-12 col-md-4 pull-right">
 								<p:commandButton value="#{msg['common.apply']}" type="submit"
 									actionListener="#{subjectDictionaryBean.cmdApplyDLGSD()}"
 									styleClass="pull-right"

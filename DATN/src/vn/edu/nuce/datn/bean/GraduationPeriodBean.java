@@ -149,9 +149,10 @@ public class GraduationPeriodBean extends BaseController implements Serializable
 
 		for (int i = 0; i < header.getPhysicalNumberOfCells(); i++) {
 			HSSFCell cell = header.getCell(i);
-
 			cell.setCellStyle(cellStyle);
 		}
+		
+		
 	}
 
 	public void resetFilters() {

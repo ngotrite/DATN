@@ -123,7 +123,7 @@
 
 		<h:form id="form-sd-list" class="container-fluid">
 
-			<p:dataTable var="item" value="#{graPeriodBean.students}"
+			<p:dataTable var="item" value="#{graPeriodBean.students}" selectionMode="single"
 				id="dtStudent" rowKey="#{item.studentId}"
 				disabledSelection="#{graPeriodBean.readOnly == true}"
 				filteredValue="#{graPeriodBean.filteredStudents}"
@@ -194,10 +194,14 @@
 				<p:column sortBy="#{item.schoolFeeUpdateTime}" style="width:12%"
 					filterBy="#{item.schoolFeeUpdateTime}" filterMatchMode="contains"
 					headerText="#{msg['st.schoolFeeUT']}">
-					<p:calendar effect="fold" value="#{item.schoolFeeUpdateTime}"
-						id="cSchoolFeeUpdateTime" disabled="true">
+					<!-- 					<p:calendar effect="fold" value="#{item.schoolFeeUpdateTime}" -->
+					<!-- 						id="cSchoolFeeUpdateTime" disabled="true"> -->
+					<!-- 						<f:convertDateTime pattern="dd-MM-yyyy" /> -->
+					<!-- 					</p:calendar> -->
+					<h:outputText value="#{item.schoolFeeUpdateTime}"
+						id="cSchoolFeeUpdateTime">
 						<f:convertDateTime pattern="dd-MM-yyyy" />
-					</p:calendar>
+					</h:outputText>
 				</p:column>
 
 				<p:column filterBy="#{item.libraryStatus}" styleClass="text-center"
@@ -223,10 +227,14 @@
 				<p:column sortBy="#{item.libraryUpdateTime}"
 					filterBy="#{item.libraryUpdateTime}" filterMatchMode="contains"
 					headerText="#{msg['st.libraryUT']}">
-					<p:calendar effect="fold" value="#{item.libraryUpdateTime}"
-						id="cLibraryUpdateTime" disabled="true">
+					<!-- 					<p:calendar effect="fold" value="#{item.libraryUpdateTime}" -->
+					<!-- 						id="cLibraryUpdateTime" disabled="true"> -->
+					<!-- 						<f:convertDateTime pattern="dd-MM-yyyy" /> -->
+					<!-- 					</p:calendar> -->
+					<h:outputText value="#{item.libraryUpdateTime}"
+						id="cLibraryUpdateTime">
 						<f:convertDateTime pattern="dd-MM-yyyy" />
-					</p:calendar>
+					</h:outputText>
 				</p:column>
 
 				<p:column filterBy="#{item.departmentStatus}"
@@ -252,10 +260,14 @@
 				<p:column sortBy="#{item.departmentUpdateTime}" style="width:12%"
 					filterBy="#{item.departmentUpdateTime}" filterMatchMode="contains"
 					headerText="#{msg['st.departmentUT']}">
-					<p:calendar effect="fold" value="#{item.departmentUpdateTime}"
-						id="cDepartmentUpdateTime" disabled="true">
+<!-- 					<p:calendar effect="fold" value="#{item.departmentUpdateTime}" -->
+<!-- 						id="cDepartmentUpdateTime" disabled="true"> -->
+<!-- 						<f:convertDateTime pattern="dd-MM-yyyy" /> -->
+<!-- 					</p:calendar> -->
+					<h:outputText value="#{item.departmentUpdateTime}"
+						id="cDepartmentUpdateTime">
 						<f:convertDateTime pattern="dd-MM-yyyy" />
-					</p:calendar>
+					</h:outputText>
 				</p:column>
 
 				<f:facet name="footer">
@@ -277,24 +289,24 @@
 									message="#{msg['common.confirm_apply']}" icon="ui-icon-alert" />
 							</p:commandButton>
 						</div>
-					
 
-					<div class="row">
-						<p:outputLabel value="Tổng số sinh viên đã hoàn thành học phí :" />
-						<p:outputLabel value="#{graPeriodBean.countStudentsSF()}" />
-					</div>
 
-					<div class="row">
-						<p:outputLabel
-							value="Tổng số sinh viên đã hoàn thành thủ tục tại thư viện :" />
-						<p:outputLabel value="#{graPeriodBean.countStudentsL()}" />
-					</div>
+						<div class="row">
+							<p:outputLabel value="Tổng số sinh viên đã hoàn thành học phí :" />
+							<p:outputLabel value="#{graPeriodBean.countStudentsSF()}" />
+						</div>
 
-					<div class="row">
-						<p:outputLabel
-							value="Tổng số sinh viên đã hoàn thành thủ tục tại khoa :" />
-						<p:outputLabel value="#{graPeriodBean.countStudentsD()}" />
-					</div>
+						<div class="row">
+							<p:outputLabel
+								value="Tổng số sinh viên đã hoàn thành thủ tục tại thư viện :" />
+							<p:outputLabel value="#{graPeriodBean.countStudentsL()}" />
+						</div>
+
+						<div class="row">
+							<p:outputLabel
+								value="Tổng số sinh viên đã hoàn thành thủ tục tại khoa :" />
+							<p:outputLabel value="#{graPeriodBean.countStudentsD()}" />
+						</div>
 					</div>
 				</f:facet>
 			</p:dataTable>
@@ -467,16 +479,16 @@
 			resizable="false" showEffect="fade" styleClass="dlg-center-fix"
 			widgetVar="dlgStudentWV">
 			<style>
-			#dlgStudent.dlg-center-fix{
-			height: 287px !important;
-width: 480px !important;
-min-height: 287px !important;
-			}
-			#dlgStudent.ui-dialog .ui-dialog-content{
-			overflow: initial;
-			
-			}
-			</style>
+#dlgStudent.dlg-center-fix {
+	height: 287px !important;
+	width: 480px !important;
+	min-height: 287px !important;
+}
+
+#dlgStudent.ui-dialog .ui-dialog-content {
+	overflow: initial;
+}
+</style>
 			<h:form id="form-dlgStudent" class="container-fluid">
 				<div class="row formFieldMg">
 					<div class="col-xs-12 col-sm-12">

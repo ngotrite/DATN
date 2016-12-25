@@ -98,7 +98,8 @@ public class CertificateDAO extends BaseDAO<Certificate> implements Serializable
 		return lst;
 	}
 
-//	Select count(*) from certificate c Where c.GRADUATION_YEAR = '2016' and c.MAJOR=6;
+	// Select count(*) from certificate c Where c.GRADUATION_YEAR = '2016' and
+	// c.MAJOR=6;
 
 	public Long countCer(String graduationYear, Long major) {
 		Session session = HibernateUtil.getOpenSession();
@@ -106,10 +107,23 @@ public class CertificateDAO extends BaseDAO<Certificate> implements Serializable
 		Query query = session.createNativeQuery(sql);
 		query.setParameter("graduationYear", graduationYear);
 		query.setParameter("major", major);
-		
+
 		Number number = (Number) query.getSingleResult();
 
 		return number.longValue();
+	}
+
+	public Long reportCer(Date toDate, Date fromDate, Long major) {
+		Session session = HibernateUtil.getOpenSession();
+		String sql = "SELECT COUNT(*) FROM certificate c WHERE c.ISSUANCE_DATE <=:toDate AND c.ISSUANCE_DATE >=:fromDate AND c.MAJOR =:major";
+		Query query = session.createNativeQuery(sql);
+		query.setParameter("toDate", toDate);
+		query.setParameter("fromDate", fromDate);
+		query.setParameter("major", major);
+		Number number = (Number) query.getSingleResult();
+
+		return number.longValue();
+
 	}
 
 }

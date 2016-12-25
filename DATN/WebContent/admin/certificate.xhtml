@@ -42,10 +42,10 @@
 				</div>
 
 				<p:dataTable var="item" value="#{certificateBean.lstcertificate}"
-					id="dtCer" rowKey="#{item.studentId}"
+					id="dtCer" rowKey="#{item.studentId}" selectionMode="single"
 					emptyMessage="#{msg['common.noData']}" paginator="true" rows="20"
 					paginatorPosition="bottom" rowIndexVar="rowIndex"
-					widgetVar="dtCerWV"
+					widgetVar="dtCerWV" 		
 					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 					rowsPerPageTemplate="10,20,50,100">
 
@@ -124,7 +124,7 @@
 
 
 					<p:column headerText="#{msg['common.action']}"
-						style="text-align:center;">
+						style="text-align:center;" exportable="false">
 						<p:commandLink update="dlgCer"
 							actionListener="#{certificateBean.showDialogCer(item)}"
 							styleClass="btn btn-sm btn-action-edit colorBlue">
@@ -150,7 +150,7 @@
 					<f:facet name="footer">
 						<div class="col-xs-12 col-md-10"></div>
 						<div class="col-xs-12 col-md-2">
-							<h:commandButton value="#{msg['common.export']}"
+							<h:commandButton value="#{msg['common.export']}" 
 								styleClass="btn-export-zone pull-right">
 								<p:dataExporter type="xls" target="dtCer"
 									fileName="Danh_sach_van_bang" pageOnly="true"

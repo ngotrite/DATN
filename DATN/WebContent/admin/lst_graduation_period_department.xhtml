@@ -95,7 +95,7 @@
 		<h:form id="form-sd-list" class="container-fluid">
 
 			<p:dataTable var="item" value="#{graPeriodBean.students}"
-				id="dtStudent" rowKey="#{item.studentId}"
+				id="dtStudent" rowKey="#{item.studentId}" selectionMode="single"
 				disabledSelection="#{graPeriodBean.readOnly == true}"
 				filteredValue="#{graPeriodBean.filteredStudents}"
 				rendered="#{graPeriodBean.students.size() > 0}"
@@ -164,16 +164,21 @@
 				<p:column sortBy="#{item.departmentUpdateTime}" style="width:20%"
 					filterBy="#{item.departmentUpdateTime}" filterMatchMode="contains"
 					headerText="#{msg['st.departmentUT']}">
-					<p:calendar effect="fold" value="#{item.departmentUpdateTime}"
-						id="cDepartmentUpdateTime" disabled="true">
+<!-- 					<p:calendar effect="fold" value="#{item.departmentUpdateTime}" -->
+<!-- 						id="cDepartmentUpdateTime" disabled="true"> -->
+<!-- 						<f:convertDateTime pattern="dd-MM-yyyy" /> -->
+<!-- 					</p:calendar> -->
+					<h:outputText value="#{item.departmentUpdateTime}"
+						id="cDepartmentUpdateTime">
 						<f:convertDateTime pattern="dd-MM-yyyy" />
-					</p:calendar>
+					</h:outputText>
 				</p:column>
 
 				<p:column sortBy="#{graPeriodBean.getUserName(item,'DEPARTMENT')}"
-					filterBy="#{graPeriodBean.getUserName(item,'DEPARTMENT')}" filterMatchMode="contains"
-					headerText="#{msg['user.acc']}">
-					<h:outputText value="#{graPeriodBean.getUserName(item,'DEPARTMENT')}"
+					filterBy="#{graPeriodBean.getUserName(item,'DEPARTMENT')}"
+					filterMatchMode="contains" headerText="#{msg['user.acc']}">
+					<h:outputText
+						value="#{graPeriodBean.getUserName(item,'DEPARTMENT')}"
 						id="txtdepartmentUserId" />
 				</p:column>
 				<f:facet name="footer">
@@ -201,7 +206,7 @@
 								value="Tổng số sinh viên đã hoàn thành thủ tục tại khoa :" />
 							<p:outputLabel value="#{graPeriodBean.countStudentsD()}" />
 						</div>
-						</div>
+					</div>
 				</f:facet>
 			</p:dataTable>
 

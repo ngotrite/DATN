@@ -15,7 +15,7 @@
 
 
 			<p:dataTable var="item" value="#{documentBean.documents}"
-				id="dtDocument" rowKey="#{item.documentId}"
+				id="dtDocument" rowKey="#{item.documentId}" selectionMode="single"
 				emptyMessage="#{msg['common.noData']}" paginator="true" rows="20"
 				paginatorPosition="bottom" rowIndexVar="rowIndex"
 				widgetVar="dtDocumentWV"
@@ -45,10 +45,10 @@
 					</h:outputText>
 				</p:column>
 
-<!-- 				<p:column sortBy="#{item.numberDL}" filterBy="#{item.numberDL}" -->
-<!-- 					filterMatchMode="contains" headerText="#{msg['common.numberDL']}"> -->
-<!-- 					<h:outputText value="#{item.numberDL}" /> -->
-<!-- 				</p:column> -->
+				<p:column sortBy="#{item.numberDL}" filterBy="#{item.numberDL}"
+					filterMatchMode="contains" headerText="#{msg['common.numberDL']}">
+					<h:outputText value="#{item.numberDL}" />
+				</p:column>
 
 				<p:column headerText="#{msg['common.action']}"
 					style="text-align:center; width:20%">

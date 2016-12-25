@@ -14,7 +14,7 @@
 		<h:form id="form-list" class="container-fluid">
 
 			<p:dataTable var="item" value="#{studentBean.students}"
-				id="dtStudent" rowKey="#{item.studentId}"
+				id="dtStudent" rowKey="#{item.studentId}" selectionMode="single"
 				rendered="#{studentBean.students.size() > 0}"
 				emptyMessage="#{msg['common.noData']}" paginator="true" rows="20"
 				paginatorPosition="bottom" rowIndexVar="rowIndex"

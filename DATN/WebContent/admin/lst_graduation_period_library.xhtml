@@ -94,7 +94,7 @@
 		<h:form id="form-sd-list" class="container-fluid">
 
 			<p:dataTable var="item" value="#{graPeriodBean.students}"
-				id="dtStudent" rowKey="#{item.studentId}"
+				id="dtStudent" rowKey="#{item.studentId}" selectionMode="single"
 				disabledSelection="#{graPeriodBean.readOnly == true}"
 				filteredValue="#{graPeriodBean.filteredStudents}"
 				rendered="#{graPeriodBean.students.size() > 0}"
@@ -162,17 +162,20 @@
 				<p:column sortBy="#{item.libraryUpdateTime}"
 					filterBy="#{item.libraryUpdateTime}" filterMatchMode="contains"
 					headerText="#{msg['st.libraryUT']}">
-					<p:calendar effect="fold" value="#{item.libraryUpdateTime}"
-						id="cLibraryUpdateTime" disabled="true">
+<!-- 					<p:calendar effect="fold" value="#{item.libraryUpdateTime}" -->
+<!-- 						id="cLibraryUpdateTime" disabled="true"> -->
+<!-- 						<f:convertDateTime pattern="dd-MM-yyyy" /> -->
+<!-- 					</p:calendar> -->
+					<h:outputText value="#{item.libraryUpdateTime}"
+						id="cLibraryUpdateTime">
 						<f:convertDateTime pattern="dd-MM-yyyy" />
-					</p:calendar>
+					</h:outputText>
 				</p:column>
 
 				<p:column sortBy="#{graPeriodBean.getUserName(item,'LIBRARY')}"
 					filterBy="#{graPeriodBean.getUserName(item,'LIBRARY')}"
 					filterMatchMode="contains" headerText="#{msg['user.acc']}">
-					<h:outputText
-						value="#{graPeriodBean.getUserName(item,'LIBRARY')}"
+					<h:outputText value="#{graPeriodBean.getUserName(item,'LIBRARY')}"
 						id="txtlibraryUserId" />
 				</p:column>
 

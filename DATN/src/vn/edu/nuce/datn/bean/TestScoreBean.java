@@ -302,8 +302,6 @@ public class TestScoreBean extends BaseController implements Serializable {
 
 	// Upload File PDF
 	public void handleFileUpload(FileUploadEvent event) {
-		FacesMessage message = new FacesMessage("Succesful", event.getFile().getFileName() + " is uploaded.");
-		FacesContext.getCurrentInstance().addMessage(null, message);
 
 		try {
 			int count = 1;
@@ -355,6 +353,8 @@ public class TestScoreBean extends BaseController implements Serializable {
 			System.out.println(count++ + " File Success");
 			// super.showMessageINFO("", this.readProperties("Đã upload thành
 			// công") + count++);
+			FacesMessage message = new FacesMessage("Succesful", event.getFile().getFileName() + " is uploaded.");
+			FacesContext.getCurrentInstance().addMessage(null, message);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -382,7 +382,8 @@ public class TestScoreBean extends BaseController implements Serializable {
 					.getRequest();
 			HttpServletResponse response = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext()
 					.getResponse();
-			response.sendRedirect(request.getContextPath() + ResourceBundleUtil.getString("link.document") + testScore.getFileName());
+			response.sendRedirect(
+					request.getContextPath() + ResourceBundleUtil.getString("link.document") + testScore.getFileName());
 			return "";
 		} catch (FileNotFoundException fnfex) {
 			return "";
