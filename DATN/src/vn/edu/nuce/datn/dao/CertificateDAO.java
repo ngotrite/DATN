@@ -38,7 +38,7 @@ public class CertificateDAO extends BaseDAO<Certificate> implements Serializable
 
 	}
 
-	public List<Certificate> findCertificateHomeNew(String studentId, String studentName, Date birthday,
+	public List<Certificate> findCertificateHomeNew(String studentId, String studentName, String birthday,
 			String certificateNo) {
 		List<Certificate> lstCertificate = new ArrayList<Certificate>();
 		Session session = HibernateUtil.getOpenSession();
@@ -56,7 +56,7 @@ public class CertificateDAO extends BaseDAO<Certificate> implements Serializable
 			sql.append(" AND c.studentName=:studentName ");
 		}
 
-		if (birthday != null) {
+		if (!birthday.isEmpty()) {
 			sql.append(" AND c.birthday=:birthday ");
 		}
 
@@ -74,7 +74,7 @@ public class CertificateDAO extends BaseDAO<Certificate> implements Serializable
 			query.setParameter("studentName", studentName);
 		}
 
-		if (birthday != null) {
+		if (!birthday.isEmpty()) {
 			query.setParameter("birthday", birthday);
 		}
 
@@ -113,7 +113,7 @@ public class CertificateDAO extends BaseDAO<Certificate> implements Serializable
 		return number.longValue();
 	}
 
-	public Long reportCer(Date toDate, Date fromDate, Long major) {
+	public Long reportCer(Date toDate, Date fromDate, String major) {
 		Session session = HibernateUtil.getOpenSession();
 		String sql = "SELECT COUNT(*) FROM certificate c WHERE c.ISSUANCE_DATE <=:toDate AND c.ISSUANCE_DATE >=:fromDate AND c.MAJOR =:major";
 		Query query = session.createNativeQuery(sql);

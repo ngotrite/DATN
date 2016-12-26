@@ -20,6 +20,7 @@ public class MajorBean extends BaseController implements Serializable {
 	private Major major;
 	private MajorDAO majorDAO;
 	private List<Major> lstMajor;
+	private Boolean isEdit;
 
 	@PostConstruct
 	public void init() {

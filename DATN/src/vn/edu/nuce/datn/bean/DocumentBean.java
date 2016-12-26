@@ -96,7 +96,7 @@ public class DocumentBean extends BaseController implements Serializable {
 	// View File PDF
 	public String newTabFilePDF(Document document) {
 		try {
-
+			
 			String srcPath = document.getFilePath();
 			FileInputStream fis = new FileInputStream(new File(srcPath));
 			FacesContext fc = FacesContext.getCurrentInstance();
@@ -107,16 +107,16 @@ public class DocumentBean extends BaseController implements Serializable {
 			// name you want, this only won't work in MSIE, it will use current
 			// request URL as file name instead.
 			ec.setResponseHeader("Content-Disposition", "attachment; filename=\"" + document.getFileName() + "\"");
-			FileOutputStream fos = new FileOutputStream(new File(ec.getRealPath(document.getFileName())));
-			byte[] data = IOUtils.toByteArray(fis);
-			fos.write(data, 0, data.length);
-			fos.close();
+//			FileOutputStream fos = new FileOutputStream(new File(ec.getRealPath(document.getFileName())));
+//			byte[] data = IOUtils.toByteArray(fis);
+//			fos.write(data, 0, data.length);
+//			fos.close();
 			HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext()
 					.getRequest();
 			HttpServletResponse response = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext()
 					.getResponse();
-//			response.sendRedirect(request.getContextPath() + ResourceBundleUtil.getString("link.document") + document.getFileName());
-			response.sendRedirect(request.getContextPath() + "/" + document.getFileName());
+			response.sendRedirect(request.getContextPath() + ResourceBundleUtil.getString("link.document") + document.getFileName());
+//			response.sendRedirect(request.getContextPath() + "/" + document.getFileName());
 			document.setNumberDL(document.getNumberDL() + 1L);
 			documentDAO.saveOrUpdate(document);
 			return "";
@@ -185,8 +185,8 @@ public class DocumentBean extends BaseController implements Serializable {
 			// E:\GitHub\DATN\DATN\WebContent\pdf
 			// File file = new File("E:\\test\\" + fileName);
 
-//			File file = new File(ResourceBundleUtil.getString("server.path.document") + fileName);
-			File file = new File(ResourceBundleUtil.getString("local.path.document") + fileName);
+			File file = new File(ResourceBundleUtil.getString("server.path.document") + fileName);
+//			File file = new File(ResourceBundleUtil.getString("local.path.document") + fileName);
 
 			InputStream inputStream = event.getFile().getInputstream();
 			OutputStream outputStream = new FileOutputStream(file);

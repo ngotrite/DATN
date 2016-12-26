@@ -45,7 +45,7 @@
 					id="dtCer" rowKey="#{item.studentId}" selectionMode="single"
 					emptyMessage="#{msg['common.noData']}" paginator="true" rows="20"
 					paginatorPosition="bottom" rowIndexVar="rowIndex"
-					widgetVar="dtCerWV" 		
+					widgetVar="dtCerWV"
 					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 					rowsPerPageTemplate="10,20,50,100">
 
@@ -66,7 +66,8 @@
 
 					<p:column sortBy="#{item.birthday}" filterBy="#{item.birthday}"
 						filterMatchMode="contains" headerText="#{msg['cer.birthday']}">
-						<p:calendar effect="fold" value="#{item.birthday}" disabled="true" />
+						<!-- 						<p:calendar effect="fold" value="#{item.birthday}" disabled="true" /> -->
+						<h:outputText value="#{item.birthday}" />
 					</p:column>
 
 					<p:column sortBy="#{item.birthPlace}" filterBy="#{item.birthPlace}"
@@ -90,6 +91,10 @@
 						filterMatchMode="contains" headerText="#{msg['cer.major']}">
 						<h:outputText value="#{certificateBean.getMajorName(item.major)}" />
 					</p:column>
+					<!-- 					<p:column sortBy="#{item.major}" filterBy="#{item.major}" -->
+					<!-- 						filterMatchMode="contains" headerText="#{msg['cer.major']}"> -->
+					<!-- 						<h:outputText value="#{item.major}" /> -->
+					<!-- 					</p:column> -->
 
 					<p:column sortBy="#{item.certificateNo}"
 						filterBy="#{item.certificateNo}" filterMatchMode="contains"
@@ -150,7 +155,7 @@
 					<f:facet name="footer">
 						<div class="col-xs-12 col-md-10"></div>
 						<div class="col-xs-12 col-md-2">
-							<h:commandButton value="#{msg['common.export']}" 
+							<h:commandButton value="#{msg['common.export']}"
 								styleClass="btn-export-zone pull-right">
 								<p:dataExporter type="xls" target="dtCer"
 									fileName="Danh_sach_van_bang" pageOnly="true"
@@ -166,19 +171,18 @@
 		<!-- DIALOG CERTIFICATEDETAIL -->
 
 		<p:dialog header="#{msg['title.certificateDetail']}" modal="true"
-			id="dlgCer" resizable="false" showEffect="fade" 
-			widgetVar="dlgCerWV" styleClass="dlg-center-fix">
+			id="dlgCer" resizable="false" showEffect="fade" widgetVar="dlgCerWV"
+			styleClass="dlg-center-fix">
 			<style>
-			#dlgCer.ui-dialog .ui-dialog-content {
+#dlgCer.ui-dialog .ui-dialog-content {
 	float: right;
 }
-#dlgCer{
-width: 67% !important
-}
 
-			
-			</style>
-			
+#dlgCer {
+	width: 67% !important
+}
+</style>
+
 			<h:form id="form-cer-detail" class="container-fluid">
 				<div class="formFieldMg">
 					<div class="col-xs-12 col-sm-4">
@@ -204,12 +208,13 @@ width: 67% !important
 
 						<div class="row">
 							<div class="col-xs-12">
-								<p:outputLabel value="#{msg['cer.birthday']}" />
+								<p:outputLabel value="#{msg['cer.birthday']}" for="date" />
 							</div>
 							<div class="col-xs-12">
-								<p:calendar effect="fold"
-									value="#{certificateBean.certificate.birthday}">
-								</p:calendar>
+								<!-- 								<p:calendar effect="fold" -->
+								<!-- 									value="#{certificateBean.certificate.birthday}"> -->
+								<!-- 								</p:calendar> -->
+								<p:inputMask id="date" value="#{certificateBean.certificate.birthday}" mask="99/99/9999" styleClass="form-control" />
 							</div>
 						</div>
 						<div class="row">

@@ -135,9 +135,6 @@ public class GraduationScoreBean extends BaseController implements Serializable 
 
 	// Upload File PDF
 	public void handleFileUpload(FileUploadEvent event) {
-		FacesMessage message = new FacesMessage("Succesful", event.getFile().getFileName() + " is uploaded.");
-		FacesContext.getCurrentInstance().addMessage(null, message);
-
 		try {
 			String fileName = event.getFile().getFileName();
 
@@ -167,7 +164,8 @@ public class GraduationScoreBean extends BaseController implements Serializable 
 
 			graScoreDAO.save(graScore);
 			graScores.add(graScore);
-
+			FacesMessage message = new FacesMessage("Succesful", event.getFile().getFileName() + " is uploaded.");
+			FacesContext.getCurrentInstance().addMessage(null, message);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -187,10 +185,10 @@ public class GraduationScoreBean extends BaseController implements Serializable 
 			// name you want, this only won't work in MSIE, it will use current
 			// request URL as file name instead.
 			ec.setResponseHeader("Content-Disposition", "attachment; filename=\"" + graScore.getFileName() + "\"");
-			FileOutputStream fos = new FileOutputStream(new File(ec.getRealPath(graScore.getFileName())));
-			byte[] data = IOUtils.toByteArray(fis);
-			fos.write(data, 0, data.length);
-			fos.close();
+//			FileOutputStream fos = new FileOutputStream(new File(ec.getRealPath(graScore.getFileName())));
+//			byte[] data = IOUtils.toByteArray(fis);
+//			fos.write(data, 0, data.length);
+//			fos.close();
 			HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext()
 					.getRequest();
 			HttpServletResponse response = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext()

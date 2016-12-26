@@ -56,20 +56,20 @@
 					</h:outputText>
 				</p:column>
 
-				<p:column sortBy="#{item.numberDL}" filterBy="#{item.numberDL}" id="numberDL" 
+				<p:column sortBy="#{item.numberDL}" filterBy="#{item.numberDL}" id="numberDL" style="width:10%"
 					filterMatchMode="contains" headerText="#{msg['common.numberDL']}">
 					<h:outputText value="#{item.numberDL}" />
 				</p:column>
 
 				<p:column sortBy="#{documentBean.getUserName(item)}"
-					style="width:12%" filterBy="#{documentBean.getUserName(item)}"
+					style="width:11%" filterBy="#{documentBean.getUserName(item)}"
 					filterMatchMode="contains"
 					headerText="#{msg['common.uploadUserId']}">
 					<h:outputText value="#{documentBean.getUserName(item)}" />
 				</p:column>
 
 				<p:column headerText="#{msg['common.action']}"
-					style="text-align:center;">
+					style="text-align:center; width:16%" >
 
 					<h:commandLink action="#{documentBean.newTabFilePDF(item)}"
 						target="_blank" onclick="reloadPage();"

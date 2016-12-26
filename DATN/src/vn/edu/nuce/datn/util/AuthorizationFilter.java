@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
+import javax.inject.Inject;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -15,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import vn.edu.nuce.datn.bean.UserSession;
 import vn.edu.nuce.datn.entity.SysMenu;
 
 @WebFilter(filterName = "AuthFilter", urlPatterns = { "*.xhtml", "*.jsf" })
@@ -36,10 +40,18 @@ public class AuthorizationFilter implements Filter {
 			HttpServletRequest reqt = (HttpServletRequest) request;
 			HttpServletResponse resp = (HttpServletResponse) response;
 			HttpSession ses = reqt.getSession(false);
+			UserSession userSession = (UserSession) reqt.getSession().getAttribute("userSession");
 
 			String reqURI = reqt.getRequestURI();
-			if (reqURI.endsWith(reqt.getContextPath() + "/") || reqURI.endsWith(reqt.getContextPath() + "/home.xhtml")
-					|| reqURI.indexOf("/login.xhtml") >= 0 || reqURI.indexOf("/errorRole.xhtml") >= 0
+			
+			if(userSession != null && userSession.getSysUser() != null){ 
+				if(reqURI.endsWith(reqt.getContextPath() + "/") || reqURI.endsWith(reqt.getContextPath() + "/home.xhtml")){
+					resp.sendRedirect(reqt.getContextPath() + "/admin/document_ex.xhtml");
+				}
+			}
+			
+			if (reqURI.endsWith(reqt.getContextPath() + "/") || reqURI.endsWith(reqt.getContextPath() + "/home.xhtml") 
+					|| reqURI.indexOf("/admin/login.xhtml") >= 0 || reqURI.indexOf("/errorRole.xhtml") >= 0
 					|| reqURI.indexOf("/resources/") >= 0 || reqURI.contains("javax.faces.resource")) {
 
 				chain.doFilter(request, response);
@@ -90,7 +102,7 @@ public class AuthorizationFilter implements Filter {
 				}
 			} else {
 
-				if (isAJAXRequest(reqt)) {
+				if (isAJAXRequest(reqt) && reqURI.indexOf("/home.xhtml") == -1) {
 
 					StringBuilder sb = new StringBuilder();
 					sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?><partial-response><redirect url=\"")

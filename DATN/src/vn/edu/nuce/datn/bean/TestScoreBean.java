@@ -374,10 +374,10 @@ public class TestScoreBean extends BaseController implements Serializable {
 			// name you want, this only won't work in MSIE, it will use current
 			// request URL as file name instead.
 			ec.setResponseHeader("Content-Disposition", "attachment; filename=\"" + testScore.getFileName() + "\"");
-			FileOutputStream fos = new FileOutputStream(new File(ec.getRealPath(testScore.getFileName())));
-			byte[] data = IOUtils.toByteArray(fis);
-			fos.write(data, 0, data.length);
-			fos.close();
+//			FileOutputStream fos = new FileOutputStream(new File(ec.getRealPath(testScore.getFileName())));
+//			byte[] data = IOUtils.toByteArray(fis);
+//			fos.write(data, 0, data.length);
+//			fos.close();
 			HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext()
 					.getRequest();
 			HttpServletResponse response = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext()

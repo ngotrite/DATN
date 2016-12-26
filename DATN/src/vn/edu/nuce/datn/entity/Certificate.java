@@ -21,7 +21,7 @@ public class Certificate implements Serializable{
 	private String studentName;
 	
 	@Column(name = "BIRTHDAY")
-	private Date birthday;
+	private String birthday;
 	
 	@Column(name = "BIRTH_PLACE")
 	private String birthPlace;
@@ -66,11 +66,11 @@ public class Certificate implements Serializable{
 		this.studentName = studentName;
 	}
 
-	public Date getBirthday() {
+	public String getBirthday() {
 		return birthday;
 	}
 
-	public void setBirthday(Date birthday) {
+	public void setBirthday(String birthday) {
 		this.birthday = birthday;
 	}
 
@@ -145,7 +145,4 @@ public class Certificate implements Serializable{
 	public void setUpdateDate(Date updateDate) {
 		this.updateDate = updateDate;
 	}
-	
-	
-	
 }

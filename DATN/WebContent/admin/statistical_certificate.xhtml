@@ -10,13 +10,13 @@
 <ui:composition template="../templates/vcbsContentTemplate.xhtml">
 	<ui:define name="content">
 		<h:form id="form-statis" class="container-fluid">
+		
+		
+		
 			<div class="formFieldMg">
 
 				<div class="col-xs-12 col-md-1">
 					<div class="row">
-						<div class="col-xs-12">
-							<p:outputLabel />
-						</div>
 						<div class="col-xs-12">
 							<p:outputLabel value="#{msg['cer.sta.startYear']}" />
 						</div>
@@ -25,10 +25,6 @@
 
 				<div class="col-xs-12 col-md-3">
 					<div class="row">
-						<div class="col-xs-12">
-							<p:outputLabel value="#{msg['cer.graduationYear']}"
-								for="fromDate" />
-						</div>
 						<div class="col-xs-12">
 							<!-- 							<p:inputText value="#{certificateBean.certificate.issuanceDate}" /> -->
 							<!-- 							<p:calendar effect="fold" value="#{certificateBean.fromDate}"> -->
@@ -43,9 +39,6 @@
 				<div class="col-xs-12 col-md-1">
 					<div class="row">
 						<div class="col-xs-12">
-							<p:outputLabel />
-						</div>
-						<div class="col-xs-12">
 							<p:outputLabel value="#{msg['cer.sta.endYear']}" />
 
 						</div>
@@ -54,9 +47,6 @@
 
 				<div class="col-xs-12 col-md-3">
 					<div class="row">
-						<div class="col-xs-12">
-							<p:outputLabel value="#{msg['cer.graduationYear']}" for="toDate" />
-						</div>
 						<div class="col-xs-12">
 							<!-- 							<p:inputText value="#{certificateBean.certificate.issuanceDate}" /> -->
 							<!-- 							<p:calendar effect="fold" value="#{certificateBean.toDate}"> -->
@@ -70,7 +60,7 @@
 				<div class="col-xs-12 col-md-3">
 					<div class="row">
 						<div class="col-xs-12">
-							<p:outputLabel />
+							<p:outputLabel styleClass="hidden"/>
 						</div>
 						<div class="pull-left" style="padding-right: 12px" align="right">
 							<p:commandButton value="#{msg['common.export']}" ajax="false"

@@ -14,11 +14,12 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "major")
 public class Major implements Serializable {
+	// @Id
+	// @GeneratedValue(strategy = IDENTITY)
+	// @Column(name = "ID")
+	// private Long Id;
 	@Id
-	@GeneratedValue(strategy = IDENTITY)
-	@Column(name = "ID")
-	private Long Id;
-
+//	@GeneratedValue(strategy = IDENTITY)
 	@Column(name = "MAJOR_ID")
 	private String majorId;
 
@@ -41,12 +42,12 @@ public class Major implements Serializable {
 		this.majorName = majorName;
 	}
 
-	public Long getId() {
-		return Id;
-	}
-
-	public void setId(Long id) {
-		Id = id;
-	}
+//	public Long getId() {
+//		return Id;
+//	}
+//
+//	public void setId(Long id) {
+//		Id = id;
+//	}
 
 }

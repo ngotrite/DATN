@@ -69,7 +69,7 @@ public class CertificateBean extends BaseController implements Serializable {
 	private List<SelectItem> lstMajor;
 	private List<Major> majors;
 	private MajorDAO majorDAO;
-	
+
 	private Date toDate;
 	private Date fromDate;
 
@@ -82,48 +82,50 @@ public class CertificateBean extends BaseController implements Serializable {
 		this.majorDAO = new MajorDAO();
 		loadCer();
 		loadMajors();
-		
+		loadCerHome();
+		this.lstCertificateHome = new ArrayList<Certificate>();
+
 		this.toDate = new Date();
 		this.fromDate = new Date();
 	}
 
-	public String getMajorName(Long majorId) {
+	public String getMajorName(String majorId) {
 		MajorDAO majorDAO = new MajorDAO();
 		if (majorId != null) {
 			return majorDAO.get(majorId).getMajorName();
 		}
 		return null;
 	}
-	
-	public List<DateToSearch> fillDateToSearch(Calendar fromDate, Calendar toDate){
+
+	public List<DateToSearch> fillDateToSearch(Calendar fromDate, Calendar toDate) {
 		List<DateToSearch> dateToSearch = new ArrayList<>();
 		Integer numberOfDate = toDate.get(Calendar.YEAR) - fromDate.get(Calendar.YEAR);
-		if(numberOfDate > 0){
-			for(int i = 0; i <= numberOfDate; i++){
+		if (numberOfDate > 0) {
+			for (int i = 0; i <= numberOfDate; i++) {
 				dateToSearch.add(new DateToSearch());
 				Calendar fromDateTmp = Calendar.getInstance();
 				Calendar toDateTmp = Calendar.getInstance();
-				if(i == 0){
-					dateToSearch.get(dateToSearch.size() -1).setFromDate(fromDate);
+				if (i == 0) {
+					dateToSearch.get(dateToSearch.size() - 1).setFromDate(fromDate);
 					toDateTmp.set(fromDate.get(Calendar.YEAR), 12, 31);
-					dateToSearch.get(dateToSearch.size() -1).setToDate(toDateTmp);
-				} else if (i == numberOfDate){
-					dateToSearch.get(dateToSearch.size() -1).setToDate(toDate);
+					dateToSearch.get(dateToSearch.size() - 1).setToDate(toDateTmp);
+				} else if (i == numberOfDate) {
+					dateToSearch.get(dateToSearch.size() - 1).setToDate(toDate);
 					fromDateTmp.set(toDate.get(Calendar.YEAR), 1, 1);
-					dateToSearch.get(dateToSearch.size() -1).setFromDate(fromDateTmp);
+					dateToSearch.get(dateToSearch.size() - 1).setFromDate(fromDateTmp);
 				} else {
 					fromDateTmp.set(fromDate.get(Calendar.YEAR) + i, 1, 1);
-					dateToSearch.get(dateToSearch.size() -1).setFromDate(fromDateTmp);
+					dateToSearch.get(dateToSearch.size() - 1).setFromDate(fromDateTmp);
 					toDateTmp.set(fromDate.get(Calendar.YEAR) + i, 12, 31);
-					dateToSearch.get(dateToSearch.size() -1).setToDate(toDateTmp);
+					dateToSearch.get(dateToSearch.size() - 1).setToDate(toDateTmp);
 				}
 			}
-		} else if (numberOfDate == 0){
+		} else if (numberOfDate == 0) {
 			dateToSearch.add(new DateToSearch(fromDate, toDate));
 		}
 		return dateToSearch;
 	}
-	
+
 	public String createReport() {
 		this.majors = majorDAO.findAll();
 		List<ReportResultDTO> resultList = new ArrayList<>();
@@ -132,138 +134,147 @@ public class CertificateBean extends BaseController implements Serializable {
 		fromDateCal.setTime(this.fromDate);
 		Calendar toDateCal = Calendar.getInstance();
 		toDateCal.setTime(this.toDate);
-		if(this.fromDate.compareTo(this.toDate) != 1){
+		if (this.fromDate.compareTo(this.toDate) != 1) {
 			int numberOfYear = getNumberOfYear(this.fromDate, this.toDate);
-			if(numberOfYear > 0){
+			if (numberOfYear > 0) {
 				dateToSearch = fillDateToSearch(fromDateCal, toDateCal);
 				for (Major major : this.majors) {
 					resultList.add(new ReportResultDTO());
 					resultList.get(resultList.size() - 1).setMajorName(major.getMajorName());
 					List<YearReport> yearReport = new ArrayList<>();
-					for(int i = 0; i < dateToSearch.size(); i++){
+					for (int i = 0; i < dateToSearch.size(); i++) {
 						yearReport.add(new YearReport());
-						yearReport.get(yearReport.size() - 1).setYear(dateToSearch.get(i).getFromDate().get(Calendar.YEAR) + "");
-						yearReport.get(yearReport.size() - 1).setValue(certificateDAO.reportCer(dateToSearch.get(i).getToDate().getTime(),
-								dateToSearch.get(i).getToDate().getTime(), major.getId()).toString());
+						yearReport.get(yearReport.size() - 1)
+								.setYear(dateToSearch.get(i).getFromDate().get(Calendar.YEAR) + "");
+						yearReport.get(yearReport.size() - 1)
+								.setValue(certificateDAO
+										.reportCer(dateToSearch.get(i).getToDate().getTime(),
+												dateToSearch.get(i).getFromDate().getTime(), major.getMajorId())
+										.toString());
 					}
 					resultList.get(resultList.size() - 1).setYearReport(yearReport);
 				}
 			}
 		}
-		
-		if(resultList.size() > 0){
+
+		if (resultList.size() > 0) {
 			HSSFWorkbook wb = new HSSFWorkbook();
-            HSSFSheet sheet = wb.createSheet("Danh sách");
-            HSSFRow row;
+			HSSFSheet sheet = wb.createSheet("Danh sách");
+			HSSFRow row;
 
-            // set style align center
-            CellStyle cellStyle = wb.createCellStyle();
-            cellStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);
-            // set cell Style width for người nộp
-            short indexBlackColor = IndexedColors.BLACK.getIndex();
-            short indexBorderStyle = HSSFCellStyle.BORDER_MEDIUM;
-            CellStyle cellTable = wb.createCellStyle();
-            cellTable.setBottomBorderColor(indexBlackColor);
-            cellTable.setTopBorderColor(indexBlackColor);
-            cellTable.setRightBorderColor(indexBlackColor);
-            cellTable.setLeftBorderColor(indexBlackColor);
-            cellTable.setBorderBottom(indexBorderStyle);
-            cellTable.setBorderLeft(indexBorderStyle);
-            cellTable.setBorderRight(indexBorderStyle);
-            cellTable.setBorderTop(indexBorderStyle);
-            //row head 1
-            row = sheet.createRow(0);
-            HSSFCell cell = row.createCell(0);
-            cell.setCellValue("Thống kê số liệu quy mô đào tạo");
-            cell.setCellStyle(cellStyle);
-            // add merge region
-            sheet.addMergedRegion(new org.apache.poi.ss.util.CellRangeAddress(
-                    0, //first row (0-based)
-                    0, //last row  (0-based)
-                    0, //first column (0-based)
-                    3 //last column  (0-based)
-            ));
-            row = sheet.createRow(1);
-            cell = row.createCell(0);
-            cell.setCellValue("");
-            cell.setCellStyle(cellStyle);
-            // add merge region
-            sheet.addMergedRegion(new org.apache.poi.ss.util.CellRangeAddress(
-                    1, //first row (0-based)
-                    1, //last row  (0-based)
-                    0, //first column (0-based)
-                    3 //last column  (0-based)
-            ));
-            //row head 2
-            row = sheet.createRow(3);
-            cell = row.createCell(0);
-            cell.setCellStyle(cellStyle);
-            cell.setCellValue("Hệ chính quy");
-            sheet.addMergedRegion(new org.apache.poi.ss.util.CellRangeAddress(
-                    3, //first row (0-based)
-                    3, //last row  (0-based)
-                    0, //first column (0-based)
-                    12 //last column  (0-based)
-            ));
+			// set style align center
+			CellStyle cellStyle = wb.createCellStyle();
+			cellStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+			// set cell Style width for người nộp
+			short indexBlackColor = IndexedColors.BLACK.getIndex();
+			short indexBorderStyle = HSSFCellStyle.BORDER_MEDIUM;
+			CellStyle cellTable = wb.createCellStyle();
+			cellTable.setBottomBorderColor(indexBlackColor);
+			cellTable.setTopBorderColor(indexBlackColor);
+			cellTable.setRightBorderColor(indexBlackColor);
+			cellTable.setLeftBorderColor(indexBlackColor);
+			cellTable.setBorderBottom(indexBorderStyle);
+			cellTable.setBorderLeft(indexBorderStyle);
+			cellTable.setBorderRight(indexBorderStyle);
+			cellTable.setBorderTop(indexBorderStyle);
+			// row head 1
+			row = sheet.createRow(0);
+			HSSFCell cell = row.createCell(0);
+			cell.setCellValue(
+					"THỐNG KÊ SỐ LIỆU QUY MÔ ĐÀO TẠO ĐẠI HỌC THEO NĂM HỌC, NGÀNH ( CHUYÊN NGÀNH) HỆ CHÍNH QUY");
+			cell.setCellStyle(cellStyle);
+			// add merge region
+			sheet.addMergedRegion(new org.apache.poi.ss.util.CellRangeAddress(0, // first
+																					// row
+																					// (0-based)
+					0, // last row (0-based)
+					0, // first column (0-based)
+					3 // last column (0-based)
+			));
+			row = sheet.createRow(1);
+			cell = row.createCell(0);
+			cell.setCellValue("");
+			cell.setCellStyle(cellStyle);
+			// add merge region
+			sheet.addMergedRegion(new org.apache.poi.ss.util.CellRangeAddress(1, // first
+																					// row
+																					// (0-based)
+					1, // last row (0-based)
+					0, // first column (0-based)
+					3 // last column (0-based)
+			));
+			// row head 2
+			row = sheet.createRow(3);
+			cell = row.createCell(0);
+			cell.setCellStyle(cellStyle);
+			cell.setCellValue("Hệ chính quy");
+			sheet.addMergedRegion(new org.apache.poi.ss.util.CellRangeAddress(3, // first
+																					// row
+																					// (0-based)
+					3, // last row (0-based)
+					0, // first column (0-based)
+					12 // last column (0-based)
+			));
 
-            //row table header
-            row = sheet.createRow(4);
-            cell = row.createCell(0);
-            cell.setCellValue("STT");
-            cell.setCellStyle(cellTable);
-            cell = row.createCell(1);
-            cell.setCellValue("Ngành/Chuyên ngành");
-            cell.setCellStyle(cellTable);
-            
-            int cellYear = resultList.get(0).getYearReport().size();
-            
-            for(int i=0; i < cellYear; i++){
-	            cell = row.createCell(2 + i);
-	            cell.setCellValue("Năm " + resultList.get(0).getYearReport().get(i).getYear());
-	            cell.setCellStyle(cellTable);
-            }
+			// row table header
+			row = sheet.createRow(4);
+			cell = row.createCell(0);
+			cell.setCellValue("STT");
+			cell.setCellStyle(cellTable);
+			cell = row.createCell(1);
+			cell.setCellValue("Ngành/Chuyên ngành");
+			cell.setCellStyle(cellTable);
 
+			int cellYear = resultList.get(0).getYearReport().size();
 
+			for (int i = 0; i < cellYear; i++) {
+				cell = row.createCell(2 + i);
+				cell.setCellValue("Năm " + resultList.get(0).getYearReport().get(i).getYear());
+				cell.setCellStyle(cellTable);
+			}
 
-            int stt = 1;
-            for (int RowNum = 5; RowNum < resultList.size() + 5; RowNum++) {
-                row = sheet.createRow(RowNum);
-                for (int colNum = 0; colNum < 2 + cellYear; colNum++) {
-                    cell = row.createCell(colNum);
-                    if (colNum == 0) {
-                        cell.setCellValue(stt);
-                        cell.setCellStyle(cellTable);
-                        stt++;
-                    }
-                    if (colNum == 1) {
-                        cell.setCellValue(resultList.get(RowNum -5).getMajorName());
-                        cell.setCellStyle(cellTable);
-                    }
-                    if (colNum > 1) {
-	                    for(int i = 0; i < cellYear; i++){
-	                        cell.setCellValue(resultList.get(RowNum -5).getYearReport().get(i).getValue());
-	                        cell.setCellStyle(cellTable);
-	                    }
-                    }
-                    
-                }
-            }
-            row = sheet.getRow(7);
-            for (Integer colNum = 0; colNum < (int) row.getLastCellNum(); colNum++) {
-                sheet.autoSizeColumn(colNum);
-            }
+			int stt = 1;
+			for (int RowNum = 5; RowNum < resultList.size() + 5; RowNum++) {
+				row = sheet.createRow(RowNum);
+				int countCol = 0;
+				for (int colNum = 0; colNum < 2 + cellYear; colNum++) {
+					cell = row.createCell(colNum);
+					if (colNum == 0) {
+						cell.setCellValue(stt);
+						cell.setCellStyle(cellTable);
+						stt++;
+					}
+					if (colNum == 1) {
+						cell.setCellValue(resultList.get(RowNum - 5).getMajorName());
+						cell.setCellStyle(cellTable);
+					}
+					if (colNum > 1) {
+						if (countCol < cellYear) {
+							cell.setCellValue(resultList.get(RowNum - 5).getYearReport().get(countCol).getValue());
+							cell.setCellStyle(cellTable);
+							countCol++;
+						}
+					}
 
-            String fileName = "danh_sach.xls";
-            FacesContext fc = FacesContext.getCurrentInstance();
+				}
+			}
+			row = sheet.getRow(7);
+			for (Integer colNum = 0; colNum < (int) row.getLastCellNum(); colNum++) {
+				sheet.autoSizeColumn(colNum);
+			}
+
+			String fileName = "danh_sach.xls";
+			FacesContext fc = FacesContext.getCurrentInstance();
 			ExternalContext ec = fc.getExternalContext();
 			ec.responseReset();
 			ec.setResponseContentType("application/vnd.ms-excel");
-			// The Save As popup magic is done here. You can give it any file name you want, this only won't work in MSIE, it will use current request URL as file name instead.
+			// The Save As popup magic is done here. You can give it any file
+			// name you want, this only won't work in MSIE, it will use current
+			// request URL as file name instead.
 			ec.setResponseHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
-			try (
-			        OutputStream fileOut = ec.getResponseOutputStream()) {
-			    wb.write(fileOut);
-			    fileOut.flush();
+			try (OutputStream fileOut = ec.getResponseOutputStream()) {
+				wb.write(fileOut);
+				fileOut.flush();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -272,130 +283,145 @@ public class CertificateBean extends BaseController implements Serializable {
 		}
 		return "";
 	}
-	
-	public Integer getNumberOfYear(Date fromDate , Date toDate){
-		return	toDate.getYear() - fromDate.getYear() + 1;
+
+	public Integer getNumberOfYear(Date fromDate, Date toDate) {
+		return toDate.getYear() - fromDate.getYear() + 1;
 	}
 
-//	public String createReportForGHBSError(String type, Long toYear) throws IOException {
-//		byte[] report = null;
-//		Map<String, Object> reportHeader = new HashMap<>();
-//		ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
-//		HttpServletRequest request = (HttpServletRequest) ec.getRequest();
-//		this.majors = majorDAO.findAll();
-//		String reportName = "TKSLTN";
-//
-//		String jasperPath = request.getSession().getServletContext().getRealPath("/jasper/" + reportName + ".jasper");
-//		String jrxmlPath = request.getSession().getServletContext().getRealPath("/jasper/" + reportName + ".jrxml");
-//		if (this.majors.size() > 0) {
-//			try {
-//				List<ReportResultDTO> resultList = new ArrayList<>();
-//				Long dataYear1 = 0l;
-//				Long dataYear2 = 0l;
-//				Long dataYear3 = 0l;
-//				Long dataYear4 = 0l;
-//				Long dataYear5 = 0l;
-//				for (Major major : this.majors) {
-//					resultList.add(new ReportResultDTO());
-//					resultList.get(resultList.size() - 1).setMajorName(major.getMajorName());
-//
-//					dataYear1 = certificateDAO.countCer(String.valueOf(toYear - 4), major.getId());
-//					if (dataYear1 != null) {
-//						resultList.get(resultList.size() - 1).setIssDate1(dataYear1.toString());
-//					} else {
-//						resultList.get(resultList.size() - 1).setIssDate1("0");
-//					}
-//
-//					dataYear2 = certificateDAO.countCer(String.valueOf(toYear - 3), major.getId());
-//					if (dataYear2 != null) {
-//						resultList.get(resultList.size() - 1).setIssDate2(dataYear2.toString());
-//					} else {
-//						resultList.get(resultList.size() - 1).setIssDate2("0");
-//					}
-//
-//					dataYear3 = certificateDAO.countCer(String.valueOf(toYear - 2), major.getId());
-//					if (dataYear3 != null) {
-//						resultList.get(resultList.size() - 1).setIssDate3(dataYear3.toString());
-//					} else {
-//						resultList.get(resultList.size() - 1).setIssDate3("0");
-//					}
-//
-//					dataYear4 = certificateDAO.countCer(String.valueOf(toYear - 1), major.getId());
-//					if (dataYear4 != null) {
-//						resultList.get(resultList.size() - 1).setIssDate4(dataYear4.toString());
-//					} else {
-//						resultList.get(resultList.size() - 1).setIssDate4("0");
-//					}
-//
-//					dataYear5 = certificateDAO.countCer(String.valueOf(toYear), major.getId());
-//					if (dataYear5 != null) {
-//						resultList.get(resultList.size() - 1).setIssDate5(dataYear5.toString());
-//					} else {
-//						resultList.get(resultList.size() - 1).setIssDate5("0");
-//					}
-//				}
-//
-//				Long totalDataYear1 = 0l;
-//				Long totalDataYear2 = 0l;
-//				Long totalDataYear3 = 0l;
-//				Long totalDataYear4 = 0l;
-//				Long totalDataYear5 = 0l;
-//
-//				if (resultList.size() > 0) {
-//					for (int i = 0; i < resultList.size(); i++) {
-//						totalDataYear1 += Long.valueOf(resultList.get(i).getIssDate1());
-//						totalDataYear2 += Long.valueOf(resultList.get(i).getIssDate2());
-//						totalDataYear3 += Long.valueOf(resultList.get(i).getIssDate3());
-//						totalDataYear4 += Long.valueOf(resultList.get(i).getIssDate4());
-//						totalDataYear5 += Long.valueOf(resultList.get(i).getIssDate5());
-//					}
-//				}
-//
-//				reportHeader.put("sum_nam1", String.valueOf(totalDataYear1));
-//				reportHeader.put("sum_nam2", String.valueOf(totalDataYear2));
-//				reportHeader.put("sum_nam3", String.valueOf(totalDataYear3));
-//				reportHeader.put("sum_nam4", String.valueOf(totalDataYear4));
-//				reportHeader.put("sum_nam5", String.valueOf(totalDataYear5));
-//
-//				reportHeader.put("in_nam1", String.valueOf(toYear - 4));
-//				reportHeader.put("in_nam2", String.valueOf(toYear - 3));
-//				reportHeader.put("in_nam3", String.valueOf(toYear - 2));
-//				reportHeader.put("in_nam4", String.valueOf(toYear - 1));
-//				reportHeader.put("in_nam5", String.valueOf(toYear));
-//
-//				JasperReport jasperReport = ReportUtils.getCompiledFile(jasperPath, jrxmlPath);
-//
-//				if (type.equalsIgnoreCase("PDF")) {
-//					report = ReportUtils.generateReportPDF(resultList, reportHeader, jasperReport);
-//				} else if (type.equalsIgnoreCase("EXCEL")) {
-//					reportHeader.put("IS_IGNORE_PAGINATION", Boolean.TRUE);
-//					report = ReportUtils.generateReportExcel(reportHeader, jasperReport, resultList);
-//				}
-//
-//				if (report != null) {
-//					try {
-//						String fileName = "ThongKeSoLieu.xls";
-//						ec.responseReset();
-//						ec.setResponseContentType("application/vnd.ms-excel");
-//						// The Save As popup magic is done here. You can give it
-//						// any file name you want, this only won't work in MSIE,
-//						// it will use current request URL as file name instead.
-//						ec.setResponseHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
-//						try (OutputStream fileOut = ec.getResponseOutputStream()) {
-//							fileOut.write(report);
-//							fileOut.flush();
-//						}
-//						FacesContext.getCurrentInstance().responseComplete();
-//					} catch (FileNotFoundException ex) {
-//						ex.getMessage();
-//					}
-//				}
-//			} catch (Exception e) {
-//				e.printStackTrace();
-//			}
-//		}
-//		return "";
-//	}
+	// public String createReportForGHBSError(String type, Long toYear) throws
+	// IOException {
+	// byte[] report = null;
+	// Map<String, Object> reportHeader = new HashMap<>();
+	// ExternalContext ec =
+	// FacesContext.getCurrentInstance().getExternalContext();
+	// HttpServletRequest request = (HttpServletRequest) ec.getRequest();
+	// this.majors = majorDAO.findAll();
+	// String reportName = "TKSLTN";
+	//
+	// String jasperPath =
+	// request.getSession().getServletContext().getRealPath("/jasper/" +
+	// reportName + ".jasper");
+	// String jrxmlPath =
+	// request.getSession().getServletContext().getRealPath("/jasper/" +
+	// reportName + ".jrxml");
+	// if (this.majors.size() > 0) {
+	// try {
+	// List<ReportResultDTO> resultList = new ArrayList<>();
+	// Long dataYear1 = 0l;
+	// Long dataYear2 = 0l;
+	// Long dataYear3 = 0l;
+	// Long dataYear4 = 0l;
+	// Long dataYear5 = 0l;
+	// for (Major major : this.majors) {
+	// resultList.add(new ReportResultDTO());
+	// resultList.get(resultList.size() - 1).setMajorName(major.getMajorName());
+	//
+	// dataYear1 = certificateDAO.countCer(String.valueOf(toYear - 4),
+	// major.getId());
+	// if (dataYear1 != null) {
+	// resultList.get(resultList.size() - 1).setIssDate1(dataYear1.toString());
+	// } else {
+	// resultList.get(resultList.size() - 1).setIssDate1("0");
+	// }
+	//
+	// dataYear2 = certificateDAO.countCer(String.valueOf(toYear - 3),
+	// major.getId());
+	// if (dataYear2 != null) {
+	// resultList.get(resultList.size() - 1).setIssDate2(dataYear2.toString());
+	// } else {
+	// resultList.get(resultList.size() - 1).setIssDate2("0");
+	// }
+	//
+	// dataYear3 = certificateDAO.countCer(String.valueOf(toYear - 2),
+	// major.getId());
+	// if (dataYear3 != null) {
+	// resultList.get(resultList.size() - 1).setIssDate3(dataYear3.toString());
+	// } else {
+	// resultList.get(resultList.size() - 1).setIssDate3("0");
+	// }
+	//
+	// dataYear4 = certificateDAO.countCer(String.valueOf(toYear - 1),
+	// major.getId());
+	// if (dataYear4 != null) {
+	// resultList.get(resultList.size() - 1).setIssDate4(dataYear4.toString());
+	// } else {
+	// resultList.get(resultList.size() - 1).setIssDate4("0");
+	// }
+	//
+	// dataYear5 = certificateDAO.countCer(String.valueOf(toYear),
+	// major.getId());
+	// if (dataYear5 != null) {
+	// resultList.get(resultList.size() - 1).setIssDate5(dataYear5.toString());
+	// } else {
+	// resultList.get(resultList.size() - 1).setIssDate5("0");
+	// }
+	// }
+	//
+	// Long totalDataYear1 = 0l;
+	// Long totalDataYear2 = 0l;
+	// Long totalDataYear3 = 0l;
+	// Long totalDataYear4 = 0l;
+	// Long totalDataYear5 = 0l;
+	//
+	// if (resultList.size() > 0) {
+	// for (int i = 0; i < resultList.size(); i++) {
+	// totalDataYear1 += Long.valueOf(resultList.get(i).getIssDate1());
+	// totalDataYear2 += Long.valueOf(resultList.get(i).getIssDate2());
+	// totalDataYear3 += Long.valueOf(resultList.get(i).getIssDate3());
+	// totalDataYear4 += Long.valueOf(resultList.get(i).getIssDate4());
+	// totalDataYear5 += Long.valueOf(resultList.get(i).getIssDate5());
+	// }
+	// }
+	//
+	// reportHeader.put("sum_nam1", String.valueOf(totalDataYear1));
+	// reportHeader.put("sum_nam2", String.valueOf(totalDataYear2));
+	// reportHeader.put("sum_nam3", String.valueOf(totalDataYear3));
+	// reportHeader.put("sum_nam4", String.valueOf(totalDataYear4));
+	// reportHeader.put("sum_nam5", String.valueOf(totalDataYear5));
+	//
+	// reportHeader.put("in_nam1", String.valueOf(toYear - 4));
+	// reportHeader.put("in_nam2", String.valueOf(toYear - 3));
+	// reportHeader.put("in_nam3", String.valueOf(toYear - 2));
+	// reportHeader.put("in_nam4", String.valueOf(toYear - 1));
+	// reportHeader.put("in_nam5", String.valueOf(toYear));
+	//
+	// JasperReport jasperReport = ReportUtils.getCompiledFile(jasperPath,
+	// jrxmlPath);
+	//
+	// if (type.equalsIgnoreCase("PDF")) {
+	// report = ReportUtils.generateReportPDF(resultList, reportHeader,
+	// jasperReport);
+	// } else if (type.equalsIgnoreCase("EXCEL")) {
+	// reportHeader.put("IS_IGNORE_PAGINATION", Boolean.TRUE);
+	// report = ReportUtils.generateReportExcel(reportHeader, jasperReport,
+	// resultList);
+	// }
+	//
+	// if (report != null) {
+	// try {
+	// String fileName = "ThongKeSoLieu.xls";
+	// ec.responseReset();
+	// ec.setResponseContentType("application/vnd.ms-excel");
+	// // The Save As popup magic is done here. You can give it
+	// // any file name you want, this only won't work in MSIE,
+	// // it will use current request URL as file name instead.
+	// ec.setResponseHeader("Content-Disposition", "attachment; filename=\"" +
+	// fileName + "\"");
+	// try (OutputStream fileOut = ec.getResponseOutputStream()) {
+	// fileOut.write(report);
+	// fileOut.flush();
+	// }
+	// FacesContext.getCurrentInstance().responseComplete();
+	// } catch (FileNotFoundException ex) {
+	// ex.getMessage();
+	// }
+	// }
+	// } catch (Exception e) {
+	// e.printStackTrace();
+	// }
+	// }
+	// return "";
+	// }
 
 	public void loadMajors() {
 		majors = majorDAO.findAll();
@@ -434,12 +460,24 @@ public class CertificateBean extends BaseController implements Serializable {
 
 	public boolean validateSearchCer() {
 		boolean result = true;
-		if (certificate.getStudentId() == "" && certificate.getStudentName() == "" && certificate.getBirthday() == null
+		if (certificate.getStudentId() == "" && certificate.getStudentName() == "" && certificate.getBirthday() == ""
 				&& certificate.getCertificateNo() == "") {
 			FacesContext context = FacesContext.getCurrentInstance();
 			context.addMessage(null,
 					new FacesMessage(FacesMessage.SEVERITY_WARN, "", this.readProperties("cer.checkNullAll")));
 			result = false;
+		} else if (certificate.getStudentId() == "" && certificate.getCertificateNo() == "") {
+			if (certificate.getStudentName() != "" && certificate.getBirthday() == "") {
+				FacesContext context = FacesContext.getCurrentInstance();
+				context.addMessage(null,
+						new FacesMessage(FacesMessage.SEVERITY_WARN, "", this.readProperties("cer.checkNullStudent")));
+				result = false;
+			} else if (certificate.getStudentName() == "" && certificate.getBirthday() != "") {
+				FacesContext context = FacesContext.getCurrentInstance();
+				context.addMessage(null,
+						new FacesMessage(FacesMessage.SEVERITY_WARN, "", this.readProperties("cer.checkNullStudent")));
+				result = false;
+			}
 		}
 		return result;
 	}
@@ -616,15 +654,17 @@ public class CertificateBean extends BaseController implements Serializable {
 					certificate.setStudentName((String) getCellValue(nextCell));
 					break;
 				case 2:
-					SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-					Date updateDate = new Date();
-					try {
-						updateDate = dateFormat.parse(getCellValue(nextCell));
-						certificate.setBirthday(updateDate);
-					} catch (ParseException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+					certificate.setBirthday((String) getCellValue(nextCell));
+					// SimpleDateFormat dateFormat = new
+					// SimpleDateFormat("dd/MM/yyyy");
+					// Date updateDate = new Date();
+					// try {
+					// updateDate = dateFormat.parse(getCellValue(nextCell));
+					// certificate.setBirthday(updateDate);
+					// } catch (ParseException e) {
+					// // TODO Auto-generated catch block
+					// e.printStackTrace();
+					// }
 					break;
 				case 3:
 					certificate.setBirthPlace((String) getCellValue(nextCell));
@@ -636,7 +676,13 @@ public class CertificateBean extends BaseController implements Serializable {
 					certificate.setProgram((String) getCellValue(nextCell));
 					break;
 				case 6:
-					certificate.setMajor((String) getCellValue(nextCell));
+					// certificate.setMajor((String) getCellValue(nextCell));
+					String major = getCellValue(nextCell).toString();
+					if (major.indexOf(".") != -1) {
+						major = major.substring(0, major.indexOf("."));
+					}
+					certificate.setMajor(major);
+
 					break;
 				case 7:
 					String certificateNo = getCellValue(nextCell).toString();
@@ -725,7 +771,5 @@ public class CertificateBean extends BaseController implements Serializable {
 	public void setFromDate(Date fromDate) {
 		this.fromDate = fromDate;
 	}
-	
-	
 
 }

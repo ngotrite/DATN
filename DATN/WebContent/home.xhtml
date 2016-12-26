@@ -11,6 +11,14 @@
 	<ui:define name="content">
 		<h:form id="form-home" class="container-fluid">
 			<div class="formFieldMg">
+				<!-- 				<p:growl id="growlMessageGlobal" autoUpdate="true" severity="info" -->
+				<!-- 					showSummary="true" showDetail="true" life="3000" /> -->
+				<!-- 				<p:growl showSummary="true" showDetail="true" severity="error" -->
+				<!-- 					autoUpdate="true" sticky="true" id="growlError" /> -->
+				<!-- 				<p:growl showSummary="true" showDetail="true" severity="warn" -->
+				<!-- 					autoUpdate="true" sticky="true" id="growlWarn" /> -->
+				<p:messages id="messages" showDetail="true" autoUpdate="true"
+					closable="true" />
 				<div class="col-xs-12 col-sm-2">
 					<div class="row">
 						<div class="col-xs-12 col-md-3">
@@ -33,7 +41,7 @@
 						<div class="col-xs-12 col-md-3">
 							<p:outputLabel />
 						</div>
-							<p:outputLabel value="#{msg['common.or']}" styleClass="pull-right" />
+						<p:outputLabel value="#{msg['common.or']}" styleClass="pull-right" />
 						<div class="col-xs-12 col-md-5"></div>
 					</div>
 				</div>
@@ -58,12 +66,18 @@
 					</div>
 					<div class="row">
 						<div class="col-xs-12 col-md-4">
-							<p:outputLabel value="#{msg['cer.birthday']}" />
+							<p:outputLabel value="#{msg['cer.birthday']}" for="date" />
 						</div>
 						<div class="col-xs-12 col-md-5">
-							<p:calendar effect="fold"
-								value="#{certificateBean.certificate.birthday}">
-							</p:calendar>
+							<!-- 							<p:calendar effect="fold" id="clBirthday" -->
+							<!-- 								value="#{certificateBean.certificate.birthday}" -->
+							<!-- 								pattern="dd/MM/yyyy"> -->
+							<!-- 							</p:calendar> -->
+							<!-- 							<p:inputText value="#{certificateBean.certificate.birthday}" -->
+							<!-- 								styleClass="form-control" /> -->
+							<p:inputMask id="date"
+								value="#{certificateBean.certificate.birthday}"
+								mask="99/99/9999" styleClass="form-control" />
 						</div>
 					</div>
 					<div class="row">
@@ -82,7 +96,7 @@
 						<div class="col-xs-12 col-md-5">
 							<p:commandButton id="btnSearch" value="#{msg['common.search']}"
 								actionListener="#{certificateBean.loadCerHome()}"
-								update="dtCer" icon=" fa fa fa-search"
+								update="form-home dtCer" icon=" fa fa fa-search"
 								styleClass="btn btn-default pull-right" resetValues="true">
 							</p:commandButton>
 						</div>
@@ -113,7 +127,7 @@
 					</p:column>
 
 					<p:column headerText="#{msg['cer.birthday']}">
-						<p:calendar effect="fold" value="#{item.birthday}" disabled="true" />
+						<h:outputText value="#{item.birthday}" />
 					</p:column>
 
 					<p:column headerText="#{msg['cer.birthPlace']}">
@@ -129,7 +143,7 @@
 					</p:column>
 
 					<p:column headerText="#{msg['cer.major']}">
-						<h:outputText value="#{item.major}" />
+						<h:outputText value="#{certificateBean.getMajorName(item.major)}" />
 					</p:column>
 
 					<p:column headerText="#{msg['cer.certificateNo']}">
@@ -141,8 +155,9 @@
 					</p:column>
 
 					<p:column headerText="#{msg['cer.issuanceDate']}">
-						<p:calendar effect="fold" value="#{item.issuanceDate}"
-							disabled="true" />
+						<h:outputText value="#{item.issuanceDate}">
+							<f:convertDateTime pattern="dd-MM-yyyy" />
+						</h:outputText>
 					</p:column>
 
 					<p:column headerText="#{msg['cer.grade']}">
