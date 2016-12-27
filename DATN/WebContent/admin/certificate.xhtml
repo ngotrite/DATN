@@ -130,7 +130,7 @@
 
 					<p:column headerText="#{msg['common.action']}"
 						style="text-align:center;" exportable="false">
-						<p:commandLink update="dlgCer"
+						<p:commandLink update="dlgCer" resetValues="true"
 							actionListener="#{certificateBean.showDialogCer(item)}"
 							styleClass="btn btn-sm btn-action-edit colorBlue">
 							<i class="fa fa-pencil icon-only mr-0"></i>
@@ -198,11 +198,11 @@
 
 						<div class="row">
 							<div class="col-xs-12">
-								<p:outputLabel value="#{msg['st.studentName']}" />
+								<p:outputLabel value="#{msg['st.studentName']}" for="studentName"/>
 							</div>
 							<div class="col-xs-12">
 								<p:inputText value="#{certificateBean.certificate.studentName}"
-									styleClass="form-control" />
+									styleClass="form-control" required="true" id="studentName"/>
 							</div>
 						</div>
 

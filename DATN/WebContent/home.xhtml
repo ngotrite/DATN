@@ -95,8 +95,9 @@
 						</div>
 						<div class="col-xs-12 col-md-5">
 							<p:commandButton id="btnSearch" value="#{msg['common.search']}"
-								actionListener="#{certificateBean.loadCerHome()}"
-								update="form-home dtCer" icon=" fa fa fa-search"
+								ajax="false"
+								action="#{certificateBean.loadCerHome()}"
+								 icon=" fa fa fa-search"
 								styleClass="btn btn-default pull-right" resetValues="true">
 							</p:commandButton>
 						</div>

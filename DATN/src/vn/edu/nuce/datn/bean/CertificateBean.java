@@ -82,7 +82,6 @@ public class CertificateBean extends BaseController implements Serializable {
 		this.majorDAO = new MajorDAO();
 		loadCer();
 		loadMajors();
-		loadCerHome();
 		this.lstCertificateHome = new ArrayList<Certificate>();
 
 		this.toDate = new Date();
