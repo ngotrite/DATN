@@ -208,9 +208,15 @@ public class GraduationPeriodBean extends BaseController implements Serializable
 	}
 
 	public void cmdDeleteGP(GraduationPeriod graduationPeriod) {
-		graduationPeriodDAO.delete(graduationPeriod);
-		graduationPeriods.remove(graduationPeriod);
-		super.showNotificationSuccsess();
+		StudentDAO studentDAO = new StudentDAO();
+		if (!studentDAO.checkGPInStudent(graduationPeriod.getGraduationPeriodId())) {
+			graduationPeriodDAO.delete(graduationPeriod);
+			graduationPeriods.remove(graduationPeriod);
+			super.showNotificationSuccsess();
+		}else {
+			this.showMessageWARN("common.summary.warning", super.readProperties("validate.fieldUseIn"));
+		}
+		
 	}
 
 	public void showDialogGP(GraduationPeriod graduationPeriod) {

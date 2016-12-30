@@ -49,11 +49,11 @@
 		paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 		rowsPerPageTemplate="10,20,50,100">
 
-		<p:column style="width:5%" headerText="#{msg['common.index']}">
+		<p:column style="text-align:center; width:5%" headerText="#{msg['common.index']}">
 			<h:outputText value="#{rowIndex + 1}" />
 		</p:column>
 
-		<p:column sortBy="#{item.studentId}" filterBy="#{item.studentId}"
+		<p:column sortBy="#{item.studentId}" filterBy="#{item.studentId}" style="text-align:center; width:15%"
 			filterMatchMode="contains" headerText="#{msg['st.studentId']}">
 			<h:outputText value="#{item.studentId}" />
 		</p:column>
@@ -63,7 +63,7 @@
 			<h:outputText value="#{graScoreBean.viewInfoStu(item, 'STUDENT_NAME')}" />
 		</p:column>
 
-		<p:column sortBy="#{graScoreBean.viewInfoStu(item, '_CLASS')}" filterBy="#{graScoreBean.viewInfoStu(item, '_CLASS')}"
+		<p:column sortBy="#{graScoreBean.viewInfoStu(item, '_CLASS')}" filterBy="#{graScoreBean.viewInfoStu(item, '_CLASS')}" style="text-align:center; width:15%"
 			filterMatchMode="contains" headerText="#{msg['st.class']}">
 			<h:outputText value="#{graScoreBean.viewInfoStu(item, '_CLASS')}" />
 		</p:column>

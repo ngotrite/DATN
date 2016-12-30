@@ -58,21 +58,21 @@
 				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 				rowsPerPageTemplate="10,20,50,100">
 
-				<p:column style="width:10%" headerText="#{msg['common.index']}">
+				<p:column style="text-align:center; width:10%" headerText="#{msg['common.index']}">
 					<h:outputText value="#{rowIndex + 1}" />
 				</p:column>
 
-				<p:column sortBy="#{item.subjectId}" filterBy="#{item.subjectId}"
+				<p:column sortBy="#{item.subjectId}" filterBy="#{item.subjectId}" style="text-align:center;"
 					filterMatchMode="contains" headerText="#{msg['sb.subjectId']}">
 					<h:outputText value="#{item.subjectId}" />
 				</p:column>
 
-				<p:column sortBy="#{item.subject}" filterBy="#{item.subject}"
+				<p:column sortBy="#{item.subject}" filterBy="#{item.subject}" style="text-align:center; width:35%"
 					filterMatchMode="contains" headerText="#{msg['sb.subject']}">
 					<h:outputText value="#{item.subject}" />
 				</p:column>
 
-				<p:column sortBy="#{item.credit}" filterBy="#{item.credit}"
+				<p:column sortBy="#{item.credit}" filterBy="#{item.credit}" style="text-align:center; width:14%"
 					filterMatchMode="contains" headerText="#{msg['sb.credit']}">
 					<h:outputText value="#{item.credit}" />
 				</p:column>

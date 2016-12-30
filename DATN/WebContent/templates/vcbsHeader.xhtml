@@ -11,6 +11,28 @@ VIETTEL PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:c="http://java.sun.com/jsp/jstl/core">
 <!-- HEADER -->
+<div class="menu-top">
+	<div class="section clearfix">
+		<div id="secondary-menu" class="navigation">
+			<h2 class="element-invisible">Trình đơn phụ</h2>
+			<ul id="secondary-menu-links" class="links inline clearfix">
+				<li class="menu-479 first">
+					<a href="http://nuce.edu.vn/vi/chuc-doan/hoi-sinh-vien.html" title="">Sinh viên</a>
+				</li>
+				<li class="menu-481">
+					<a href="http://nuce.edu.vn/vi" title="">Cán bộ &amp; giảng viên</a>
+				</li>
+				<li class="menu-483">
+					<a href="http://nuce.edu.vn/vi/gioi-thieu/loi-chao-mung.html" title="">Cựu sinh viên</a>
+				</li>
+				<li class="menu-485 last">
+					<a href="http://nuce.edu.vn/vi/gioi-thieu/loi-chao-mung-cua-hieu-truong.html" title="">Khách tham quan</a>
+				</li>
+			</ul>
+		</div>
+		<!-- /#secondary-menu -->
+	</div>
+</div>
 <div id="header">
 	<!-- 	<a href="#" class="btn_dangnhap_header"> <i class="fa fa-sign-out	"> -->
 	<!-- 	</i> Ðăng xuất -->
@@ -22,10 +44,10 @@ VIETTEL PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
 			<!-- 				ajax="false" title="Logout" > -->
 			<!-- 			</p:commandButton> -->
 			<i class="fa fa-sign-out"></i>
-			<p:commandLink value="Đăng xuất" id="btnLogout" action="#{userSession.doLogout()}"
-				ajax="false" title="Đăng xuất" >
-							</p:commandLink>
-			
+			<p:commandLink value="Đăng xuất" id="btnLogout"
+				action="#{userSession.doLogout()}" ajax="false" title="Đăng xuất">
+			</p:commandLink>
+
 		</h:form>
 	</div>
 	<!-- end logout button -->
@@ -54,11 +76,11 @@ VIETTEL PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
 	</h:form>
 
 	<div class="logo">
-	
-			<img
-				src="#{request.contextPath}/resources/newTheme/image/tonghop/header1.jpg"
-				alt="" />
-	
+
+		<img
+			src="#{request.contextPath}/resources/newTheme/image/tonghop/header1.jpg"
+			alt="" />
+
 	</div>
 
 	<div class="logo-mobile">
@@ -156,24 +178,26 @@ VIETTEL PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
 #header>:first-child {
 	width: auto !important;
 	/* margin-right: 116px !important; */
-}	
+}
 
 .btn-header.transparent {
 	position: absolute;
 	right: 0;
 }
-.btn-header > :first-child > a{
-font-size: 14px;
-color: black;
-margin: 0px;
-margin-right: 20px;
-font-weight: 400;
+
+.btn-header>:first-child>a {
+	font-size: 14px;
+	color: black;
+	margin: 0px;
+	margin-right: 20px;
+	font-weight: 400;
 }
-.btn-header > :first-child > a:HOVER{ 
-box-shadow:none;
-color: black;
-text-decoration: underline !important;
-cursor: pointer !important;
+
+.btn-header>:first-child>a:HOVER {
+	box-shadow: none;
+	color: black;
+	text-decoration: underline !important;
+	cursor: pointer !important;
 }
 </style>
 </html>

@@ -111,7 +111,7 @@ public class SubjectDictionaryBean extends BaseController implements Serializabl
 			subjectDictionaries.add(subjectDictionary);
 
 		} else {
-			super.showNotificationFail();
+//			super.showNotificationFail();
 		}
 		RequestContext context = RequestContext.getCurrentInstance();
 		context.execute("PF('dlgSubjectDictionaryWV').hide();");
@@ -262,8 +262,8 @@ public class SubjectDictionaryBean extends BaseController implements Serializabl
 					listCodeDuplicate += "," + codeDuplicate.get(i);
 				}
 			}
-			this.showMessageWARN("Subject Code",
-					super.readProperties("your inport file") + " has " + count + " success record and "
+			this.showMessageWARN("Subject ID",
+					super.readProperties("your import file") + " has " + count + " success record and "
 							+ codeDuplicate.size() + " duplicate record with name : " + listCodeDuplicate);
 		}
 

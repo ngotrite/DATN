@@ -240,16 +240,16 @@ function onKeyUpFrom(fromId, toId) {
 }
 //clear space 2 dau gia tri
 function trimAllInputText() {
-    var arrInput = document.getElementsByTagName("input");
-    try {
-        var count = 0;
-        for (var i = 0; i < arrInput.length; i++) {
-            if (arrInput[i].getAttribute("type") === "text" || arrInput[i].getAttribute("type") === "number" || arrInput[i].getAttribute("role") === "textbox") {
-                arrInput[i].value = arrInput[i].value.trim();
-                count++;
-            }
-        }
-    } catch (e) {
-        console.log(e);
-    }
+//    var arrInput = document.getElementsByTagName("input");
+//    try {
+//        var count = 0;
+//        for (var i = 0; i < arrInput.length; i++) {
+//            if (arrInput[i].getAttribute("type") === "text" || arrInput[i].getAttribute("type") === "number" || arrInput[i].getAttribute("role") === "textbox") {
+//                arrInput[i].value = arrInput[i].value.trim();
+//                count++;
+//            }
+//        }
+//    } catch (e) {
+//        console.log(e);
+//    }
 }

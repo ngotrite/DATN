@@ -27,12 +27,12 @@
 						style="font-weight:bold" />
 				</f:facet>
 
-				<p:column style="width:5%" headerText="#{msg['common.index']}">
+				<p:column style="text-align:center; width:5%" headerText="#{msg['common.index']}">
 					<h:outputText value="#{rowIndex + 1}" />
 				</p:column>
 
 				<p:column sortBy="#{item.studentId}" filterBy="#{item.studentId}"
-					style="width:11%" filterMatchMode="contains"
+					style="text-align:center; width:11%" filterMatchMode="contains"
 					headerText="#{msg['st.studentId']}">
 					<p:commandLink update=":form-list:carDetail"
 						value="#{item.studentId}"
@@ -43,19 +43,19 @@
 					</p:commandLink>
 				</p:column>
 
-				<p:column sortBy="#{item.studentName}" style="width:25%"
+				<p:column sortBy="#{item.studentName}" style="text-align:center; width:25%"
 					filterBy="#{item.studentName}" filterMatchMode="contains"
 					headerText="#{msg['st.studentName']}">
 					<h:outputText value="#{item.studentName}" />
 				</p:column>
 
-				<p:column sortBy="#{item._class}" filterBy="#{item._class}"
+				<p:column sortBy="#{item._class}" filterBy="#{item._class}" style="text-align:center;"
 					filterMatchMode="contains" headerText="#{msg['st.class']}">
 					<h:outputText value="#{item._class}" />
 				</p:column>
 
 				<p:column
-					sortBy="#{studentBean.getGPName(item.graduationPeriodId)}"
+					sortBy="#{studentBean.getGPName(item.graduationPeriodId)}" style="text-align:center;"
 					filterBy="#{studentBean.getGPName(item.graduationPeriodId)}"
 					filterMatchMode="contains" headerText="#{msg['gp.graPeriodName']}">
 					<h:outputText
@@ -63,7 +63,7 @@
 				</p:column>
 
 				<p:column
-					sortBy="#{studentBean.getGPInfo(item.graduationPeriodId,'START_DATE')}"
+					sortBy="#{studentBean.getGPInfo(item.graduationPeriodId,'START_DATE')}" style="text-align:center;"
 					filterBy="#{studentBean.getGPInfo(item.graduationPeriodId, 'START_DATE')}"
 					filterMatchMode="contains" headerText="#{msg['gp.startDate']}">
 					<h:outputText
@@ -73,7 +73,7 @@
 				</p:column>
 
 				<p:column
-					sortBy="#{studentBean.getGPInfo(item.graduationPeriodId,'FINISH_DATE')}"
+					sortBy="#{studentBean.getGPInfo(item.graduationPeriodId,'FINISH_DATE')}" style="text-align:center;"
 					filterBy="#{studentBean.getGPInfo(item.graduationPeriodId, 'FINISH_DATE')}"
 					filterMatchMode="contains" headerText="#{msg['gp.finishDate']}">
 					<h:outputText

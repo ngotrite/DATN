@@ -76,7 +76,7 @@ VIETTEL PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
 	<!-- Content Template CSS -->
 	<link rel="stylesheet" type="text/css" media="screen"
 		href="#{request.contextPath}/resources/themes/smartadmin/css/customContent.css" />
-	
+
 	<link rel="stylesheet" type="text/css" media="screen"
 		href="#{request.contextPath}/resources/newTheme/css/styleSheet.css" />
 	<!-- iOS web-app metas : hides Safari UI Components and Changes Status Bar Appearance -->
@@ -105,93 +105,121 @@ VIETTEL PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
 
 <body oncontextmenu="return true;">
 	<div class="container">
-        <div class="row">
-	<f:view locale="#{userSession.language}" contentType="text/html"
-		id="viewLocale">
-		<p:ajaxStatus
-			onstart="checkOpenDlg('statusDialog');trimAllInputText();"
-			oncomplete="checkCloseDlg('statusDialog');" />
-		<p:ajaxStatus onstart="trimAllInputText();" oncomplete="" />
-		<p:dialog modal="" hideEffect="" widgetVar="statusDialog"
-			draggable="false" closable="false" resizable="false"
-			style="background: transparent !important;" styleClass="loading">
-			<img src="#{request.contextPath}/resources/themes/images/loading.gif"
-				style="width: 64px;" />
-		</p:dialog>
-		<!-- <p:tooltip /> -->
-		<p:growl id="growlMessageGlobal" autoUpdate="true" severity="info"
-			showSummary="true" showDetail="true" life="3000" />
-<!-- 				<p:growl id="growlInfo" autoUpdate="true" severity="info" showSummary="true" showDetail="true" life="3000" /> -->
-		<p:growl showSummary="true" showDetail="true" severity="error" autoUpdate="true" sticky="true" id="growlError"/>
-		<p:growl showSummary="true" showDetail="true" severity="warn" autoUpdate="true" sticky="true" id="growlWarn"/>
+		<div class="row">
+			<f:view locale="#{userSession.language}" contentType="text/html"
+				id="viewLocale">
+				<p:ajaxStatus
+					onstart="checkOpenDlg('statusDialog');trimAllInputText();"
+					oncomplete="checkCloseDlg('statusDialog');" />
+				<p:ajaxStatus onstart="trimAllInputText();" oncomplete="" />
+				<p:dialog modal="" hideEffect="" widgetVar="statusDialog"
+					draggable="false" closable="false" resizable="false"
+					style="background: transparent !important;" styleClass="loading">
+					<img
+						src="#{request.contextPath}/resources/themes/images/loading.gif"
+						style="width: 64px;" />
+				</p:dialog>
+				<!-- <p:tooltip /> -->
+				<p:growl id="growlMessageGlobal" autoUpdate="true" severity="info"
+					showSummary="true" showDetail="true" life="3000" />
+				<!-- 				<p:growl id="growlInfo" autoUpdate="true" severity="info" showSummary="true" showDetail="true" life="3000" /> -->
+				<p:growl showSummary="true" showDetail="true" severity="error"
+					autoUpdate="true" sticky="true" id="growlError" />
+				<p:growl showSummary="true" showDetail="true" severity="warn"
+					autoUpdate="true" sticky="true" id="growlWarn" />
 
-		<p:confirmDialog global="true" showEffect="fade" hideEffect="explode"
-			width="250">
-			<p:commandButton
-				style="background: #3276b1;color: #fff;border-radius: 3px;float: left; padding: 5px 10px; margin-left: 20px;"
-				value="Yes" type="button" styleClass="ui-confirmdialog-yes"
-				icon="ui-icon-check" />
-			<p:commandButton
-				style="background: #c79121; color: #fff;border-radius: 3px; float: right; padding: 5px 10px; margin-right: 20px"
-				value="No" type="button" styleClass="ui-confirmdialog-no"
-				icon="ui-icon-close" />
-		</p:confirmDialog>
+				<p:confirmDialog global="true" showEffect="fade"
+					hideEffect="explode" width="250">
+					<p:commandButton
+						style="background: #3276b1;color: #fff;border-radius: 3px;float: left; padding: 5px 10px; margin-left: 20px;"
+						value="Yes" type="button" styleClass="ui-confirmdialog-yes"
+						icon="ui-icon-check" />
+					<p:commandButton
+						style="background: #c79121; color: #fff;border-radius: 3px; float: right; padding: 5px 10px; margin-right: 20px"
+						value="No" type="button" styleClass="ui-confirmdialog-no"
+						icon="ui-icon-close" />
+				</p:confirmDialog>
 
 
-		<ui:insert name="header">
-			<ui:include src="vcbsHeader.xhtml" />
-		</ui:insert>
-		
-		<div class="body">
-			<div class="container-fluid">
-				<div class="col-xs-12  login-right">
-					<div class="box-login-right" style="overflow: hidden;">
-						<div class="content">
-							<ui:insert name="content">
-				
-							</ui:insert>
+				<ui:insert name="header">
+					<ui:include src="vcbsHeader.xhtml" />
+				</ui:insert>
+
+				<div class="body">
+					<div class="container-fluid">
+						<div class="col-xs-12  login-right">
+							<div class="box-login-right" style="overflow: hidden;">
+								<div class="content">
+									<ui:insert name="content">
+
+									</ui:insert>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
-			</div>
-		</div>
-		<div id="footer">
-		    <p><strong>TRƯỜNG ĐẠI HỌC XÂY DỰNG</strong></p>
-			<p>Ðịa chỉ: 55 đường Giải Phóng, quận Hai Bà Trung, Hà Nội</p>
-		</div>
-		<!-- END MAIN PANEL -->
-		<!-- Link to Google CDN's jQuery + jQueryUI; fall back to local -->
-		<!--<script src="#{request.contextPath}/resources/themes/smartadmin/js/libs/jquery-2.0.2.min.js"></script>-->
-		<script
-			src="#{request.contextPath}/resources/themes/smartadmin/js/libs/jquery-ui-1.10.3.min.js"></script>
+				<div id="footer-wrapper">
+					<div class="container-fluid text-center">
+						<div class="row">
+							<div class="col-xs-12">
+								<div class="content relative">
+									<ul class="menu clearfix">
+										<li class="first leaf"><a href="/vi/contact" title="">Liên
+												hệ</a></li>
+										<li class="leaf"><a href="/vi" title="" class="active">Danh
+												mục</a></li>
+										<li class="last leaf"><a
+											href="https://www.google.com/maps/place/Tr%C6%B0%E1%BB%9Dng+%C4%90%E1%BA%A1i+h%E1%BB%8Dc+X%C3%A2y+d%E1%BB%B1ng/@21.0032632,105.8431575,15z/data=!4m2!3m1!1s0x0:0x499b8b613889f78a"
+											title="">Bản đồ và chỉ hướng</a></li>
+									</ul>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-xs-12">
+								<div class="content">
+									<p>
+										<strong>Bản quyền © 2010 Đại học Xây Dựng 55 Giải
+											phóng, Hà nội</strong>
+									</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- END MAIN PANEL -->
+				<!-- Link to Google CDN's jQuery + jQueryUI; fall back to local -->
+				<!--<script src="#{request.contextPath}/resources/themes/smartadmin/js/libs/jquery-2.0.2.min.js"></script>-->
+				<script
+					src="#{request.contextPath}/resources/themes/smartadmin/js/libs/jquery-ui-1.10.3.min.js"></script>
 
 
-		<!--JS TOUCH : include this plugin for mobile drag / drop touch events-->
-		<!-- <script src="#{request.contextPath}/resources/themes/smartadmin/js/plugin/jquery-touch/jquery.ui.touch-punch.min.js"></script> -->
+				<!--JS TOUCH : include this plugin for mobile drag / drop touch events-->
+				<!-- <script src="#{request.contextPath}/resources/themes/smartadmin/js/plugin/jquery-touch/jquery.ui.touch-punch.min.js"></script> -->
 
-		<!-- BOOTSTRAP JS -->
-		<script
-			src="#{request.contextPath}/resources/themes/smartadmin/js/bootstrap/bootstrap.min.js"></script>
+				<!-- BOOTSTRAP JS -->
+				<script
+					src="#{request.contextPath}/resources/themes/smartadmin/js/bootstrap/bootstrap.min.js"></script>
 
-		<!-- JARVIS WIDGETS -->
-		<script
-			src="#{request.contextPath}/resources/themes/smartadmin/js/smartwidgets/jarvis.widget.min.js"></script>
+				<!-- JARVIS WIDGETS -->
+				<script
+					src="#{request.contextPath}/resources/themes/smartadmin/js/smartwidgets/jarvis.widget.min.js"></script>
 
-		<!-- JQUERY MASKED INPUT -->
-		<!-- <script src="#{request.contextPath}/resources/themes/smartadmin/js/plugin/masked-input/jquery.maskedinput.min.js"></script> -->
+				<!-- JQUERY MASKED INPUT -->
+				<!-- <script src="#{request.contextPath}/resources/themes/smartadmin/js/plugin/masked-input/jquery.maskedinput.min.js"></script> -->
 
-		<!-- browser msie issue fix -->
-		<!-- <script src="#{request.contextPath}/resources/themes/smartadmin/js/plugin/msie-fix/jquery.mb.browser.min.js"></script> -->
+				<!-- browser msie issue fix -->
+				<!-- <script src="#{request.contextPath}/resources/themes/smartadmin/js/plugin/msie-fix/jquery.mb.browser.min.js"></script> -->
 
-		<!-- MAIN APP JS FILE -->
-		<script
-			src="#{request.contextPath}/resources/themes/smartadmin/js/app.js"></script>
+				<!-- MAIN APP JS FILE -->
+				<script
+					src="#{request.contextPath}/resources/themes/smartadmin/js/app.js"></script>
 
-		<!-- huannn -->
-		<!-- <script src="#{request.contextPath}/resources/themes/smartadmin/js/demo.js"></script> -->
-		<script src="#{request.contextPath}/resources/js/tree_ocs.js"></script>
+				<!-- huannn -->
+				<!-- <script src="#{request.contextPath}/resources/themes/smartadmin/js/demo.js"></script> -->
+				<script src="#{request.contextPath}/resources/js/tree_ocs.js"></script>
 
-		<script type="text/javascript">
+				<script type="text/javascript">
             $(document).ready(function () {
                 $(".calendar input").css("border", "none").css("background-color", "transparent").css("padding", "0px");
                 $(".combobox-container label").css("padding", "0px").css("width", "100%");
@@ -209,8 +237,8 @@ VIETTEL PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
                 }
             }
             </script>
-		<ui:insert name="footer_script"></ui:insert>
-	</f:view>
+				<ui:insert name="footer_script"></ui:insert>
+			</f:view>
 		</div>
 	</div>
 </body>

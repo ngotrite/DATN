@@ -46,11 +46,11 @@
 		paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 		rowsPerPageTemplate="10,20,50,100">
 
-		<p:column style="width:5%" headerText="#{msg['common.index']}">
+		<p:column style="text-align:center; width:5%" headerText="#{msg['common.index']}">
 			<h:outputText value="#{rowIndex + 1}" />
 		</p:column>
 
-		<p:column sortBy="#{item.subjectId}" filterBy="#{item.subjectId}"
+		<p:column sortBy="#{item.subjectId}" filterBy="#{item.subjectId}" style="text-align:center; width:12%"
 			filterMatchMode="contains" headerText="#{msg['sb.subjectId']}">
 			<h:outputText value="#{item.subjectId}" />
 		</p:column>
@@ -61,23 +61,23 @@
 			<h:outputText value="#{testScoreBean.viewInfoSub(item.subjectId, 'SUB_NAME')}" />
 		</p:column>
 
-		<p:column sortBy="#{testScoreBean.viewInfoSub(item.subjectId, 'CREDIT')}"
+		<p:column sortBy="#{testScoreBean.viewInfoSub(item.subjectId, 'CREDIT')}" style="text-align:center; width:9%"
 			filterBy="#{testScoreBean.viewInfoSub(item.subjectId, 'CREDIT')}"
 			filterMatchMode="contains" headerText="#{msg['sb.credit']}">
 			<h:outputText value="#{testScoreBean.viewInfoSub(item.subjectId, 'CREDIT')}" />
 		</p:column>
 
-		<p:column sortBy="#{item.groupId}" filterBy="#{item.groupId}"
+		<p:column sortBy="#{item.groupId}" filterBy="#{item.groupId}" style="text-align:center; width:13%"
 			filterMatchMode="contains" headerText="#{msg['ts.groupName']}">
 			<h:outputText value="#{item.groupId}" />
 		</p:column>
 
-		<p:column sortBy="#{item.schoolYear}" filterBy="#{item.schoolYear}"
+		<p:column sortBy="#{item.schoolYear}" filterBy="#{item.schoolYear}" style="text-align:center; width:9%"
 			filterMatchMode="contains" headerText="#{msg['ts.schoolYear']}">
 			<h:outputText value="#{item.schoolYear}" />
 		</p:column>
 
-		<p:column sortBy="#{item.test}" filterBy="#{item.test}"
+		<p:column sortBy="#{item.test}" filterBy="#{item.test}" style="text-align:center; width:9%"
 			filterMatchMode="contains" headerText="#{msg['ts.test']}">
 			<h:outputText value="#{item.test}" />
 		</p:column>

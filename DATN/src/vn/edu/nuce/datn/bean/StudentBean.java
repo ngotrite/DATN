@@ -46,7 +46,7 @@ public class StudentBean extends BaseController implements Serializable {
 		if (graduationPeriodId != null) {
 			return gPDAO.get(graduationPeriodId).getGraduationPeriodName();
 		}
-		return null;
+		return "";
 	}
 	
 	public Date getGPInfo(Long graduationPeriodId, String type) {

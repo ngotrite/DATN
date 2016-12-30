@@ -6,6 +6,7 @@ import java.util.List;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
+
 import vn.edu.nuce.datn.db.HibernateUtil;
 import vn.edu.nuce.datn.db.Operator;
 import vn.edu.nuce.datn.entity.Student;
@@ -123,6 +124,18 @@ public class StudentDAO extends BaseDAO<Student> implements Serializable {
 		String[] cols = { "studentId"};
 		Operator[] operators = { Operator.EQ};
 		Object[] values = { studentId  };
+		lst = findByConditionsWithoutDomain(cols, operators, values, "");
+		if (lst != null && lst.size() > 0) {
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean checkGPInStudent(Long graduationPeriodId) {
+		List<Student> lst = null;
+		String[] cols = { "graduationPeriodId"};
+		Operator[] operators = { Operator.EQ};
+		Object[] values = { graduationPeriodId };
 		lst = findByConditionsWithoutDomain(cols, operators, values, "");
 		if (lst != null && lst.size() > 0) {
 			return true;

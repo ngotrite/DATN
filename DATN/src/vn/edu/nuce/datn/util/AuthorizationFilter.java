@@ -115,7 +115,13 @@ public class AuthorizationFilter implements Filter {
 					pw.flush();
 					return;
 				}
-				resp.sendRedirect(reqt.getContextPath() + "/admin/login.xhtml");
+				
+				if (reqURI.indexOf("home.xhtml;jsessionid") > 0){
+					resp.sendRedirect(reqt.getContextPath() + "/");
+				}
+				if (reqURI.indexOf("/admin") > 0){
+					resp.sendRedirect(reqt.getContextPath() + "/admin/login.xhtml");
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

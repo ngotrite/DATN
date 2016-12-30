@@ -1,19 +1,19 @@
-function trimAllInputText() {
-	var arrInput = document.getElementsByTagName("input");
-	try {
-		var count = 0;
-		for (var i = arrInput.length - 1; i > 0; i--) {
-			if (arrInput[i].getAttribute("type") === "text"
-					|| arrInput[i].getAttribute("type") === "number"
-					|| arrInput[i].getAttribute("role") === "textbox") {
-				arrInput[i].value = arrInput[i].value.trim();
-				count++;
-			}
-		}
-	} catch (e) {
-		console.log(e);
-	}
-}
+//function trimAllInputText() {
+//	var arrInput = document.getElementsByTagName("input");
+//	try {
+//		var count = 0;
+//		for (var i = arrInput.length - 1; i > 0; i--) {
+//			if (arrInput[i].getAttribute("type") === "text"
+//					|| arrInput[i].getAttribute("type") === "number"
+//					|| arrInput[i].getAttribute("role") === "textbox") {
+//				arrInput[i].value = arrInput[i].value.trim();
+//				count++;
+//			}
+//		}
+//	} catch (e) {
+//		console.log(e);
+//	}
+//}
 // Search menu
 function hideLeftMenu(search) {
 	$("#left-panel .categoty").hide();
@@ -41,7 +41,7 @@ function showLeftMenu() {
 }
 function keyUpSearch() {
 	$("#keyword_menu").keyup(function() {
-		var search = $.trim(this.value);
+//		var search = $.trim(this.value);
 		if (search === "") {
 			showLeftMenu();
 		} else {

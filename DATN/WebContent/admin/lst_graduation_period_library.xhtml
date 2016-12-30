@@ -31,18 +31,18 @@
 					listener="#{graPeriodBean.onRowUnselect}"
 					update="form-sd-list form-sd-list:dtStudent" />
 
-				<p:column style="width:10%" headerText="#{msg['common.index']}">
+				<p:column style="text-align:center; width:10%" headerText="#{msg['common.index']}">
 					<h:outputText value="#{rowIndex + 1}" />
 				</p:column>
 
-				<p:column sortBy="#{item.graduationPeriodName}" style="width:20%"
+				<p:column sortBy="#{item.graduationPeriodName}" style="text-align:center; width:20%"
 					filterBy="#{item.graduationPeriodName}" filterMatchMode="contains"
 					headerText="#{msg['gp.graPeriodName']}">
 					<h:outputText value="#{item.graduationPeriodName}" />
 				</p:column>
 
 
-				<p:column sortBy="#{item.status}" style="width:20%"
+				<p:column sortBy="#{item.status}" style="text-align:center; width:20%"
 					filterBy="#{item.status}" filterMatchMode="equals"
 					headerText="#{msg['common.status']}">
 					<f:facet name="filter">
@@ -63,14 +63,14 @@
 						value="#{item.status eq true ? msg['common.opened'] : msg['common.closed'] }" />
 				</p:column>
 
-				<p:column sortBy="#{item.startDate}" filterBy="#{item.startDate}"
+				<p:column sortBy="#{item.startDate}" filterBy="#{item.startDate}" style="text-align:center;"
 					filterMatchMode="contains" headerText="#{msg['gp.startDate']}">
 					<h:outputText value="#{item.startDate}">
 						<f:convertDateTime pattern="dd-MM-yyyy" />
 					</h:outputText>
 				</p:column>
 
-				<p:column sortBy="#{item.finishDate}" filterBy="#{item.finishDate}"
+				<p:column sortBy="#{item.finishDate}" filterBy="#{item.finishDate}" style="text-align:center;"
 					filterMatchMode="contains" headerText="#{msg['gp.finishDate']}">
 					<h:outputText value="#{item.finishDate}">
 						<f:convertDateTime pattern="dd-MM-yyyy" />
@@ -118,23 +118,23 @@
 
 
 
-				<p:column style="width:5%" headerText="#{msg['common.index']}">
+				<p:column style="text-align:center; width:5%" headerText="#{msg['common.index']}">
 					<h:outputText value="#{rowIndex + 1}" />
 				</p:column>
 
 				<p:column sortBy="#{item.studentId}" filterBy="#{item.studentId}"
-					style="width:11%" filterMatchMode="contains"
+					style="text-align:center; width:11%" filterMatchMode="contains"
 					headerText="#{msg['st.studentId']}">
 					<h:outputText value="#{item.studentId}" />
 				</p:column>
 
-				<p:column sortBy="#{item.studentName}" style="width:12%"
+				<p:column sortBy="#{item.studentName}" style="text-align:center; width:12%"
 					filterBy="#{item.studentName}" filterMatchMode="contains"
 					headerText="#{msg['st.studentName']}">
 					<h:outputText value="#{item.studentName}" />
 				</p:column>
 
-				<p:column sortBy="#{item._class}" filterBy="#{item._class}"
+				<p:column sortBy="#{item._class}" filterBy="#{item._class}" style="text-align:center;"
 					filterMatchMode="contains" headerText="#{msg['st.class']}">
 					<h:outputText value="#{item._class}" />
 				</p:column>
@@ -159,7 +159,7 @@
 					</p:selectBooleanCheckbox>
 				</p:column>
 
-				<p:column sortBy="#{item.libraryUpdateTime}"
+				<p:column sortBy="#{item.libraryUpdateTime}" style="text-align:center;"
 					filterBy="#{item.libraryUpdateTime}" filterMatchMode="contains"
 					headerText="#{msg['st.libraryUT']}">
 <!-- 					<p:calendar effect="fold" value="#{item.libraryUpdateTime}" -->
@@ -172,7 +172,7 @@
 					</h:outputText>
 				</p:column>
 
-				<p:column sortBy="#{graPeriodBean.getUserName(item,'LIBRARY')}"
+				<p:column sortBy="#{graPeriodBean.getUserName(item,'LIBRARY')}"  style="text-align:center;"
 					filterBy="#{graPeriodBean.getUserName(item,'LIBRARY')}"
 					filterMatchMode="contains" headerText="#{msg['user.acc']}">
 					<h:outputText value="#{graPeriodBean.getUserName(item,'LIBRARY')}"

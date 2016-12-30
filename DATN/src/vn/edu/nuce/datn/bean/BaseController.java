@@ -12,7 +12,6 @@ import javax.faces.application.FacesMessage;
 import javax.faces.application.FacesMessage.Severity;
 import javax.faces.context.FacesContext;
 
-
 import org.primefaces.context.RequestContext;
 
 import vn.edu.nuce.datn.util.LocaleUtils;
@@ -109,10 +108,25 @@ public class BaseController {
 	 * @param objName
 	 *            Ex: Offer
 	 */
+	// public void showMessageWARN(String actionKey, String objName, String...
+	// additionalMessages) {
+	//
+	// String details = String.format("%s %s %s",
+	// this.readProperties(actionKey), objName,
+	// this.readProperties("common.notSafe"));
+	// for (String additionalMsg : additionalMessages) {
+	// details += this.readProperties(additionalMsg);
+	// }
+	// FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_WARN,
+	// this.readProperties("common.summary.warning"), details);
+	// FacesContext.getCurrentInstance().addMessage(null, message);
+	// }
 	public void showMessageWARN(String actionKey, String objName, String... additionalMessages) {
 
-		String details = String.format("%s %s %s", this.readProperties(actionKey), objName,
-				this.readProperties("common.notSafe"));
+		// String details = String.format("%s %s %s",
+		// this.readProperties(actionKey), objName,
+		// this.readProperties("common.notSafe"));
+		String details = String.format("%s %s", this.readProperties(actionKey), objName);
 		for (String additionalMsg : additionalMessages) {
 			details += this.readProperties(additionalMsg);
 		}

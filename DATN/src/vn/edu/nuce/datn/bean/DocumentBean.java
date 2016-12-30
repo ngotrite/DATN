@@ -40,12 +40,14 @@ public class DocumentBean extends BaseController implements Serializable {
 	private List<Document> documents;
 	private Document document;
 	private DocumentDAO documentDAO;
+	private List<Document> filteredDocuments;
 
 	@PostConstruct
 	public void init() {
 		this.document = new Document();
 		this.documentDAO = new DocumentDAO();
 		this.documents = new ArrayList<Document>();
+//		this.filteredDocuments = new ArrayList<Document>();
 		loadDocuments();
 	}
 
@@ -245,4 +247,13 @@ public class DocumentBean extends BaseController implements Serializable {
 	public void setDocument(Document document) {
 		this.document = document;
 	}
+
+	public List<Document> getFilteredDocuments() {
+		return filteredDocuments;
+	}
+
+	public void setFilteredDocuments(List<Document> filteredDocuments) {
+		this.filteredDocuments = filteredDocuments;
+	}
+	
 }

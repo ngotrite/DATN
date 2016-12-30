@@ -144,7 +144,6 @@ $(document).ready(function() {
 	} else {
 		alert("Error - menu anchor does not exist");
 	}
-	
 	// textfield only number
 	$(".text-field-only-number").keydown(function (e) {
         // Allow: backspace, delete, tab, escape, enter and .
