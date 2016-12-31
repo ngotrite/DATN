@@ -11,6 +11,7 @@ import org.hibernate.query.Query;
 import vn.edu.nuce.datn.db.HibernateUtil;
 import vn.edu.nuce.datn.db.Operator;
 import vn.edu.nuce.datn.entity.Certificate;
+import vn.edu.nuce.datn.entity.GraduationScore;
 
 @SuppressWarnings("serial")
 public class CertificateDAO extends BaseDAO<Certificate> implements Serializable {
@@ -124,6 +125,18 @@ public class CertificateDAO extends BaseDAO<Certificate> implements Serializable
 
 		return number.longValue();
 
+	}
+	
+	public boolean checkMajorInCertificate(String major) {
+		List<Certificate> lst = null;
+		String[] cols = { "major" };
+		Operator[] operators = { Operator.EQ };
+		Object[] values = { major };
+		lst = findByConditionsWithoutDomain(cols, operators, values, "");
+		if (lst != null && lst.size() > 0) {
+			return true;
+		}
+		return false;
 	}
 
 }

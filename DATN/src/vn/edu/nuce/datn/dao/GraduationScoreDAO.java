@@ -8,6 +8,7 @@ import org.hibernate.Session;
 import org.hibernate.query.Query;
 
 import vn.edu.nuce.datn.db.HibernateUtil;
+import vn.edu.nuce.datn.db.Operator;
 import vn.edu.nuce.datn.entity.GraduationScore;
 import vn.edu.nuce.datn.entity.TestScore;
 
@@ -61,5 +62,17 @@ public class GraduationScoreDAO extends BaseDAO<GraduationScore> implements Seri
 		} finally {
 			session.close();
 		}
+	}
+	
+	public boolean checkStudentIdInGraduationScore(String studentId) {
+		List<GraduationScore> lst = null;
+		String[] cols = { "studentId" };
+		Operator[] operators = { Operator.EQ };
+		Object[] values = { studentId };
+		lst = findByConditionsWithoutDomain(cols, operators, values, "");
+		if (lst != null && lst.size() > 0) {
+			return true;
+		}
+		return false;
 	}
 }

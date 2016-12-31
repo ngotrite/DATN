@@ -10,6 +10,7 @@ import org.hibernate.query.Query;
 import vn.edu.nuce.datn.db.Operator;
 
 import vn.edu.nuce.datn.db.HibernateUtil;
+import vn.edu.nuce.datn.entity.Student;
 import vn.edu.nuce.datn.entity.TestScore;
 
 @SuppressWarnings("serial")
@@ -66,7 +67,7 @@ public class TestScoreDAO extends BaseDAO<TestScore> implements Serializable {
 		}
 
 	}
-	
+
 	public Boolean checkFieldIsExist(String col, Object value, TestScore testScore) {
 		boolean result = false;
 
@@ -89,5 +90,17 @@ public class TestScoreDAO extends BaseDAO<TestScore> implements Serializable {
 		}
 
 		return result;
+	}
+
+	public boolean checkSubjectIdInTestScore(String subjectId) {
+		List<TestScore> lst = null;
+		String[] cols = { "subjectId" };
+		Operator[] operators = { Operator.EQ };
+		Object[] values = { subjectId };
+		lst = findByConditionsWithoutDomain(cols, operators, values, "");
+		if (lst != null && lst.size() > 0) {
+			return true;
+		}
+		return false;
 	}
 }

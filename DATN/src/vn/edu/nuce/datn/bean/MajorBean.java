@@ -8,6 +8,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 
+import vn.edu.nuce.datn.dao.CertificateDAO;
 import vn.edu.nuce.datn.dao.MajorDAO;
 import vn.edu.nuce.datn.entity.Major;
 import vn.edu.nuce.datn.entity.News;
@@ -54,14 +55,14 @@ public class MajorBean extends BaseController implements Serializable {
 	}
 
 	public void deleleMajor(Major major) {
-		try {
+		CertificateDAO cDAO = new CertificateDAO();
+		if (!cDAO.checkMajorInCertificate(major.getMajorId())) {
 			majorDAO.delete(major);
 			lstMajor.remove(major);
 			major = new Major();
-			super.showNotificationSuccsess();
-		} catch (Exception e) {
-			e.printStackTrace();
-			super.showNotificationFail();
+			this.showMessageINFO("common.delete", "Ngành");
+		} else {
+			this.showMessageWARN("common.summary.warning", super.readProperties("validate.fieldUseIn"));
 		}
 	}
 

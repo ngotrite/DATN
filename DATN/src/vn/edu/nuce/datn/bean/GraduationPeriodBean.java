@@ -33,9 +33,11 @@ import org.primefaces.event.UnselectEvent;
 import org.primefaces.model.UploadedFile;
 
 import vn.edu.nuce.datn.dao.GraduationPeriodDAO;
+import vn.edu.nuce.datn.dao.GraduationScoreDAO;
 import vn.edu.nuce.datn.dao.StudentDAO;
 import vn.edu.nuce.datn.dao.SysUserDAO;
 import vn.edu.nuce.datn.entity.GraduationPeriod;
+import vn.edu.nuce.datn.entity.GraduationScore;
 import vn.edu.nuce.datn.entity.Student;
 import vn.edu.nuce.datn.entity.SysUser;
 import vn.edu.nuce.datn.util.ContantsUtil;
@@ -321,9 +323,15 @@ public class GraduationPeriodBean extends BaseController implements Serializable
 	}
 
 	public void cmdDeleteStudent(Student student) {
-		studentDAO.delete(student);
-		students.remove(student);
-		this.showMessageINFO("common.delete", "Student");
+		GraduationScoreDAO gsDAO = new GraduationScoreDAO();
+		if (!gsDAO.checkStudentIdInGraduationScore(student.getStudentId())) {
+			studentDAO.delete(student);
+			students.remove(student);
+			this.showMessageINFO("common.delete", "Sinh viên");	
+		}else {
+			this.showMessageWARN("common.summary.warning", super.readProperties("validate.fieldUseIn"));
+		}
+		
 	}
 
 	// Upload Student

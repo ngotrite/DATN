@@ -23,8 +23,8 @@ import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.UploadedFile;
 
-
 import vn.edu.nuce.datn.dao.SubjectDictionaryDAO;
+import vn.edu.nuce.datn.dao.TestScoreDAO;
 import vn.edu.nuce.datn.entity.SubjectDictionary;
 import vn.edu.nuce.datn.util.ValidateUtil;
 
@@ -41,28 +41,27 @@ public class SubjectDictionaryBean extends BaseController implements Serializabl
 
 	@PostConstruct
 	public void init() {
-		this.subjectDictionary =new SubjectDictionary();
+		this.subjectDictionary = new SubjectDictionary();
 		this.subjectDictionaryDAO = new SubjectDictionaryDAO();
 		this.subjectDictionaries = new ArrayList<SubjectDictionary>();
 		this.subjectDictionariesSelection = new ArrayList<SubjectDictionary>();
 		loadSubjectDictionary();
 
 	}
-	
-	
+
 	/***** SELECTION DELETE *****/
-	
+
 	public void selectEvent(AjaxBehaviorEvent event) {
-		
+
 	}
-	
+
 	public boolean activeButton() {
 		if (subjectDictionariesSelection != null && subjectDictionariesSelection.size() > 0) {
 			return true;
 		}
 		return false;
 	}
-	
+
 	public void commandRemoveSD() {
 		if (subjectDictionaryDAO.delListSubjectDictionary(subjectDictionariesSelection)) {
 			subjectDictionariesSelection.clear();
@@ -71,7 +70,6 @@ public class SubjectDictionaryBean extends BaseController implements Serializabl
 			this.showMessageINFO("validate.deleteSuccess", super.readProperties(""));
 		}
 	}
-
 
 	/***** SUBJECT DICTONARY *****/
 
@@ -86,11 +84,17 @@ public class SubjectDictionaryBean extends BaseController implements Serializabl
 		}
 
 	}
-	
+
 	public void cmdDeleteSD(SubjectDictionary subjectDictionary) {
-		subjectDictionaryDAO.delete(subjectDictionary);
-		subjectDictionaries.remove(subjectDictionary);
-		this.showMessageINFO("common.delete", "Subject Dictionary");
+		TestScoreDAO tsDAO = new TestScoreDAO();
+		if (!tsDAO.checkSubjectIdInTestScore(subjectDictionary.getSubjectId())) {
+			subjectDictionaryDAO.delete(subjectDictionary);
+			subjectDictionaries.remove(subjectDictionary);
+			this.showMessageINFO("common.delete", "Từ điển môn học");
+		}else {
+			this.showMessageWARN("common.summary.warning", super.readProperties("validate.fieldUseIn"));
+		}
+
 	}
 
 	/***** DIALOG SUBJECT DICTONARY *****/
@@ -111,7 +115,7 @@ public class SubjectDictionaryBean extends BaseController implements Serializabl
 			subjectDictionaries.add(subjectDictionary);
 
 		} else {
-//			super.showNotificationFail();
+			// super.showNotificationFail();
 		}
 		RequestContext context = RequestContext.getCurrentInstance();
 		context.execute("PF('dlgSubjectDictionaryWV').hide();");
