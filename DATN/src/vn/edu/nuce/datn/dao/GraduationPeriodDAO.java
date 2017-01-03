@@ -7,8 +7,10 @@ import org.hibernate.Session;
 
 
 import vn.edu.nuce.datn.db.HibernateUtil;
+import vn.edu.nuce.datn.db.Operator;
 import vn.edu.nuce.datn.entity.GraduationPeriod;
 import vn.edu.nuce.datn.entity.Student;
+import vn.edu.nuce.datn.entity.SubjectDictionary;
 
 @SuppressWarnings("serial")
 public class GraduationPeriodDAO extends BaseDAO<GraduationPeriod> implements Serializable {

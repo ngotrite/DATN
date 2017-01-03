@@ -16,8 +16,8 @@
 				</div>
 				<div class="col-xs-12">
 					<p:inputText id="userName" value="#{userBean.sysUser.userName}"
-						styleClass="form-control" maxlength="20" required="true"
-						validator="ValidatorUsername" />
+						tabindex="1" styleClass="form-control" maxlength="20"
+						required="true" validator="ValidatorUsername" />
 				</div>
 			</div>
 
@@ -27,14 +27,15 @@
 				</div>
 				<div class="col-xs-12">
 					<p:inputText id="fullName" value="#{userBean.sysUser.fullName}"
-						styleClass="form-control" maxlength="100" />
+						tabindex="4" styleClass="form-control" maxlength="100" />
 				</div>
 			</div>
 
 
 			<div class="row">
 				<div class="col-xs-12">
-					<p:selectBooleanCheckbox value="#{userBean.sysUser.isActive}">
+					<p:selectBooleanCheckbox value="#{userBean.sysUser.isActive}"
+						tabindex="7">
 					</p:selectBooleanCheckbox>
 					<p:outputLabel value="#{msg['common.active']}" />
 				</div>
@@ -47,7 +48,7 @@
 					<p:outputLabel value="#{msg['user.password']}" for="password" />
 				</div>
 				<div class="col-xs-12">
-					<p:password id="password" value="#{userBean.password}"
+					<p:password id="password" value="#{userBean.password}" tabindex="2"
 						styleClass="form-control" maxlength="20" />
 				</div>
 			</div>
@@ -57,7 +58,7 @@
 					<p:outputLabel value="#{msg['user.remark']}" />
 				</div>
 				<div class="col-xs-12">
-					<p:inputText value="#{userBean.sysUser.remark}"
+					<p:inputText value="#{userBean.sysUser.remark}" tabindex="5"
 						styleClass="form-control" maxlength="20">
 						<pe:keyFilter regEx="/[0-9]/i" />
 					</p:inputText>
@@ -74,7 +75,7 @@
 				</div>
 				<div class="col-xs-12">
 					<p:password value="#{userBean.pass}" styleClass="form-control"
-						maxlength="20" />
+						tabindex="3" maxlength="20" />
 				</div>
 			</div>
 			<div class="row">
@@ -82,7 +83,7 @@
 					<p:outputLabel value="#{msg['user.email']}" />
 				</div>
 				<div class="col-xs-12">
-					<p:inputText value="#{userBean.sysUser.email}"
+					<p:inputText value="#{userBean.sysUser.email}" tabindex="6"
 						styleClass="form-control" maxlength="100"
 						validator="ValidatorEmail">
 					</p:inputText>
@@ -136,26 +137,23 @@
 					filterBy="#{user.userName}" filterMatchMode="contains">
 					<h:outputText value="#{user.userName}" title="#{user.userName}" />
 				</p:column>
-				<p:column headerText="#{msg['user.email']}" resizable="true"
-					styleClass="text-truncate preformatted" sortBy="#{user.userName}"
-					filterBy="#{user.email}" filterMatchMode="contains">
-					<h:outputText value="#{user.email}" title="#{user.email}" />
-				</p:column>
 				<p:column headerText="#{msg['user.fullName']}" resizable="true"
 					styleClass="text-truncate preformatted" sortBy="#{user.fullName}"
 					filterBy="#{user.fullName}" filterMatchMode="contains">
 					<h:outputText value="#{user.fullName}" title="#{user.fullName}" />
 				</p:column>
+				<p:column headerText="#{msg['user.email']}" resizable="true"
+					styleClass="text-truncate preformatted" sortBy="#{user.userName}"
+					filterBy="#{user.email}" filterMatchMode="contains">
+					<h:outputText value="#{user.email}" title="#{user.email}" />
+				</p:column>
+
 				<!-- <p:column headerText="#{msg['user.role']}"
 					sortBy="#{user.role.name}" filterBy="#{user.role.name}"
 					filterMatchMode="contains">
 					<h:outputText value="#{user.role.name}" />
 				</p:column> -->
-				<p:column headerText="#{msg['common.active']}"
-					styleClass="checkboxColumn">
-					<p:selectBooleanCheckbox value="#{user.isActive}" disabled="true">
-					</p:selectBooleanCheckbox>
-				</p:column>
+
 				<!-- 				<p:column headerText="#{msg['user.expireDate']}" -->
 				<!-- 					styleClass="text-truncate" sortBy="#{user.expireDate}"> -->
 				<!-- 					<h:outputText value="#{user.expireDate}" title="#{user.expireDate}" /> -->
@@ -164,6 +162,11 @@
 					styleClass="text-truncate" resizable="true"
 					filterBy="#{user.remark}" filterMatchMode="contains">
 					<h:outputText value="#{user.remark}" title="#{user.remark}" />
+				</p:column>
+
+				<p:column headerText="#{msg['common.active']}" style="text-align:center; width:10%">
+					<p:selectBooleanCheckbox value="#{user.isActive}" disabled="true">
+					</p:selectBooleanCheckbox>
 				</p:column>
 
 				<p:column headerText="#{msg['common.action']}"

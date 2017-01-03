@@ -35,11 +35,8 @@ import org.primefaces.model.UploadedFile;
 import vn.edu.nuce.datn.dao.GraduationPeriodDAO;
 import vn.edu.nuce.datn.dao.GraduationScoreDAO;
 import vn.edu.nuce.datn.dao.StudentDAO;
-import vn.edu.nuce.datn.dao.SysUserDAO;
 import vn.edu.nuce.datn.entity.GraduationPeriod;
-import vn.edu.nuce.datn.entity.GraduationScore;
 import vn.edu.nuce.datn.entity.Student;
-import vn.edu.nuce.datn.entity.SysUser;
 import vn.edu.nuce.datn.util.ContantsUtil;
 import vn.edu.nuce.datn.util.SessionUtils;
 import vn.edu.nuce.datn.util.ValidateUtil;
@@ -76,23 +73,37 @@ public class GraduationPeriodBean extends BaseController implements Serializable
 		this.finishedStudents = new ArrayList<Student>();
 		this.readOnly = true;
 	}
+	public void removeAll() {
+		for (Student student : students) {
+			studentDAO.delete(student);
+		}
+		students.clear();
+		super.showNotificationSuccsess();
+	}
 	
+	public boolean activeButton() {
+		if (students.size() > 0) {
+			return true;
+		}
+		return false;
+	}
+
 	public String getUserName(Student item, String type) {
 		String userName = "";
 		switch (type) {
 		case ContantsUtil.GroupUser.DEPARTMENT:
 			if (item.getDepartmentStatus()) {
-				userName = SessionUtils.getUserName(); 
+				userName = SessionUtils.getUserName();
 			}
 			break;
 		case ContantsUtil.GroupUser.LIBRARY:
 			if (item.getLibraryStatus()) {
-				userName = SessionUtils.getUserName(); 
+				userName = SessionUtils.getUserName();
 			}
 			break;
 		case ContantsUtil.GroupUser.SCHOOLFEE:
 			if (item.getSchoolFeeStatus()) {
-				userName = SessionUtils.getUserName(); 
+				userName = SessionUtils.getUserName();
 			}
 			break;
 		default:
@@ -101,8 +112,7 @@ public class GraduationPeriodBean extends BaseController implements Serializable
 
 		return userName;
 	}
-	
-	
+
 	public int countStudentsSF() {
 		if (graduationPeriod.getGraduationPeriodId() != null) {
 			for (Student student : students) {
@@ -153,8 +163,7 @@ public class GraduationPeriodBean extends BaseController implements Serializable
 			HSSFCell cell = header.getCell(i);
 			cell.setCellStyle(cellStyle);
 		}
-		
-		
+
 	}
 
 	public void resetFilters() {
@@ -178,6 +187,7 @@ public class GraduationPeriodBean extends BaseController implements Serializable
 
 	public void saveStudent() {
 		studentDAO.saveStudents(students);
+//		studentDAO.saveOrUpdate(student);
 		super.showNotificationSuccsess();
 		countStudentsSF();
 		countStudentsD();
@@ -215,10 +225,10 @@ public class GraduationPeriodBean extends BaseController implements Serializable
 			graduationPeriodDAO.delete(graduationPeriod);
 			graduationPeriods.remove(graduationPeriod);
 			super.showNotificationSuccsess();
-		}else {
+		} else {
 			this.showMessageWARN("common.summary.warning", super.readProperties("validate.fieldUseIn"));
 		}
-		
+
 	}
 
 	public void showDialogGP(GraduationPeriod graduationPeriod) {
@@ -327,11 +337,11 @@ public class GraduationPeriodBean extends BaseController implements Serializable
 		if (!gsDAO.checkStudentIdInGraduationScore(student.getStudentId())) {
 			studentDAO.delete(student);
 			students.remove(student);
-			this.showMessageINFO("common.delete", "Sinh viên");	
-		}else {
+			this.showMessageINFO("common.delete", "Sinh viên");
+		} else {
 			this.showMessageWARN("common.summary.warning", super.readProperties("validate.fieldUseIn"));
 		}
-		
+
 	}
 
 	// Upload Student
@@ -380,10 +390,10 @@ public class GraduationPeriodBean extends BaseController implements Serializable
 
 	public void readStudentExcelFile(UploadedFile file) throws IOException {
 		Workbook workbook = new HSSFWorkbook(file.getInputstream());
-
 		Sheet firstSheet = workbook.getSheetAt(0);
 		Iterator<Row> iterator = firstSheet.iterator();
-
+		List<String> stIDDuplicate = new ArrayList<>();
+		int count = 0;
 		while (iterator.hasNext()) {
 			Row nextRow = iterator.next();
 			if (nextRow.getRowNum() == 0) {
@@ -391,34 +401,91 @@ public class GraduationPeriodBean extends BaseController implements Serializable
 			}
 			Iterator<Cell> cellIterator = nextRow.cellIterator();
 			Student student = new Student();
-			while (cellIterator.hasNext()) {
-				Cell nextCell = cellIterator.next();
-				int columnIndex = nextCell.getColumnIndex();
+			boolean hasError = false;
+			if (!hasError) {
+				while (cellIterator.hasNext()) {
+					Cell nextCell = cellIterator.next();
+					int columnIndex = nextCell.getColumnIndex();
 
-				switch (columnIndex) {
-				case 0:
-					String studentId = getCellValue(nextCell).toString();
-					if(studentId.indexOf(".") != -1){
-						studentId = studentId.substring(0, studentId.indexOf("."));
+					switch (columnIndex) {
+					case 0:
+						String studentId = getCellValue(nextCell).toString();
+						if (studentId.indexOf(".") != -1) {
+							studentId = studentId.substring(0, studentId.indexOf("."));
+						}
+						if (checkIsExistST("studentId", studentId)) {
+							stIDDuplicate.add(studentId);
+							hasError = true;
+						} else {
+							if (studentId != null && !studentDAO.checkStudentId(studentId)) {
+								student.setStudentId(studentId);
+								hasError = false;
+							} else {
+								stIDDuplicate.add(studentId);
+								hasError = true;
+							}
+						}
+						break;
+
+					case 1:
+						if (hasError == false) {
+							student.setStudentName((String) getCellValue(nextCell));
+							break;
+						}
+					case 2:
+						if (hasError == false) {
+							student.set_class((String) getCellValue(nextCell));
+							break;
+						}
 					}
-					student.setStudentId(studentId);
-//					student.setStudentId((String) getCellValue(nextCell));
-					break;
-				case 1:
-					student.setStudentName((String) getCellValue(nextCell));
-					break;
-				case 2:
-					student.set_class((String) getCellValue(nextCell));
-					break;
+					if (hasError == false) {
+						student.setDepartmentStatus(false);
+						student.setLibraryStatus(false);
+						student.setSchoolFeeStatus(false);
+					}
 				}
-				student.setDepartmentStatus(false);
-				student.setLibraryStatus(false);
-				student.setSchoolFeeStatus(false);
-
 			}
-			students.add(student);
+			if (!hasError) {
+				students.add(student);
+				count++;
+			}
+		}
+		if (stIDDuplicate.size() > 0) {
+			String listIDDuplicate = "";
+			for (int i = 0; i < stIDDuplicate.size(); i++) {
+				if (listIDDuplicate.isEmpty()) {
+					listIDDuplicate += stIDDuplicate.get(i);
+				} else {
+					listIDDuplicate += "," + stIDDuplicate.get(i);
+				}
+			}
+			this.showMessageWARN("Student ID",
+					super.readProperties("your import file") + " has " + count + " success record and "
+							+ stIDDuplicate.size() + " duplicate record with name : " + listIDDuplicate);
+		}else {
+			this.showMessageINFO("Student your import file", count  + "");
 		}
 		workbook.close();
+	}
+
+	public Boolean checkIsExistST(String column, String value) {
+		boolean result = false;
+		if (column.equals("studentId")) {
+			if (this.students.size() > 0) {
+				for (Student s : this.students) {
+					if (s.getStudentId().equals(value)) {
+						result = true;
+						break;
+					}
+				}
+			}
+			if (!result) {
+				if (studentDAO.checkFieldIsExist(column, value, new Student())) {
+					result = true;
+				}
+			}
+		}
+		return result;
 	}
 
 	public void saveGraPeriod() {

@@ -12,6 +12,7 @@ import vn.edu.nuce.datn.db.HibernateUtil;
 import vn.edu.nuce.datn.db.Operator;
 import vn.edu.nuce.datn.entity.Certificate;
 import vn.edu.nuce.datn.entity.GraduationScore;
+import vn.edu.nuce.datn.entity.Student;
 
 @SuppressWarnings("serial")
 public class CertificateDAO extends BaseDAO<Certificate> implements Serializable {
@@ -132,6 +133,38 @@ public class CertificateDAO extends BaseDAO<Certificate> implements Serializable
 		String[] cols = { "major" };
 		Operator[] operators = { Operator.EQ };
 		Object[] values = { major };
+		lst = findByConditionsWithoutDomain(cols, operators, values, "");
+		if (lst != null && lst.size() > 0) {
+			return true;
+		}
+		return false;
+	}
+	
+	public Boolean checkFieldIsExist(String col, String value, Certificate certificate) {
+		boolean result = false;
+		int count = 0;
+		if (certificate == null) {
+			String[] column = { col };
+			Operator[] ope = { Operator.EQ };
+			Object[] val = { value };
+			count = this.countByConditions(column, ope, val);
+		} else {
+			String[] column = { col, "studentId" };
+			Operator[] ope = { Operator.EQ, Operator.NOTEQ };
+			Object[] val = { value, certificate.getStudentId()};
+			count = this.countByConditions(column, ope, val);
+		}
+		if (count > 0) {
+			result = true;
+		}
+		return result;
+	}
+	
+	public boolean checkStudentId(String studentId) {
+		List<Certificate> lst = null;
+		String[] cols = { "studentId"};
+		Operator[] operators = { Operator.EQ};
+		Object[] values = { studentId  };
 		lst = findByConditionsWithoutDomain(cols, operators, values, "");
 		if (lst != null && lst.size() > 0) {
 			return true;

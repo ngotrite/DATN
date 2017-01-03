@@ -9,11 +9,11 @@
 
 <ui:composition template="../templates/vcbsContentTemplate.xhtml">
 	<ui:define name="content">
-		<p:tabView id="tabTestScore" effect="fade" effectDuration="fast">
-			<p:tab id="tabSubScore" title="#{msg['ts.listSubjectScore']}">
+		<p:tabView prependId="false">
+			<p:tab title="#{msg['ts.listSubjectScore']}">
 				<ui:include src="/admin/subject_score.xhtml" />
 			</p:tab>
-			<p:tab id="tabGraScore" title="#{msg['gs.listGraduationScore']}">
+			<p:tab title="#{msg['gs.listGraduationScore']}">
 				<ui:include src="/admin/graduation_score.xhtml" />
 			</p:tab>
 		</p:tabView>

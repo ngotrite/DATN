@@ -123,7 +123,8 @@ public abstract class BaseDAO<T> {
 		try {
 
 			// Criteria cri = session.createCriteria(clazz);
-			String queryString = "SELECT COUNT(obj) FROM " + clazz.getName();
+//			String queryString = "SELECT COUNT(obj) FROM " + clazz.getName();
+			String queryString = "SELECT COUNT(obj) FROM " + clazz.getName() + " obj WHERE 1 = 1 ";
 			queryString += getWhereString(cols, operators);
 
 			Query query = session.createQuery(queryString);

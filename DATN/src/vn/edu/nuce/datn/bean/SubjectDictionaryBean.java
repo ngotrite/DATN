@@ -91,7 +91,7 @@ public class SubjectDictionaryBean extends BaseController implements Serializabl
 			subjectDictionaryDAO.delete(subjectDictionary);
 			subjectDictionaries.remove(subjectDictionary);
 			this.showMessageINFO("common.delete", "Từ điển môn học");
-		}else {
+		} else {
 			this.showMessageWARN("common.summary.warning", super.readProperties("validate.fieldUseIn"));
 		}
 
@@ -206,13 +206,10 @@ public class SubjectDictionaryBean extends BaseController implements Serializabl
 
 	public void readZoneFromExcelFile(UploadedFile file) throws IOException {
 		Workbook workbook = new HSSFWorkbook(file.getInputstream());
-
 		Sheet firstSheet = workbook.getSheetAt(0);
 		Iterator<Row> iterator = firstSheet.iterator();
-
 		List<String> codeDuplicate = new ArrayList<>();
 		int count = 0;
-
 		while (iterator.hasNext()) {
 			Row nextRow = iterator.next();
 			if (nextRow.getRowNum() == 0) {
@@ -227,7 +224,6 @@ public class SubjectDictionaryBean extends BaseController implements Serializabl
 					int columnIndex = nextCell.getColumnIndex();
 
 					switch (columnIndex) {
-
 					case 0:
 						if (checkIsExistSD("subjectId", (String) getCellValue(nextCell))) {
 							codeDuplicate.add((String) getCellValue(nextCell));
@@ -238,17 +234,16 @@ public class SubjectDictionaryBean extends BaseController implements Serializabl
 						}
 						break;
 					case 1:
-						subjectDictionary.setSubject((String) getCellValue(nextCell));
-						hasError = false;
-
-						break;
+						if (hasError == false) {
+							subjectDictionary.setSubject((String) getCellValue(nextCell));
+							break;
+						}
 					case 2:
-						subjectDictionary.setCredit((Double.valueOf(getCellValue(nextCell))).longValue());
-						hasError = false;
-						break;
-
+						if (hasError == false) {
+							subjectDictionary.setCredit((Double.valueOf(getCellValue(nextCell))).longValue());
+							break;
+						}
 					}
-
 				}
 			}
 			if (!hasError) {
@@ -269,15 +264,15 @@ public class SubjectDictionaryBean extends BaseController implements Serializabl
 			this.showMessageWARN("Subject ID",
 					super.readProperties("your import file") + " has " + count + " success record and "
 							+ codeDuplicate.size() + " duplicate record with name : " + listCodeDuplicate);
+		}else {
+			this.showMessageINFO("Bạn đã import thành công : ", count  + "");
 		}
-
 		workbook.close();
 	}
 
 	public Boolean checkIsExistSD(String column, String value) {
 		boolean result = false;
-
-		if (column.equals("SUBJECT_ID")) {
+		if (column.equals("subjectId")) {
 			if (this.subjectDictionaries.size() > 0) {
 				for (SubjectDictionary s : this.subjectDictionaries) {
 					if (s.getSubjectId().equals(value)) {
@@ -293,7 +288,6 @@ public class SubjectDictionaryBean extends BaseController implements Serializabl
 				}
 			}
 		}
-
 		return result;
 	}
 

@@ -14,9 +14,11 @@ import org.primefaces.context.RequestContext;
 
 import vn.edu.nuce.datn.dao.GraduationPeriodDAO;
 import vn.edu.nuce.datn.dao.StudentDAO;
+import vn.edu.nuce.datn.dao.SysUserDAO;
 import vn.edu.nuce.datn.entity.GraduationPeriod;
 import vn.edu.nuce.datn.entity.Student;
 import vn.edu.nuce.datn.entity.SubjectDictionary;
+import vn.edu.nuce.datn.entity.SysUser;
 import vn.edu.nuce.datn.util.ContantsUtil;
 import vn.edu.nuce.datn.util.SessionUtils;
 
@@ -45,6 +47,13 @@ public class StudentBean extends BaseController implements Serializable {
 		GraduationPeriodDAO gPDAO = new GraduationPeriodDAO();
 		if (graduationPeriodId != null) {
 			return gPDAO.get(graduationPeriodId).getGraduationPeriodName();
+		}
+		return "";
+	}
+	public String getUserName(Long userId) {
+		SysUserDAO sysUserDAO = new SysUserDAO();
+		if (userId != null) {
+			return sysUserDAO.get(userId).getFullName();
 		}
 		return "";
 	}

@@ -24,10 +24,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.poi.util.IOUtils;
+import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
 
 import vn.edu.nuce.datn.dao.SubjectDictionaryDAO;
 import vn.edu.nuce.datn.dao.TestScoreDAO;
+import vn.edu.nuce.datn.entity.GraduationScore;
 import vn.edu.nuce.datn.entity.SubjectDictionary;
 import vn.edu.nuce.datn.entity.TestScore;
 import vn.edu.nuce.datn.util.ContantsUtil;
@@ -41,6 +43,7 @@ public class TestScoreBean extends BaseController implements Serializable {
 
 	private TestScore testScore;
 	private List<TestScore> testScores;
+	private List<TestScore> lstTestScoreDLG;
 	private List<TestScore> testScoresSelection;
 	private TestScoreDAO testScoreDAO;
 
@@ -51,7 +54,20 @@ public class TestScoreBean extends BaseController implements Serializable {
 		this.testScore = new TestScore();
 		this.testScores = new ArrayList<TestScore>();
 		this.testScoreDAO = new TestScoreDAO();
+		this.lstTestScoreDLG = new ArrayList<TestScore>();
 		loadTestScore();
+	}
+
+	public void showDialogTS(TestScore testScore) {
+		if (testScore == null) {
+			this.testScore = new TestScore();
+			lstTestScoreDLG = new ArrayList<TestScore>();
+			RequestContext context = RequestContext.getCurrentInstance();
+			context.execute("PF('dlgTSWV').show();");
+		} else {
+			// Do nothing
+		}
+
 	}
 
 	/***** SELECTION DELETE *****/
@@ -304,10 +320,10 @@ public class TestScoreBean extends BaseController implements Serializable {
 	public void handleFileUpload(FileUploadEvent event) {
 
 		try {
-			int count = 1;
 			String fileName = event.getFile().getFileName();
 
 			File file = new File(ResourceBundleUtil.getString("server.path.document") + fileName);
+//			File file = new File(ResourceBundleUtil.getString("local.path.document") + fileName);
 
 			InputStream inputStream = event.getFile().getInputstream();
 			OutputStream outputStream = new FileOutputStream(file);
@@ -347,14 +363,12 @@ public class TestScoreBean extends BaseController implements Serializable {
 			testScore.setFilePath(file.getPath());
 			testScore.setFileName(file.getName());
 			testScoreDAO.save(testScore);
+			lstTestScoreDLG.add(testScore);
 			testScores.add(testScore);
-
-			count++;
-			System.out.println(count++ + " File Success");
-			// super.showMessageINFO("", this.readProperties("Đã upload thành
-			// công") + count++);
+			loadTestScore();
 			FacesMessage message = new FacesMessage("Succesful", event.getFile().getFileName() + " is uploaded.");
 			FacesContext.getCurrentInstance().addMessage(null, message);
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -374,10 +388,11 @@ public class TestScoreBean extends BaseController implements Serializable {
 			// name you want, this only won't work in MSIE, it will use current
 			// request URL as file name instead.
 			ec.setResponseHeader("Content-Disposition", "attachment; filename=\"" + testScore.getFileName() + "\"");
-//			FileOutputStream fos = new FileOutputStream(new File(ec.getRealPath(testScore.getFileName())));
-//			byte[] data = IOUtils.toByteArray(fis);
-//			fos.write(data, 0, data.length);
-//			fos.close();
+			// FileOutputStream fos = new FileOutputStream(new
+			// File(ec.getRealPath(testScore.getFileName())));
+			// byte[] data = IOUtils.toByteArray(fis);
+			// fos.write(data, 0, data.length);
+			// fos.close();
 			HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext()
 					.getRequest();
 			HttpServletResponse response = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext()
@@ -445,4 +460,13 @@ public class TestScoreBean extends BaseController implements Serializable {
 	public void setLstSD(List<SubjectDictionary> lstSD) {
 		this.lstSD = lstSD;
 	}
+
+	public List<TestScore> getLstTestScoreDLG() {
+		return lstTestScoreDLG;
+	}
+
+	public void setLstTestScoreDLG(List<TestScore> lstTestScoreDLG) {
+		this.lstTestScoreDLG = lstTestScoreDLG;
+	}
+
 }

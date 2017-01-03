@@ -36,7 +36,7 @@
 					<h:outputText value="#{item.documentNumber}" />
 				</p:column>
 
-				<p:column sortBy="#{item.remark}" filterBy="#{item.remark}"
+				<p:column sortBy="#{item.remark}" filterBy="#{item.remark}" style="width:25%"
 					filterMatchMode="contains" headerText="#{msg['doc.remark']}">
 					<h:outputText value="#{item.remark}" />
 				</p:column>
@@ -47,11 +47,6 @@
 					<h:outputText value="#{item.issuanceDate}">
 						<f:convertDateTime pattern="dd-MM-yyyy" />
 					</h:outputText>
-				</p:column>
-
-				<p:column sortBy="#{item.fileName}" filterBy="#{item.fileName}" style="text-align:center;"
-					filterMatchMode="contains" headerText="#{msg['common.fileName']}">
-					<h:outputText value="#{item.fileName}" />
 				</p:column>
 
 				<p:column sortBy="#{item.uploadDate}" filterBy="#{item.uploadDate}" 
@@ -105,7 +100,7 @@
 					</p:commandLink>
 
 					<f:facet name="header">
-						<p:commandButton value="#{msg['common.addNew']}" type="submit"
+						<p:commandButton value="+" type="submit"
 							resetValues="true"
 							actionListener="#{documentBean.showDialogDoc(null)}"
 							update="dlgDoc" styleClass="btn btn-primary" immediate="true">

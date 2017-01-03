@@ -49,6 +49,7 @@ import vn.edu.nuce.datn.entity.Certificate;
 import vn.edu.nuce.datn.entity.DateToSearch;
 import vn.edu.nuce.datn.entity.Major;
 import vn.edu.nuce.datn.entity.ReportResultDTO;
+import vn.edu.nuce.datn.entity.Student;
 import vn.edu.nuce.datn.entity.YearReport;
 import vn.edu.nuce.datn.util.ContantsUtil;
 import vn.edu.nuce.datn.util.ReportUtils;
@@ -629,6 +630,8 @@ public class CertificateBean extends BaseController implements Serializable {
 
 		Sheet firstSheet = workbook.getSheetAt(0);
 		Iterator<Row> iterator = firstSheet.iterator();
+		List<String> stIDDuplicate = new ArrayList<>();
+		int count = 0;
 
 		while (iterator.hasNext()) {
 			Row nextRow = iterator.next();
@@ -637,90 +640,180 @@ public class CertificateBean extends BaseController implements Serializable {
 			}
 			Iterator<Cell> cellIterator = nextRow.cellIterator();
 			Certificate certificate = new Certificate();
-			while (cellIterator.hasNext()) {
-				Cell nextCell = cellIterator.next();
-				int columnIndex = nextCell.getColumnIndex();
+			boolean hasError = false;
+			if (!hasError) {
+				while (cellIterator.hasNext()) {
+					Cell nextCell = cellIterator.next();
+					int columnIndex = nextCell.getColumnIndex();
 
-				switch (columnIndex) {
-				case 0:
-					String studentId = getCellValue(nextCell).toString();
-					if (studentId.indexOf(".") != -1) {
-						studentId = studentId.substring(0, studentId.indexOf("."));
-					}
-					certificate.setStudentId(studentId);
-					break;
-				case 1:
-					certificate.setStudentName((String) getCellValue(nextCell));
-					break;
-				case 2:
-					certificate.setBirthday((String) getCellValue(nextCell));
-					// SimpleDateFormat dateFormat = new
-					// SimpleDateFormat("dd/MM/yyyy");
-					// Date updateDate = new Date();
-					// try {
-					// updateDate = dateFormat.parse(getCellValue(nextCell));
-					// certificate.setBirthday(updateDate);
-					// } catch (ParseException e) {
-					// // TODO Auto-generated catch block
-					// e.printStackTrace();
-					// }
-					break;
-				case 3:
-					certificate.setBirthPlace((String) getCellValue(nextCell));
-					break;
-				case 4:
-					certificate.setEducationSystem((String) getCellValue(nextCell));
-					break;
-				case 5:
-					certificate.setProgram((String) getCellValue(nextCell));
-					break;
-				case 6:
-					// certificate.setMajor((String) getCellValue(nextCell));
-					String major = getCellValue(nextCell).toString();
-					if (major.indexOf(".") != -1) {
-						major = major.substring(0, major.indexOf("."));
-					}
-					certificate.setMajor(major);
+					switch (columnIndex) {
+					case 0:
+						String studentId = getCellValue(nextCell).toString();
+						if (studentId.indexOf(".") != -1) {
+							studentId = studentId.substring(0, studentId.indexOf("."));
+						}
+						if (checkIsExistCer("studentId", studentId)) {
+							stIDDuplicate.add(studentId);
+							hasError = true;
+						} else {
+							// if (studentId != null &&
+							// !certificateDAO.checkStudentId(studentId)) {
+							// certificate.setStudentId(studentId);
+							// hasError = false;
+							// } else {
+							// stIDDuplicate.add(studentId);
+							// hasError = true;
+							// }
+							certificate.setStudentId(studentId);
+							hasError = false;
+						}
+						break;
+					case 1:
+						if (hasError == false) {
+							certificate.setStudentName((String) getCellValue(nextCell));
+							break;
+						}
 
-					break;
-				case 7:
-					String certificateNo = getCellValue(nextCell).toString();
-					if (certificateNo.indexOf(".") != -1) {
-						certificateNo = certificateNo.substring(0, certificateNo.indexOf("."));
+					case 2:
+						if (hasError == false) {
+							certificate.setBirthday((String) getCellValue(nextCell));
+							// SimpleDateFormat dateFormat = new
+							// SimpleDateFormat("dd/MM/yyyy");
+							// Date updateDate = new Date();
+							// try {
+							// updateDate =
+							// dateFormat.parse(getCellValue(nextCell));
+							// certificate.setBirthday(updateDate);
+							// } catch (ParseException e) {
+							// // TODO Auto-generated catch block
+							// e.printStackTrace();
+							// }
+							break;
+						}
+
+					case 3:
+						if (hasError == false) {
+							certificate.setBirthPlace((String) getCellValue(nextCell));
+							break;
+						}
+
+					case 4:
+						if (hasError == false) {
+							certificate.setEducationSystem((String) getCellValue(nextCell));
+							break;
+						}
+
+					case 5:
+						if (hasError == false) {
+							certificate.setProgram((String) getCellValue(nextCell));
+							break;
+						}
+
+					case 6:
+						if (hasError == false) {
+							// certificate.setMajor((String)
+							// getCellValue(nextCell));
+							String major = getCellValue(nextCell).toString();
+							if (major.indexOf(".") != -1) {
+								major = major.substring(0, major.indexOf("."));
+							}
+							certificate.setMajor(major);
+
+							break;
+						}
+
+					case 7:
+						if (hasError == false) {
+							String certificateNo = getCellValue(nextCell).toString();
+							if (certificateNo.indexOf(".") != -1) {
+								certificateNo = certificateNo.substring(0, certificateNo.indexOf("."));
+							}
+							certificate.setCertificateNo(certificateNo);
+							break;
+						}
+
+					case 8:
+						if (hasError == false) {
+							String graduationYear = getCellValue(nextCell).toString();
+							if (graduationYear.indexOf(".") != -1) {
+								graduationYear = graduationYear.substring(0, graduationYear.indexOf("."));
+							}
+							certificate.setGraduationYear(graduationYear);
+							// certificate.setGraduationYear((String)
+							// getCellValue(nextCell));
+							break;
+						}
+
+					case 9:
+						if (hasError == false) {
+							// certificate.setIssuanceDate((String)
+							// getCellValue(nextCell));
+							SimpleDateFormat dateFormat1 = new SimpleDateFormat("dd/MM/yyyy");
+							Date updateDate1 = new Date();
+							try {
+								updateDate1 = dateFormat1.parse(getCellValue(nextCell));
+								certificate.setIssuanceDate(updateDate1);
+							} catch (ParseException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+							break;
+						}
+
+					case 10:
+						if (hasError == false) {
+							certificate.setGrade((String) getCellValue(nextCell));
+							break;
+						}
 					}
-					certificate.setCertificateNo(certificateNo);
-					break;
-				case 8:
-					String graduationYear = getCellValue(nextCell).toString();
-					if (graduationYear.indexOf(".") != -1) {
-						graduationYear = graduationYear.substring(0, graduationYear.indexOf("."));
+					if (hasError == false) {
+						certificate.setUpdateDate(new Date());
 					}
-					certificate.setGraduationYear(graduationYear);
-					// certificate.setGraduationYear((String)
-					// getCellValue(nextCell));
-					break;
-				case 9:
-					// certificate.setIssuanceDate((String)
-					// getCellValue(nextCell));
-					SimpleDateFormat dateFormat1 = new SimpleDateFormat("dd/MM/yyyy");
-					Date updateDate1 = new Date();
-					try {
-						updateDate1 = dateFormat1.parse(getCellValue(nextCell));
-						certificate.setIssuanceDate(updateDate1);
-					} catch (ParseException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					break;
-				case 10:
-					certificate.setGrade((String) getCellValue(nextCell));
-					break;
+
 				}
-				certificate.setUpdateDate(new Date());
 			}
-			lstcertificate.add(certificate);
+			if (!hasError) {
+				lstcertificate.add(certificate);
+				count++;
+			}
+		}
+
+		if (stIDDuplicate.size() > 0) {
+			String listIDDuplicate = "";
+			for (int i = 0; i < stIDDuplicate.size(); i++) {
+				if (listIDDuplicate.isEmpty()) {
+					listIDDuplicate += stIDDuplicate.get(i);
+				} else {
+					listIDDuplicate += "," + stIDDuplicate.get(i);
+				}
+			}
+			this.showMessageWARN("Certificate ",
+					super.readProperties("your import file") + " has " + count + " success record and "
+							+ stIDDuplicate.size() + " duplicate record with name : " + listIDDuplicate);
+		} else {
+			this.showMessageINFO("Student your import file", count + "");
 		}
 		workbook.close();
+	}
+
+	public Boolean checkIsExistCer(String column, String value) {
+		boolean result = false;
+		if (column.equals("studentId")) {
+			if (this.lstcertificate.size() > 0) {
+				for (Certificate c : this.lstcertificate) {
+					if (c.getStudentId().equals(value)) {
+						result = true;
+						break;
+					}
+				}
+			}
+			if (!result) {
+				if (certificateDAO.checkFieldIsExist(column, value, new Certificate())) {
+					result = true;
+				}
+			}
+		}
+		return result;
 	}
 
 	public Certificate getCertificate() {

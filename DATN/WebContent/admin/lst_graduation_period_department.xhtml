@@ -22,6 +22,9 @@
 				rowsPerPageTemplate="5,10,20,50,100">
 				<f:facet name="header">
 					<p:outputLabel value="#{msg['title.graduationPeriod']}" />
+					<p:outputLabel value=" ( tổng số :" />
+					#{fn:length(graPeriodBean.graduationPeriods)}
+					<p:outputLabel value=" đợt )" />
 				</f:facet>
 
 				<p:ajax event="rowSelect" listener="#{graPeriodBean.onRowSelect}"
@@ -31,20 +34,22 @@
 					listener="#{graPeriodBean.onRowUnselect}"
 					update="form-sd-list form-sd-list:dtStudent" />
 
-				<p:column style="text-align:center; width:10%" headerText="#{msg['common.index']}">
+				<p:column style="text-align:center; width:4%"
+					headerText="#{msg['common.index']}">
 					<h:outputText value="#{rowIndex + 1}" />
 				</p:column>
 
-				<p:column sortBy="#{item.graduationPeriodName}" style="text-align:center; width:20%"
+				<p:column sortBy="#{item.graduationPeriodName}"
+					style="text-align:center; width:45%"
 					filterBy="#{item.graduationPeriodName}" filterMatchMode="contains"
 					headerText="#{msg['gp.graPeriodName']}">
 					<h:outputText value="#{item.graduationPeriodName}" />
 				</p:column>
 
 
-				<p:column sortBy="#{item.status}" style="text-align:center; width:20%"
-					filterBy="#{item.status}" filterMatchMode="equals"
-					headerText="#{msg['common.status']}">
+				<p:column sortBy="#{item.status}"
+					style="text-align:center; width:10%" filterBy="#{item.status}"
+					filterMatchMode="equals" headerText="#{msg['common.status']}">
 					<f:facet name="filter">
 						<p:selectOneMenu onchange="PF('dtGPWV').filter()"
 							value="#{graPeriodBean.student.schoolFeeStatus}"
@@ -63,26 +68,22 @@
 						value="#{item.status eq true ? msg['common.opened'] : msg['common.closed'] }" />
 				</p:column>
 
-				<p:column sortBy="#{item.startDate}" filterBy="#{item.startDate}" style="text-align:center;"
-					filterMatchMode="contains" headerText="#{msg['gp.startDate']}">
+				<p:column sortBy="#{item.startDate}" filterBy="#{item.startDate}"
+					style="text-align:center; width:10%" filterMatchMode="contains"
+					headerText="#{msg['gp.startDate']}">
 					<h:outputText value="#{item.startDate}">
 						<f:convertDateTime pattern="dd-MM-yyyy" />
 					</h:outputText>
 				</p:column>
 
-				<p:column sortBy="#{item.finishDate}" filterBy="#{item.finishDate}" style="text-align:center;"
-					filterMatchMode="contains" headerText="#{msg['gp.finishDate']}">
+				<p:column sortBy="#{item.finishDate}" filterBy="#{item.finishDate}"
+					style="text-align:center; width:10%" filterMatchMode="contains"
+					headerText="#{msg['gp.finishDate']}">
 					<h:outputText value="#{item.finishDate}">
 						<f:convertDateTime pattern="dd-MM-yyyy" />
 					</h:outputText>
 				</p:column>
 
-
-				<f:facet name="footer">
-					<p:outputLabel value="#{msg['common.total']}">
-					#{fn:length(graPeriodBean.graduationPeriods)}
-					</p:outputLabel>
-				</f:facet>
 			</p:dataTable>
 
 		</h:form>
@@ -109,6 +110,10 @@
 					<p:outputLabel value="#{msg['title.lstStudent']}"
 						style="font-weight:bold">
 					</p:outputLabel>
+					<p:outputLabel
+						value="#{graPeriodBean.graduationPeriod.graduationPeriodName}"
+						style="font-weight:bold">
+					</p:outputLabel>
 
 					<p:commandButton value="#{msg['common.resetValue']}"
 						styleClass="btn btn-default pull-right btnResetFilters hidden"
@@ -119,7 +124,8 @@
 
 
 
-				<p:column style="text-align:center; width:5%" headerText="#{msg['common.index']}">
+				<p:column style="text-align:center; width:5%"
+					headerText="#{msg['common.index']}">
 					<h:outputText value="#{rowIndex + 1}" />
 				</p:column>
 
@@ -129,14 +135,15 @@
 					<h:outputText value="#{item.studentId}" />
 				</p:column>
 
-				<p:column sortBy="#{item.studentName}" style="text-align:center; width:25%"
-					filterBy="#{item.studentName}" filterMatchMode="contains"
-					headerText="#{msg['st.studentName']}">
+				<p:column sortBy="#{item.studentName}"
+					style="text-align:center; width:25%" filterBy="#{item.studentName}"
+					filterMatchMode="contains" headerText="#{msg['st.studentName']}">
 					<h:outputText value="#{item.studentName}" />
 				</p:column>
 
-				<p:column sortBy="#{item._class}" filterBy="#{item._class}" style="text-align:center;"
-					filterMatchMode="contains" headerText="#{msg['st.class']}">
+				<p:column sortBy="#{item._class}" filterBy="#{item._class}"
+					style="text-align:center;" filterMatchMode="contains"
+					headerText="#{msg['st.class']}">
 					<h:outputText value="#{item._class}" />
 				</p:column>
 
@@ -161,20 +168,22 @@
 					</p:selectBooleanCheckbox>
 				</p:column>
 
-				<p:column sortBy="#{item.departmentUpdateTime}" style="text-align:center; width:20%"
+				<p:column sortBy="#{item.departmentUpdateTime}"
+					style="text-align:center; width:20%"
 					filterBy="#{item.departmentUpdateTime}" filterMatchMode="contains"
 					headerText="#{msg['st.departmentUT']}">
-<!-- 					<p:calendar effect="fold" value="#{item.departmentUpdateTime}" -->
-<!-- 						id="cDepartmentUpdateTime" disabled="true"> -->
-<!-- 						<f:convertDateTime pattern="dd-MM-yyyy" /> -->
-<!-- 					</p:calendar> -->
+					<!-- 					<p:calendar effect="fold" value="#{item.departmentUpdateTime}" -->
+					<!-- 						id="cDepartmentUpdateTime" disabled="true"> -->
+					<!-- 						<f:convertDateTime pattern="dd-MM-yyyy" /> -->
+					<!-- 					</p:calendar> -->
 					<h:outputText value="#{item.departmentUpdateTime}"
 						id="cDepartmentUpdateTime">
 						<f:convertDateTime pattern="dd-MM-yyyy" />
 					</h:outputText>
 				</p:column>
 
-				<p:column sortBy="#{graPeriodBean.getUserName(item,'DEPARTMENT')}" style="text-align:center;"
+				<p:column sortBy="#{graPeriodBean.getUserName(item,'DEPARTMENT')}"
+					style="text-align:center;"
 					filterBy="#{graPeriodBean.getUserName(item,'DEPARTMENT')}"
 					filterMatchMode="contains" headerText="#{msg['user.acc']}">
 					<h:outputText

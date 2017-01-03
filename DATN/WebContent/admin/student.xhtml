@@ -38,7 +38,7 @@
 						value="#{item.studentId}"
 						oncomplete="PF('carOP').show('#{component.clientId}')"
 						id="clstudentId">
-						<f:setPropertyActionListener value="#{item}"
+						<f:setPropertyActionListener value="#{item}" 
 							target="#{studentBean.student}" />
 					</p:commandLink>
 				</p:column>
@@ -49,13 +49,13 @@
 					<h:outputText value="#{item.studentName}" />
 				</p:column>
 
-				<p:column sortBy="#{item._class}" filterBy="#{item._class}" style="text-align:center;"
+				<p:column sortBy="#{item._class}" filterBy="#{item._class}" style="text-align:center; width:9%"
 					filterMatchMode="contains" headerText="#{msg['st.class']}">
 					<h:outputText value="#{item._class}" />
 				</p:column>
 
 				<p:column
-					sortBy="#{studentBean.getGPName(item.graduationPeriodId)}" style="text-align:center;"
+					sortBy="#{studentBean.getGPName(item.graduationPeriodId)}" style="text-align:center; width:25%"
 					filterBy="#{studentBean.getGPName(item.graduationPeriodId)}"
 					filterMatchMode="contains" headerText="#{msg['gp.graPeriodName']}">
 					<h:outputText
@@ -103,7 +103,7 @@
 
 				<f:facet name="footer">
 					<p:outputLabel value="#{msg['common.total']}">
-					#{fn:length(studentBean.students)}
+					#{fn:length(studentBean.students)} sinh viên
 					</p:outputLabel>
 				</f:facet>
 			</p:dataTable>
@@ -132,8 +132,8 @@
 						<h:outputText value="#{msg['st.schoolFeeUpdateTime']}" />
 						<h:outputText value="#{studentBean.student.schoolFeeUpdateTime}" />
 
-						<h:outputText value="#{msg['user.userName']}" />
-						<h:outputText value="#{studentBean.student.schoolFeeUserId}" />
+						<h:outputText value="#{msg['user.acc']}" />
+						<h:outputText value="#{studentBean.getUserName(studentBean.student.schoolFeeUserId)}" />
 
 						<h:outputText value="#{msg['st.departmentStatus']}" />
 						<h:outputText
@@ -142,8 +142,8 @@
 						<h:outputText value="#{msg['st.departmentUpdateTime']}" />
 						<h:outputText value="#{studentBean.student.departmentUpdateTime}" />
 
-						<h:outputText value="#{msg['user.userName']}" />
-						<h:outputText value="#{studentBean.student.departmentUserId}" />
+						<h:outputText value="#{msg['user.acc']}" />
+						<h:outputText value="#{studentBean.getUserName(studentBean.student.departmentUserId)}" />
 
 						<h:outputText value="#{msg['st.libraryStatus']}" />
 						<h:outputText
@@ -152,8 +152,8 @@
 						<h:outputText value="#{msg['st.libraryUpdateTime']}" />
 						<h:outputText value="#{studentBean.student.libraryUpdateTime}" />
 
-						<h:outputText value="#{msg['user.userName']}" />
-						<h:outputText value="#{studentBean.student.libraryUserId}" />
+						<h:outputText value="#{msg['user.acc']}" />
+						<h:outputText value="#{studentBean.getUserName(studentBean.student.libraryUserId)}" />
 
 					</p:panelGrid>
 				</p:outputPanel>

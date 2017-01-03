@@ -8,33 +8,108 @@
 	xmlns:p="http://primefaces.org/ui" xmlns:pe="http://primefaces.org/ui">
 
 
-<h:form id="form-tc-input" class="container-fluid"
-	enctype="multipart/form-data">
-	<div class="row formFieldMg">
-		<div class="col-xs-12 col-md-12">
-			<div class="col-xs-12 col-md-10">
-				<p:fileUpload fileUploadListener="#{testScoreBean.handleFileUpload}"
-					mode="advanced" dragDropSupport="true" multiple="true"
-					sizeLimit="9999999" fileLimit="6000000"
-					update="tabTestScore:form-tc-list:dtTestScore @this"
-					fileLimitMessage="#{msg['validate.fileLimit']}"
-					invalidSizeMessage="#{msg['validate.importSize']}"
-					invalidFileMessage="#{msg['validate.importFormatPDF']}"
-					allowTypes="/(\.|\/)(pdf)$/" />
-			</div>
-			<div class="col-xs-12 col-md-2">
-				<p:commandButton value="#{msg['common.apply']}" type="submit"
-					actionListener="#{testScoreBean.saveTS()}"
-					update="tabTestScore:form-tc-list:dtTestScore"
-					styleClass="btn btn-default pull-right">
-					<p:confirm header="#{msg['common.apply']}"
-						message="#{msg['common.confirm_apply']}" icon="ui-icon-alert" />
-				</p:commandButton>
-			</div>
-		</div>
-	</div>
+<p:dialog header="Thêm mới bảng điểm môn học" id="dlgTS" showEffect="fade"
+	resizable="false" modal="true" widgetVar="dlgTSWV"
+	styleClass="dlg-center-fix">
+			<style>
+#dlgTS.ui-dialog .ui-dialog-content {
+	float: right;
+}
 
-</h:form>
+#dlgTS {
+	width: 67% !important;
+	height: 0% !important;
+}
+
+</style>
+	<h:form id="form-tc-input" class="container-fluid"
+		enctype="multipart/form-data">
+		<div class="row formFieldMg">
+			<div class="col-xs-12 col-md-12">
+				<div class="col-xs-12" align="center">
+					<p:fileUpload
+						fileUploadListener="#{testScoreBean.handleFileUpload}"
+						mode="advanced" dragDropSupport="true" multiple="true"
+						sizeLimit="9999999" fileLimit="6000000" 
+						update="form-tc-list:dtTestScore form-tc-input:dtTestScoreDLG form-tc-input"
+						fileLimitMessage="#{msg['validate.fileLimit']}"
+						invalidSizeMessage="#{msg['validate.importSize']}"
+						invalidFileMessage="#{msg['validate.importFormatPDF']}"
+						allowTypes="/(\.|\/)(pdf)$/" />
+				</div>
+				<!-- 				<div class="col-xs-12 col-md-2"> -->
+				<!-- 					<p:commandButton value="#{msg['common.apply']}" type="submit" -->
+				<!-- 						actionListener="#{testScoreBean.saveTS()}" -->
+				<!-- 						update="tabTestScore:form-tc-list:dtTestScore" -->
+				<!-- 						styleClass="btn btn-default pull-right"> -->
+				<!-- 						<p:confirm header="#{msg['common.apply']}" -->
+				<!-- 							message="#{msg['common.confirm_apply']}" icon="ui-icon-alert" /> -->
+				<!-- 					</p:commandButton> -->
+				<!-- 				</div> -->
+			</div>
+
+			<p:dataTable var="item" value="#{testScoreBean.lstTestScoreDLG}"
+				id="dtTestScoreDLG" rowKey="#{item.testScoreId}"
+				emptyMessage="#{msg['common.noData']}" paginator="true" rows="20"
+				paginatorPosition="bottom" rowIndexVar="rowIndex"
+				widgetVar="tblTCWidgetVarDLG" rendered="#{not empty testScoreBean.lstTestScoreDLG}"
+				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="10,20,50,100">
+
+				<p:column style="text-align:center; width:5%"
+					headerText="#{msg['common.index']}">
+					<h:outputText value="#{rowIndex + 1}" />
+				</p:column>
+
+				<p:column sortBy="#{item.subjectId}" filterBy="#{item.subjectId}"
+					style="text-align:center; width:15%" filterMatchMode="contains"
+					headerText="#{msg['sb.subjectId']}">
+					<h:outputText value="#{item.subjectId}" />
+				</p:column>
+
+				<p:column style="text-align:center; width:25%"
+					sortBy="#{testScoreBean.viewInfoSub(item.subjectId, 'SUB_NAME')}"
+					filterBy="#{testScoreBean.viewInfoSub(item.subjectId, 'SUB_NAME')}"
+					filterMatchMode="contains" headerText="#{msg['sb.subject']}">
+					<h:outputText
+						value="#{testScoreBean.viewInfoSub(item.subjectId, 'SUB_NAME')}" />
+				</p:column>
+
+				<p:column
+					sortBy="#{testScoreBean.viewInfoSub(item.subjectId, 'CREDIT')}"
+					style="text-align:center; width:11%"
+					filterBy="#{testScoreBean.viewInfoSub(item.subjectId, 'CREDIT')}"
+					filterMatchMode="contains" headerText="#{msg['sb.credit']}">
+					<h:outputText
+						value="#{testScoreBean.viewInfoSub(item.subjectId, 'CREDIT')}" />
+				</p:column>
+
+				<p:column sortBy="#{item.groupId}" filterBy="#{item.groupId}"
+					style="text-align:center; width:15%" filterMatchMode="contains"
+					headerText="#{msg['ts.groupName']}">
+					<h:outputText value="#{item.groupId}" />
+				</p:column>
+
+				<p:column sortBy="#{item.schoolYear}" filterBy="#{item.schoolYear}"
+					style="text-align:center; width:11%" filterMatchMode="contains"
+					headerText="#{msg['ts.schoolYear']}">
+					<h:outputText value="#{item.schoolYear}" />
+				</p:column>
+
+				<p:column sortBy="#{item.test}" filterBy="#{item.test}"
+					style="text-align:center; width:9%" filterMatchMode="contains"
+					headerText="#{msg['ts.test']}">
+					<h:outputText value="#{item.test}" />
+				</p:column>
+
+			</p:dataTable>
+		</div>
+
+	</h:form>
+
+</p:dialog>
+
+
 
 <h:form id="form-tc-list" class="container-fluid">
 	<p:dataTable var="item" value="#{testScoreBean.testScores}"
@@ -46,44 +121,61 @@
 		paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 		rowsPerPageTemplate="10,20,50,100">
 
-		<p:column style="text-align:center; width:5%" headerText="#{msg['common.index']}">
+		<p:column style="text-align:center; width:5%"
+			headerText="#{msg['common.index']}">
 			<h:outputText value="#{rowIndex + 1}" />
 		</p:column>
 
-		<p:column sortBy="#{item.subjectId}" filterBy="#{item.subjectId}" style="text-align:center; width:12%"
-			filterMatchMode="contains" headerText="#{msg['sb.subjectId']}">
+		<p:column sortBy="#{item.subjectId}" filterBy="#{item.subjectId}"
+			style="text-align:center; width:12%" filterMatchMode="contains"
+			headerText="#{msg['sb.subjectId']}">
 			<h:outputText value="#{item.subjectId}" />
 		</p:column>
 
-		<p:column sortBy="#{testScoreBean.viewInfoSub(item.subjectId, 'SUB_NAME')}"
+		<p:column
+			sortBy="#{testScoreBean.viewInfoSub(item.subjectId, 'SUB_NAME')}"
 			filterBy="#{testScoreBean.viewInfoSub(item.subjectId, 'SUB_NAME')}"
 			filterMatchMode="contains" headerText="#{msg['sb.subject']}">
-			<h:outputText value="#{testScoreBean.viewInfoSub(item.subjectId, 'SUB_NAME')}" />
+			<h:outputText
+				value="#{testScoreBean.viewInfoSub(item.subjectId, 'SUB_NAME')}" />
 		</p:column>
 
-		<p:column sortBy="#{testScoreBean.viewInfoSub(item.subjectId, 'CREDIT')}" style="text-align:center; width:9%"
+		<p:column
+			sortBy="#{testScoreBean.viewInfoSub(item.subjectId, 'CREDIT')}"
+			style="text-align:center; width:9%"
 			filterBy="#{testScoreBean.viewInfoSub(item.subjectId, 'CREDIT')}"
 			filterMatchMode="contains" headerText="#{msg['sb.credit']}">
-			<h:outputText value="#{testScoreBean.viewInfoSub(item.subjectId, 'CREDIT')}" />
+			<h:outputText
+				value="#{testScoreBean.viewInfoSub(item.subjectId, 'CREDIT')}" />
 		</p:column>
 
-		<p:column sortBy="#{item.groupId}" filterBy="#{item.groupId}" style="text-align:center; width:13%"
-			filterMatchMode="contains" headerText="#{msg['ts.groupName']}">
+		<p:column sortBy="#{item.groupId}" filterBy="#{item.groupId}"
+			style="text-align:center; width:13%" filterMatchMode="contains"
+			headerText="#{msg['ts.groupName']}">
 			<h:outputText value="#{item.groupId}" />
 		</p:column>
 
-		<p:column sortBy="#{item.schoolYear}" filterBy="#{item.schoolYear}" style="text-align:center; width:9%"
-			filterMatchMode="contains" headerText="#{msg['ts.schoolYear']}">
+		<p:column sortBy="#{item.schoolYear}" filterBy="#{item.schoolYear}"
+			style="text-align:center; width:9%" filterMatchMode="contains"
+			headerText="#{msg['ts.schoolYear']}">
 			<h:outputText value="#{item.schoolYear}" />
 		</p:column>
 
-		<p:column sortBy="#{item.test}" filterBy="#{item.test}" style="text-align:center; width:9%"
-			filterMatchMode="contains" headerText="#{msg['ts.test']}">
+		<p:column sortBy="#{item.test}" filterBy="#{item.test}"
+			style="text-align:center; width:9%" filterMatchMode="contains"
+			headerText="#{msg['ts.test']}">
 			<h:outputText value="#{item.test}" />
 		</p:column>
 
 		<p:column headerText="#{msg['common.action']}"
 			style="text-align:center; width:17%">
+
+			<f:facet name="header">
+				<p:commandButton value="+" type="submit" resetValues="true"
+					actionListener="#{testScoreBean.showDialogTS(null)}"
+					update="dlgTS" styleClass="btn btn-primary">
+				</p:commandButton>
+			</f:facet>
 
 			<h:commandLink action="#{testScoreBean.newTabFilePDF(item)}"
 				target="_blank"
@@ -141,7 +233,7 @@
 	<p:fileUpload styleClass="hidden btn_edit_file_upload_sb"
 		fileUploadListener="#{testScoreBean.editFileUpload}" mode="advanced"
 		dragDropSupport="true" multiple="false" auto="true" sizeLimit="999999"
-		fileLimit="60000" update="tabTestScore:form-tc-list:dtTestScore @this"
+		fileLimit="60000" update="form-tc-list:dtTestScore @this"
 		fileLimitMessage="#{msg['validate.fileLimit']}"
 		invalidSizeMessage="#{msg['validate.importSize']}"
 		invalidFileMessage="#{msg['validate.importFormatXLS']}"

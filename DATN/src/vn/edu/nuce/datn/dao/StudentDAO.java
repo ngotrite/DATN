@@ -9,6 +9,7 @@ import org.hibernate.query.Query;
 
 import vn.edu.nuce.datn.db.HibernateUtil;
 import vn.edu.nuce.datn.db.Operator;
+import vn.edu.nuce.datn.entity.GraduationPeriod;
 import vn.edu.nuce.datn.entity.Student;
 
 @SuppressWarnings("serial")
@@ -142,6 +143,28 @@ public class StudentDAO extends BaseDAO<Student> implements Serializable {
 		}
 		return false;
 	}
+	
+	
+	public Boolean checkFieldIsExist(String col, String value, Student student) {
+		boolean result = false;
+		int count = 0;
+		if (student == null) {
+			String[] column = { col };
+			Operator[] ope = { Operator.EQ };
+			Object[] val = { value };
+			count = this.countByConditions(column, ope, val);
+		} else {
+			String[] column = { col, "studentId" };
+			Operator[] ope = { Operator.EQ, Operator.NOTEQ };
+			Object[] val = { value, student.getStudentId()};
+			count = this.countByConditions(column, ope, val);
+		}
+		if (count > 0) {
+			result = true;
+		}
+		return result;
+	}
+
 	
 	@Override
 	protected Class<Student> getEntityClass() {

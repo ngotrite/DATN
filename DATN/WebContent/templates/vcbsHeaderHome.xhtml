@@ -16,18 +16,33 @@ VIETTEL PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
 		<div id="secondary-menu" class="navigation">
 			<h2 class="element-invisible">Trình đơn phụ</h2>
 			<ul id="secondary-menu-links" class="links inline clearfix">
-				<li class="menu-479 first">
-					<a href="http://nuce.edu.vn/vi/chuc-doan/hoi-sinh-vien.html" title="">Sinh viên</a>
-				</li>
-				<li class="menu-481">
-					<a href="http://nuce.edu.vn/vi" title="">Cán bộ &amp; giảng viên</a>
-				</li>
-				<li class="menu-483">
-					<a href="http://nuce.edu.vn/vi/gioi-thieu/loi-chao-mung.html" title="">Cựu sinh viên</a>
-				</li>
-				<li class="menu-485 last">
-					<a href="http://nuce.edu.vn/vi/gioi-thieu/loi-chao-mung-cua-hieu-truong.html" title="">Khách tham quan</a>
-				</li>
+				<!-- 				<li class="menu-479 first"> -->
+				<!-- 					<a href="http://nuce.edu.vn/vi/chuc-doan/hoi-sinh-vien.html" title="">Sinh viên</a> -->
+				<!-- 				</li> -->
+				<!-- 				<li class="menu-481"> -->
+				<!-- 					<a href="http://nuce.edu.vn/vi" title="">Cán bộ &amp; giảng viên</a> -->
+				<!-- 				</li> -->
+				<!-- 				<li class="menu-483"> -->
+				<!-- 					<a href="http://nuce.edu.vn/vi/gioi-thieu/loi-chao-mung.html" title="">Cựu sinh viên</a> -->
+				<!-- 				</li> -->
+				<!-- 				<li class="menu-485 last"> -->
+				<!-- 					<a href="http://nuce.edu.vn/vi/gioi-thieu/loi-chao-mung-cua-hieu-truong.html" title="">Khách tham quan</a> -->
+				<!-- 				</li> -->
+				<h:form id="formLogout">
+					<style>
+#formLogout {
+	font-weight: bold;
+	color: #f5f5f5;
+}
+</style>
+					<div class="col-xs-12">
+						<i class="fa fa-sign-out"></i>
+						<p:commandLink value="Đăng nhập" id="btnLogout"
+							styleClass="colorWhite" action="#{userSession.doLogout()}"
+							ajax="false" title="Đăng nhập">
+						</p:commandLink>
+					</div>
+				</h:form>
 			</ul>
 		</div>
 		<!-- /#secondary-menu -->
@@ -39,16 +54,13 @@ VIETTEL PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
 	<!-- 	</a> -->
 	<!-- logout button -->
 	<div class="btn-header transparent pull-right navbar-right-pdt-5">
-		<h:form id="formLogout">
-			<!-- 			<p:commandButton value="Đăng xuất" id="btnLogout" action="#{userSession.doLogout()}" -->
-			<!-- 				ajax="false" title="Logout" > -->
-			<!-- 			</p:commandButton> -->
-			<i class="fa fa-sign-out"></i>
-			<p:commandLink value="Đăng nhập" id="btnLogout"
-				action="#{userSession.doLogout()}" ajax="false" title="Đăng nhập">
-			</p:commandLink>
+		<!-- 		<h:form id="formLogout"> -->
+		<!-- 			<i class="fa fa-sign-out"></i> -->
+		<!-- 			<p:commandLink value="Đăng nhập" id="btnLogout" -->
+		<!-- 				action="#{userSession.doLogout()}" ajax="false" title="Đăng nhập"> -->
+		<!-- 			</p:commandLink> -->
 
-		</h:form>
+		<!-- 		</h:form> -->
 	</div>
 	<!-- end logout button -->
 	<h:form class="navbar-form navbar-right hidden">

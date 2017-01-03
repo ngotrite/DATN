@@ -111,6 +111,14 @@
 					<p:column sortBy="#{item.issuanceDate}"
 						filterBy="#{item.issuanceDate}" filterMatchMode="contains"
 						headerText="#{msg['cer.issuanceDate']}">
+<!-- 						<f:facet name="filter"> -->
+<!-- 							<p:calendar pattern="dd/MM/yyyy"> -->
+<!-- 								<p:ajax event="dateSelect" oncomplete="PF('dtCerWV').filter()" /> -->
+<!-- 								<p:ajax event="change" execute="@this" -->
+<!-- 									oncomplete="PF('dtCerWV').filter()" update="dtCer" /> -->
+<!-- 							</p:calendar> -->
+<!-- 						</f:facet> -->
+
 						<p:calendar effect="fold" value="#{item.issuanceDate}"
 							disabled="true" />
 					</p:column>
@@ -173,13 +181,17 @@
 		<p:dialog header="#{msg['title.certificateDetail']}" modal="true"
 			id="dlgCer" resizable="false" showEffect="fade" widgetVar="dlgCerWV"
 			styleClass="dlg-center-fix">
+
 			<style>
-#dlgCer.ui-dialog .ui-dialog-content {
-	float: right;
+#dlgCer.dlg-center-fix {
+	height: 450px !important;
+	width: 730px !important;
+	min-height: 450px !important;
 }
 
-#dlgCer {
-	width: 67% !important
+#dlgCer.ui-dialog .ui-dialog-content {
+	overflow: initial;
+	float: right;
 }
 </style>
 
@@ -198,11 +210,12 @@
 
 						<div class="row">
 							<div class="col-xs-12">
-								<p:outputLabel value="#{msg['st.studentName']}" for="studentName"/>
+								<p:outputLabel value="#{msg['st.studentName']}"
+									for="studentName" />
 							</div>
 							<div class="col-xs-12">
 								<p:inputText value="#{certificateBean.certificate.studentName}"
-									styleClass="form-control" required="true" id="studentName"/>
+									styleClass="form-control" required="true" id="studentName" />
 							</div>
 						</div>
 
@@ -214,7 +227,9 @@
 								<!-- 								<p:calendar effect="fold" -->
 								<!-- 									value="#{certificateBean.certificate.birthday}"> -->
 								<!-- 								</p:calendar> -->
-								<p:inputMask id="date" value="#{certificateBean.certificate.birthday}" mask="99/99/9999" styleClass="form-control" />
+								<p:inputMask id="date"
+									value="#{certificateBean.certificate.birthday}"
+									mask="99/99/9999" styleClass="form-control" />
 							</div>
 						</div>
 						<div class="row">

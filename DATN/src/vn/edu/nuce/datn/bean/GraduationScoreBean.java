@@ -10,6 +10,7 @@ import java.io.OutputStream;
 import java.io.Serializable;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -24,11 +25,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.poi.util.IOUtils;
+import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
 
 import vn.edu.nuce.datn.dao.GraduationScoreDAO;
 import vn.edu.nuce.datn.dao.StudentDAO;
 import vn.edu.nuce.datn.dao.SubjectDictionaryDAO;
+import vn.edu.nuce.datn.entity.GraduationPeriod;
 import vn.edu.nuce.datn.entity.GraduationScore;
 import vn.edu.nuce.datn.entity.Student;
 import vn.edu.nuce.datn.util.ContantsUtil;
@@ -43,6 +46,7 @@ public class GraduationScoreBean extends BaseController implements Serializable 
 	private GraduationScore graScore;
 	private GraduationScoreDAO graScoreDAO;
 	private List<GraduationScore> graScores;
+	private List<GraduationScore> lstgraScoresDLG;
 	private List<GraduationScore> graScoresSelection;
 
 	@PostConstruct
@@ -50,7 +54,20 @@ public class GraduationScoreBean extends BaseController implements Serializable 
 		this.graScores = new ArrayList<GraduationScore>();
 		this.graScore = new GraduationScore();
 		this.graScoreDAO = new GraduationScoreDAO();
+		this.lstgraScoresDLG = new ArrayList<GraduationScore>();
 		loadGraScores();
+	}
+
+	public void showDialogGS(GraduationScore graScore) {
+		if (graScore == null) {
+			this.graScore = new GraduationScore();
+			lstgraScoresDLG = new ArrayList<GraduationScore>();
+			RequestContext context = RequestContext.getCurrentInstance();
+			context.execute("PF('dlgGSWV').show();");
+		}else {
+			//Do nothing
+		}
+
 	}
 
 	public String viewInfoStu(GraduationScore item, String type) {
@@ -139,6 +156,7 @@ public class GraduationScoreBean extends BaseController implements Serializable 
 			String fileName = event.getFile().getFileName();
 
 			File file = new File(ResourceBundleUtil.getString("server.path.document") + fileName);
+//			File file = new File(ResourceBundleUtil.getString("local.path.document") + fileName);
 
 			InputStream inputStream = event.getFile().getInputstream();
 			OutputStream outputStream = new FileOutputStream(file);
@@ -163,6 +181,7 @@ public class GraduationScoreBean extends BaseController implements Serializable 
 			graScore.setFilePath(file.getPath());
 
 			graScoreDAO.save(graScore);
+			lstgraScoresDLG.add(graScore);
 			graScores.add(graScore);
 			FacesMessage message = new FacesMessage("Succesful", event.getFile().getFileName() + " is uploaded.");
 			FacesContext.getCurrentInstance().addMessage(null, message);
@@ -170,6 +189,8 @@ public class GraduationScoreBean extends BaseController implements Serializable 
 			e.printStackTrace();
 		}
 	}
+	
+
 
 	// View File PDF
 	public String newTabFilePDF(GraduationScore graScore) {
@@ -185,10 +206,11 @@ public class GraduationScoreBean extends BaseController implements Serializable 
 			// name you want, this only won't work in MSIE, it will use current
 			// request URL as file name instead.
 			ec.setResponseHeader("Content-Disposition", "attachment; filename=\"" + graScore.getFileName() + "\"");
-//			FileOutputStream fos = new FileOutputStream(new File(ec.getRealPath(graScore.getFileName())));
-//			byte[] data = IOUtils.toByteArray(fis);
-//			fos.write(data, 0, data.length);
-//			fos.close();
+			// FileOutputStream fos = new FileOutputStream(new
+			// File(ec.getRealPath(graScore.getFileName())));
+			// byte[] data = IOUtils.toByteArray(fis);
+			// fos.write(data, 0, data.length);
+			// fos.close();
 			HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext()
 					.getRequest();
 			HttpServletResponse response = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext()
@@ -321,5 +343,14 @@ public class GraduationScoreBean extends BaseController implements Serializable 
 	public void setGraScoresSelection(List<GraduationScore> graScoresSelection) {
 		this.graScoresSelection = graScoresSelection;
 	}
+
+	public List<GraduationScore> getLstgraScoresDLG() {
+		return lstgraScoresDLG;
+	}
+
+	public void setLstgraScoresDLG(List<GraduationScore> lstgraScoresDLG) {
+		this.lstgraScoresDLG = lstgraScoresDLG;
+	}
+	
 
 }

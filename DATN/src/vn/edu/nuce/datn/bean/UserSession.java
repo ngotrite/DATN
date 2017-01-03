@@ -50,7 +50,7 @@ public class UserSession extends BaseController implements Serializable {
 
 	private void createDefaultMenu() {
 		SysMenu sysMenu = new SysMenu();
-		sysMenu.setName("Trang chủ");
+		sysMenu.setName("");
 		sysMenu.setIsActive(true);
 		sysMenu.setPath("/");
 		lstRootMenu.add(sysMenu);
@@ -153,6 +153,10 @@ public class UserSession extends BaseController implements Serializable {
 
 //		setLanguage(lang);
 		setLanguage("vi");
+	}
+	
+	public String viewUserName(){
+		return SessionUtils.getUserName();
 	}
 
 	/** GET - SET **/

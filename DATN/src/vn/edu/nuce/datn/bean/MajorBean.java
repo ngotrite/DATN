@@ -46,7 +46,7 @@ public class MajorBean extends BaseController implements Serializable {
 			super.showNotificationSuccsess();
 		} catch (Exception e) {
 			e.printStackTrace();
-			super.showNotificationFail();
+			throw e;
 		}
 	}
 
