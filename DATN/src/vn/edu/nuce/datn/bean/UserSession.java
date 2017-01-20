@@ -53,6 +53,7 @@ public class UserSession extends BaseController implements Serializable {
 		sysMenu.setName("");
 		sysMenu.setIsActive(true);
 		sysMenu.setPath("/");
+		lstRootMenu = new ArrayList<>();
 		lstRootMenu.add(sysMenu);
 	}
 

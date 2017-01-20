@@ -85,10 +85,24 @@ $(document).ready(function() {
 	 * Fire tooltips
 	 */
 	
+	
 	if ($("[rel=tooltip]").length) {
 		$("[rel=tooltip]").tooltip();
 	}
 	
+	$(document).mousemove(function(event){
+		$( '.ui-paginator-current').each(function( index ) {
+			var dataSource = $(this).html();
+			if(dataSource.indexOf("of") !== -1){
+				dataSource = dataSource.replace("(","");
+				dataSource = dataSource.replace(")","");
+				dataSource = dataSource.replace("of","/");
+				dataSource = "Trang " + dataSource;
+				$(this).html(dataSource);
+			}
+		});
+		
+	});
 	$('.btn-clearfiltercdr').click();
 	
 	if (sessionStorage.getItem('cacheMenuLeft') !== null) {
@@ -1538,4 +1552,8 @@ function backtotop(){
 
 function reloadPage(){
 	window.location.reload();
+}
+function openPopupUpload(){
+//	$('.btn_edit_file_upload_sb .ui-fileupload-buttonbar').click();
+	$('.btn_edit_file_upload_sb input[type=file]').trigger("click");
 }

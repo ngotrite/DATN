@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.poi.util.IOUtils;
+import org.primefaces.component.datatable.DataTable;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
 
@@ -48,6 +49,7 @@ public class GraduationScoreBean extends BaseController implements Serializable 
 	private List<GraduationScore> graScores;
 	private List<GraduationScore> lstgraScoresDLG;
 	private List<GraduationScore> graScoresSelection;
+	private Boolean isEdit;
 
 	@PostConstruct
 	public void init() {
@@ -56,18 +58,21 @@ public class GraduationScoreBean extends BaseController implements Serializable 
 		this.graScoreDAO = new GraduationScoreDAO();
 		this.lstgraScoresDLG = new ArrayList<GraduationScore>();
 		loadGraScores();
+		this.isEdit = false;
 	}
 
 	public void showDialogGS(GraduationScore graScore) {
 		if (graScore == null) {
 			this.graScore = new GraduationScore();
 			lstgraScoresDLG = new ArrayList<GraduationScore>();
-			RequestContext context = RequestContext.getCurrentInstance();
-			context.execute("PF('dlgGSWV').show();");
+			this.isEdit = false;
 		}else {
-			//Do nothing
+			this.graScore = graScore;
+			this.isEdit = true;
+			lstgraScoresDLG = new ArrayList<GraduationScore>();
 		}
-
+		RequestContext context = RequestContext.getCurrentInstance();
+		context.execute("PF('dlgGSWV').show();");
 	}
 
 	public String viewInfoStu(GraduationScore item, String type) {
@@ -81,7 +86,7 @@ public class GraduationScoreBean extends BaseController implements Serializable 
 		if (item.getStudentId() != null && studentDAO.checkStudentId(item.getStudentId())) {
 			switch (type) {
 			case ContantsUtil.InfoStu.STUDENT_NAME:
-				return studentDAO.get(item.getStudentId()).get_class();
+				return studentDAO.get(item.getStudentId()).getStudentName();
 			case ContantsUtil.InfoStu._CLASS:
 				return studentDAO.get(item.getStudentId()).get_class();
 			default:
@@ -130,7 +135,7 @@ public class GraduationScoreBean extends BaseController implements Serializable 
 
 	public void saveGS() {
 		// graScoreDAO.saveGS(graScores);
-		this.showMessageINFO("common.save", "Graduation Score");
+		this.showMessageINFO("common.save", "Bảng điểm tốt nghiệp");
 	}
 
 	// DEL 1 Graduation Score
@@ -141,11 +146,16 @@ public class GraduationScoreBean extends BaseController implements Serializable 
 				graScores.remove(graScore);
 				File file = new File(graScore.getFilePath());
 				file.delete();
+				DataTable dataTable = (DataTable) FacesContext.getCurrentInstance().getViewRoot().findComponent("form-gs-list:dtGraScore");
+				if (!dataTable.getFilters().isEmpty()) {
+					dataTable.reset();// working
+					RequestContext requestContext = RequestContext.getCurrentInstance();
+					requestContext.update("form-gs-list:dtGraScore");
+				}
 				super.showNotificationSuccsess();
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
-			super.showNotificationFail();
+			throw e;
 		}
 
 	}
@@ -183,8 +193,7 @@ public class GraduationScoreBean extends BaseController implements Serializable 
 			graScoreDAO.save(graScore);
 			lstgraScoresDLG.add(graScore);
 			graScores.add(graScore);
-			FacesMessage message = new FacesMessage("Succesful", event.getFile().getFileName() + " is uploaded.");
-			FacesContext.getCurrentInstance().addMessage(null, message);
+			this.showNotificationSuccsess();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -206,17 +215,17 @@ public class GraduationScoreBean extends BaseController implements Serializable 
 			// name you want, this only won't work in MSIE, it will use current
 			// request URL as file name instead.
 			ec.setResponseHeader("Content-Disposition", "attachment; filename=\"" + graScore.getFileName() + "\"");
-			// FileOutputStream fos = new FileOutputStream(new
-			// File(ec.getRealPath(graScore.getFileName())));
-			// byte[] data = IOUtils.toByteArray(fis);
-			// fos.write(data, 0, data.length);
-			// fos.close();
+//			 FileOutputStream fos = new FileOutputStream(new
+//			 File(ec.getRealPath(graScore.getFileName())));
+//			 byte[] data = IOUtils.toByteArray(fis);
+//			 fos.write(data, 0, data.length);
+//			 fos.close();
 			HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext()
 					.getRequest();
 			HttpServletResponse response = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext()
 					.getResponse();
-			response.sendRedirect(
-					request.getContextPath() + ResourceBundleUtil.getString("link.document") + graScore.getFileName());
+			response.sendRedirect(request.getContextPath() + ResourceBundleUtil.getString("link.document") + graScore.getFileName());
+//			response.sendRedirect(request.getContextPath() + "/" + graScore.getFileName());
 			return "";
 		} catch (FileNotFoundException fnfex) {
 			return "";
@@ -249,6 +258,7 @@ public class GraduationScoreBean extends BaseController implements Serializable 
 		try {
 			String fileName = event.getFile().getFileName();
 			File file = new File(ResourceBundleUtil.getString("server.path.document") + fileName);
+//			File file = new File(ResourceBundleUtil.getString("local.path.document") + fileName);
 
 			InputStream inputStream = event.getFile().getInputstream();
 			OutputStream outputStream = new FileOutputStream(file);
@@ -265,20 +275,22 @@ public class GraduationScoreBean extends BaseController implements Serializable 
 			outputStream.flush();
 			outputStream.close();
 
-			if (selectedGraScore.getStudentId() != null) {
-				File fileItem = new File(selectedGraScore.getFilePath());
+			if (graScore.getStudentId() != null) {
+				File fileItem = new File(graScore.getFilePath());
 				fileItem.delete();
-				graScores.remove(selectedGraScore);
-				graScoreDAO.delete(selectedGraScore);
+				graScores.remove(graScore);
+				graScoreDAO.delete(graScore);
 
 				String studentId = fileName.substring(0, fileName.lastIndexOf("."));
 
-				selectedGraScore.setStudentId(studentId);
-				selectedGraScore.setFileName(file.getName());
-				selectedGraScore.setFilePath(file.getPath());
+				graScore.setStudentId(studentId);
+				graScore.setFileName(file.getName());
+				graScore.setFilePath(file.getPath());
 
-				graScoreDAO.save(selectedGraScore);
-				graScores.add(selectedGraScore);
+				graScoreDAO.save(graScore);
+//				graScores.add(graScore);
+				lstgraScoresDLG.add(graScore);
+				loadGraScores();
 
 			} else {
 				System.out.println("selectedTestScore is null");
@@ -351,6 +363,13 @@ public class GraduationScoreBean extends BaseController implements Serializable 
 	public void setLstgraScoresDLG(List<GraduationScore> lstgraScoresDLG) {
 		this.lstgraScoresDLG = lstgraScoresDLG;
 	}
-	
+
+	public Boolean getIsEdit() {
+		return isEdit;
+	}
+
+	public void setIsEdit(Boolean isEdit) {
+		this.isEdit = isEdit;
+	}
 
 }

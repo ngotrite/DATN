@@ -15,7 +15,7 @@ import javax.persistence.Table;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "graduation_period")
-public class GraduationPeriod implements Serializable{
+public class GraduationPeriod implements Serializable, Cloneable{
 	@Id
 	@GeneratedValue(strategy=IDENTITY)
 	@Column(name = "GRADUATION_PERIOD_ID")
@@ -82,6 +82,11 @@ public class GraduationPeriod implements Serializable{
 
 	public void setRemark(String remark) {
 		this.remark = remark;
+	}
+	
+	@Override
+	public GraduationPeriod clone() throws CloneNotSupportedException {
+		return (GraduationPeriod) super.clone();
 	}
 	
 	

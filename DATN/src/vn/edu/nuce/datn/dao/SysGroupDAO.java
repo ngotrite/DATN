@@ -45,6 +45,8 @@ public class SysGroupDAO extends BaseDAO<SysGroup> {
 		}
 	}
 	
+	
+	
 	public List<SysGroup> findByUser(Long userId, boolean isActive) {
 		
 		Session session = HibernateUtil.getOpenSession();
@@ -66,6 +68,26 @@ public class SysGroupDAO extends BaseDAO<SysGroup> {
 			session.close();
 		}
 	}
+	
+	public String findByUser(Long userId) {
+		
+		Session session = HibernateUtil.getOpenSession();
+		try {
+			
+			String hql = "SELECT a FROM SysGroup a";
+			hql += " JOIN SysUserGroupMap b ON a.id = b.groupId";
+			hql += " AND b.userId = ?";
+			
+			Query<SysGroup> query = session.createQuery(hql);
+			query.setParameter(0, userId);
+			return query.getQueryString();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			session.close();
+		}
+	}
+	
 
 	/***
 	 * 

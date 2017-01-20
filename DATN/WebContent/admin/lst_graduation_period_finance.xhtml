@@ -164,7 +164,7 @@
 					<p:selectBooleanCheckbox value="#{item.schoolFeeStatus}"
 						disabled="#{graPeriodBean.readOnly}">
 						<p:ajax event="change"
-							update="cSchoolFeeUpdateTime txtschoolFeeUserId"
+							update="cSchoolFeeUpdateTime txtschoolFeeUserId dtStudent"
 							ignoreAutoUpdate="true"
 							listener="#{graPeriodBean.autoUpdateDate(item)}" />
 					</p:selectBooleanCheckbox>
@@ -206,7 +206,7 @@
 									fileName="Danh_sach_sinh_vien_theo_dot" pageOnly="true"
 									postProcessor="#{graPeriodBean.postProcessXLS}" />
 							</h:commandButton>
-							<p:commandButton value="#{msg['common.apply']}" type="submit"
+							<p:commandButton value="#{msg['common.apply']}" type="submit" rendered="false"
 								actionListener="#{graPeriodBean.saveStudent}" update="dtStudent"
 								styleClass="btn btn-default pull-right">
 								<p:confirm header="#{msg['common.apply']}"

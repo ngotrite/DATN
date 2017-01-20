@@ -8,8 +8,9 @@
 	xmlns:p="http://primefaces.org/ui" xmlns:pe="http://primefaces.org/ui">
 
 <p:dialog header="Thêm mới bảng điểm tốt nghiệp" id="dlgGS"
-	resizable="false" modal="true" widgetVar="dlgGSWV" styleClass="dlg-center-fix">
-			<style>
+	resizable="false" modal="true" widgetVar="dlgGSWV"
+	styleClass="dlg-center-fix">
+	<style>
 #dlgGS.ui-dialog .ui-dialog-content {
 	float: right;
 }
@@ -18,21 +19,32 @@
 	width: 67% !important;
 	height: 0% !important;
 }
-
 </style>
 
 	<h:form id="form-gs-input" class="container-fluid"
 		enctype="multipart/form-data">
 
 		<div class="row formFieldMg">
-			<div class="col-xs-12" align="center">
+			<div class="col-xs-12" align="right">
 				<p:fileUpload fileUploadListener="#{graScoreBean.handleFileUpload}"
-					mode="advanced" dragDropSupport="true" multiple="true"
-					sizeLimit="99999999" fileLimit="60000"
+					rendered="#{!graScoreBean.isEdit}" mode="advanced"
+					dragDropSupport="true" multiple="true" sizeLimit="99999999"
+					fileLimit="60000"
 					update="form-gs-list:dtGraScore form-gs-input:dtGraScoreDLG form-gs-input @this"
 					fileLimitMessage="#{msg['validate.fileLimit']}"
 					invalidSizeMessage="#{msg['validate.importSize']}"
 					invalidFileMessage="#{msg['validate.importFormatPDF']}"
+					allowTypes="/(\.|\/)(pdf)$/" />
+				<p:fileUpload id="btn_edit_file_upload_gs" widgetVar="btn_edit_fup"
+					rendered="#{graScoreBean.isEdit}"
+					styleClass="btn_edit_file_upload_gs"
+					fileUploadListener="#{graScoreBean.editFileUpload}" mode="advanced"
+					dragDropSupport="true" multiple="false" auto="true"
+					sizeLimit="999999" fileLimit="60000"
+					update="form-gs-list:dtGraScore dtGraScoreDLG form-gs-input"
+					fileLimitMessage="#{msg['validate.fileLimit']}"
+					invalidSizeMessage="#{msg['validate.importSize']}"
+					invalidFileMessage="#{msg['validate.importFormatXLS']}"
 					allowTypes="/(\.|\/)(pdf)$/" />
 			</div>
 			<!-- 			<div class="col-xs-12 col-md-2"> -->
@@ -49,7 +61,8 @@
 					id="dtGraScoreDLG" rowKey="#{item.studentId}"
 					emptyMessage="#{msg['common.noData']}" paginator="true" rows="20"
 					paginatorPosition="bottom" rowIndexVar="rowIndex"
-					widgetVar="tblGraScoreDLGWV" rendered="#{not empty graScoreBean.lstgraScoresDLG}"
+					widgetVar="tblGraScoreDLGWV"
+					rendered="#{not empty graScoreBean.lstgraScoresDLG}"
 					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 					rowsPerPageTemplate="10,20,50,100">
 
@@ -78,6 +91,11 @@
 						headerText="#{msg['st.class']}">
 						<h:outputText value="#{graScoreBean.viewInfoStu(item, '_CLASS')}" />
 					</p:column>
+										<f:facet name="footer">
+						<p:outputLabel value="Tổng số file : ">
+					#{graScoreBean.lstgraScoresDLG.size()}
+				</p:outputLabel>
+					</f:facet>
 				</p:dataTable>
 			</div>
 		</div>
@@ -131,8 +149,8 @@
 				style="text-align:center; width:17%">
 				<f:facet name="header">
 					<p:commandButton value="+" type="submit" resetValues="true"
-						actionListener="#{graScoreBean.showDialogGS(null)}"
-						update="dlgGS" styleClass="btn btn-primary">
+						actionListener="#{graScoreBean.showDialogGS(null)}" update="dlgGS"
+						styleClass="btn btn-primary">
 					</p:commandButton>
 				</f:facet>
 
@@ -142,8 +160,8 @@
 					<i class="fa fa-file-pdf-o"></i>
 				</h:commandLink>
 
-				<p:commandLink actionListener="#{graScoreBean.editFileItem(item)}"
-					update="dtGraScore"
+				<p:commandLink actionListener="#{graScoreBean.showDialogGS(item)}"
+					update="dlgGS"
 					oncomplete="$('.btn_edit_file_upload_gs input[type=file]').click();"
 					styleClass="btn btn-sm btn-action-edit colorBlue">
 					<i class="fa fa-pencil icon-only mr-0"></i>
@@ -189,16 +207,6 @@
 			</f:facet>
 
 		</p:dataTable>
-		<p:fileUpload id="btn_edit_file_upload_gs" widgetVar="btn_edit_fup"
-			styleClass="hidden btn_edit_file_upload_gs"
-			fileUploadListener="#{graScoreBean.editFileUpload}" mode="advanced"
-			dragDropSupport="true" multiple="false" auto="true"
-			sizeLimit="999999" fileLimit="60000"
-			update="form-gs-list:dtGraScore @this"
-			fileLimitMessage="#{msg['validate.fileLimit']}"
-			invalidSizeMessage="#{msg['validate.importSize']}"
-			invalidFileMessage="#{msg['validate.importFormatXLS']}"
-			allowTypes="/(\.|\/)(pdf)$/" />
 	</div>
 
 </h:form>

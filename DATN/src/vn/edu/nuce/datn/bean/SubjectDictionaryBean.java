@@ -5,12 +5,14 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -19,12 +21,14 @@ import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.primefaces.component.datatable.DataTable;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.UploadedFile;
 
 import vn.edu.nuce.datn.dao.SubjectDictionaryDAO;
 import vn.edu.nuce.datn.dao.TestScoreDAO;
+import vn.edu.nuce.datn.entity.GraduationScore;
 import vn.edu.nuce.datn.entity.SubjectDictionary;
 import vn.edu.nuce.datn.util.ValidateUtil;
 
@@ -38,6 +42,8 @@ public class SubjectDictionaryBean extends BaseController implements Serializabl
 	private SubjectDictionaryDAO subjectDictionaryDAO;
 	private UploadedFile file;
 	private List<SubjectDictionary> subjectDictionariesSelection;
+	private List<SubjectDictionary> lstSD;
+	public Boolean isEdit;
 
 	@PostConstruct
 	public void init() {
@@ -45,8 +51,30 @@ public class SubjectDictionaryBean extends BaseController implements Serializabl
 		this.subjectDictionaryDAO = new SubjectDictionaryDAO();
 		this.subjectDictionaries = new ArrayList<SubjectDictionary>();
 		this.subjectDictionariesSelection = new ArrayList<SubjectDictionary>();
+		this.lstSD = new ArrayList<SubjectDictionary>();
 		loadSubjectDictionary();
+		this.isEdit = false;
 
+	}
+	
+	
+	
+	public void showDialogImport(SubjectDictionary subjectDictionary) {
+		if (subjectDictionary == null) {
+			this.subjectDictionary = new SubjectDictionary();
+			subjectDictionaries = new ArrayList<SubjectDictionary>();
+			RequestContext context = RequestContext.getCurrentInstance();
+			context.execute("PF('dlgSDWV').show();");
+		}else {
+			//Do nothing
+		}
+	}
+	
+	public void saveSDImport() {
+			subjectDictionaryDAO.saveSubjectDictionary(subjectDictionaries);
+			RequestContext context = RequestContext.getCurrentInstance();
+			context.execute("PF('dlgSDWV').hide();");
+			super.showNotificationSuccsess();
 	}
 
 	/***** SELECTION DELETE *****/
@@ -90,7 +118,15 @@ public class SubjectDictionaryBean extends BaseController implements Serializabl
 		if (!tsDAO.checkSubjectIdInTestScore(subjectDictionary.getSubjectId())) {
 			subjectDictionaryDAO.delete(subjectDictionary);
 			subjectDictionaries.remove(subjectDictionary);
+			DataTable dataTable = (DataTable) FacesContext.getCurrentInstance().getViewRoot()
+					.findComponent("form-sd-list:dtSubjectDictionary");
+			if (!dataTable.getFilters().isEmpty()) {
+				dataTable.reset();// working
+				RequestContext requestContext = RequestContext.getCurrentInstance();
+				requestContext.update("form-sd-list:dtSubjectDictionary");
+			}
 			this.showMessageINFO("common.delete", "Từ điển môn học");
+			
 		} else {
 			this.showMessageWARN("common.summary.warning", super.readProperties("validate.fieldUseIn"));
 		}
@@ -102,6 +138,9 @@ public class SubjectDictionaryBean extends BaseController implements Serializabl
 	public void showDialogSD(SubjectDictionary subjectDictionary) {
 		if (subjectDictionary == null) {
 			subjectDictionary = new SubjectDictionary();
+			this.isEdit = false;
+		}else {
+			this.isEdit = true;
 		}
 		this.subjectDictionary = subjectDictionary;
 
@@ -111,15 +150,41 @@ public class SubjectDictionaryBean extends BaseController implements Serializabl
 	}
 
 	public void cmdApplyDLGSD() {
-		if (!subjectDictionaries.contains(subjectDictionary)) {
-			subjectDictionaries.add(subjectDictionary);
-
-		} else {
-			// super.showNotificationFail();
+//		if (!subjectDictionaries.contains(subjectDictionary)) {
+//			subjectDictionaries.add(subjectDictionary);
+//
+//		} else {
+//		}
+//		RequestContext context = RequestContext.getCurrentInstance();
+//		context.execute("PF('dlgSubjectDictionaryWV').hide();");
+		
+		if (validateSub()) {
+			boolean checkNew = true;
+			for (int i = 0; i < subjectDictionaries.size(); i++) {
+				if (subjectDictionary.getSubjectId() == (subjectDictionaries.get(i).getSubjectId())) {
+					subjectDictionaries.set(i, subjectDictionary);
+					checkNew = false;
+					break;
+				}
+			}
+			if (checkNew) {
+				subjectDictionaries.add(subjectDictionary);
+			}
+			subjectDictionaryDAO.saveOrUpdate(subjectDictionary);
+			super.showNotificationSuccsess();
+			RequestContext context = RequestContext.getCurrentInstance();
+			context.execute("PF('dlgSubjectDictionaryWV').hide();");
 		}
-		RequestContext context = RequestContext.getCurrentInstance();
-		context.execute("PF('dlgSubjectDictionaryWV').hide();");
 
+	}
+	
+	private boolean validateSub() {
+		boolean result = true;
+		if (subjectDictionaryDAO.checkSubjectId(subjectDictionary.getSubjectId()) && !this.isEdit) {
+			this.showMessageWARN("st.studentId", super.readProperties("validate.checkValueExist"));
+			result = false;
+		}
+		return result;
 	}
 
 	// Check name isExist
@@ -153,7 +218,7 @@ public class SubjectDictionaryBean extends BaseController implements Serializabl
 					}
 				}
 
-				this.showMessageWARN("Subject Dictionary",
+				this.showMessageWARN("Môn học",
 						super.readProperties("validate.checkValueNameExist") + " " + listCodeDuplicate);
 			}
 		}
@@ -225,12 +290,20 @@ public class SubjectDictionaryBean extends BaseController implements Serializabl
 
 					switch (columnIndex) {
 					case 0:
-						if (checkIsExistSD("subjectId", (String) getCellValue(nextCell))) {
-							codeDuplicate.add((String) getCellValue(nextCell));
+						String subjectId = getCellValue(nextCell).toString();
+						if (checkIsExistSD("subjectId", subjectId)) {
+							codeDuplicate.add(subjectId);
 							hasError = true;
 						} else {
-							subjectDictionary.setSubjectId((String) getCellValue(nextCell));
-							hasError = false;
+							
+							if (subjectId != null && !subjectDictionaryDAO.checkSubjectId(subjectId)) {
+								subjectDictionary.setSubjectId(subjectId);
+								hasError = false;
+							} else {
+								codeDuplicate.add(subjectId);
+								hasError = true;
+							}
+							
 						}
 						break;
 					case 1:
@@ -261,11 +334,14 @@ public class SubjectDictionaryBean extends BaseController implements Serializabl
 					listCodeDuplicate += "," + codeDuplicate.get(i);
 				}
 			}
-			this.showMessageWARN("Subject ID",
-					super.readProperties("your import file") + " has " + count + " success record and "
-							+ codeDuplicate.size() + " duplicate record with name : " + listCodeDuplicate);
+//			this.showMessageWARN("Mã môn học",
+//					super.readProperties("your import file") + " has " + count + " success record and "
+//							+ codeDuplicate.size() + " duplicate record with name : " + listCodeDuplicate);
+			this.showMessageWARN("Bạn đã import thành công ",
+					super.readProperties(" ") + count + " bản ghi và "
+							+ codeDuplicate.size() + "bản ghi bị trùng : " + listCodeDuplicate);
 		}else {
-			this.showMessageINFO("Bạn đã import thành công : ", count  + "");
+			this.showMessageINFO("Bạn đã import thành công : ", count  + "môn học");
 		}
 		workbook.close();
 	}
@@ -330,6 +406,14 @@ public class SubjectDictionaryBean extends BaseController implements Serializabl
 
 	public void setSubjectDictionariesSelection(List<SubjectDictionary> subjectDictionariesSelection) {
 		this.subjectDictionariesSelection = subjectDictionariesSelection;
+	}
+
+	public List<SubjectDictionary> getLstSD() {
+		return lstSD;
+	}
+
+	public void setLstSD(List<SubjectDictionary> lstSD) {
+		this.lstSD = lstSD;
 	}
 
 }

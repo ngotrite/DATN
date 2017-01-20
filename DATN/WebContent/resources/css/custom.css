@@ -696,3 +696,36 @@ body.orangeTheme .ui-button:focus,body.orangeTheme .ui-button:hover{background-c
 #footer-wrapper .content .menu li.last a{
 	border-right:none !important;
 }
+.table-choosing {
+	width: 100%;
+	margin: 0px;
+	padding: 0px;
+}
+
+.table-choosing .td-btn-fix {
+	text-align:left;
+	width: 30px;
+}
+.btn-refresh-rt {
+	background: #00c292;
+	height: 30px;
+    width: 30px;
+    margin: 0px 0px 0px 0px;
+    padding: 5px 5px 5px 5px;
+}
+
+.btn-refresh-rt i {
+	color: #FFF;
+}
+
+.btn-refresh-rt:hover {
+	background: rgb(51, 206, 168);
+}
+
+.ui-growl{
+	width: 475px !important;
+}
+
+.ui-growl .ui-growl-message{
+	width: 400px !important;
+}

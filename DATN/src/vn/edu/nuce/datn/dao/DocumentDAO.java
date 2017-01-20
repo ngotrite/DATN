@@ -10,6 +10,7 @@ import org.hibernate.query.Query;
 import vn.edu.nuce.datn.db.HibernateUtil;
 import vn.edu.nuce.datn.db.Operator;
 import vn.edu.nuce.datn.entity.Document;
+import vn.edu.nuce.datn.entity.Student;
 
 public class DocumentDAO extends BaseDAO<Document> implements Serializable {
 	@Override
@@ -44,6 +45,32 @@ public class DocumentDAO extends BaseDAO<Document> implements Serializable {
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw e;
+		} finally {
+			session.close();
+		}
+	}
+	
+	public boolean delListDoc(List<Document> documents) {
+		Session session = HibernateUtil.getOpenSession();
+		session.getTransaction().begin();
+		List<Long> documentsId = new ArrayList<Long>();
+		if (documents.size() > 0) {
+			for (Document st : documents) {
+				documentsId.add(st.getDocumentId());
+			}
+		}
+		try {
+			StringBuffer hql = new StringBuffer("DELETE FROM Document b");
+			hql.append(" WHERE b.documentId IN (:documentsId)");
+
+			Query<Document> query = session.createQuery(hql.toString());
+			query.setParameterList("documentsId", documentsId);
+			query.executeUpdate();
+			session.getTransaction().commit();
+			return true;
+		} catch (Exception e) {
+			session.getTransaction().rollback();
+			return false;
 		} finally {
 			session.close();
 		}

@@ -8,10 +8,11 @@
 	xmlns:p="http://primefaces.org/ui" xmlns:pe="http://primefaces.org/ui">
 
 
-<p:dialog header="Thêm mới bảng điểm môn học" id="dlgTS" showEffect="fade"
-	resizable="false" modal="true" widgetVar="dlgTSWV"
+
+<p:dialog header="Thêm mới bảng điểm môn học" id="dlgTS"
+	showEffect="fade" resizable="false" modal="true" widgetVar="dlgTSWV"
 	styleClass="dlg-center-fix">
-			<style>
+	<style>
 #dlgTS.ui-dialog .ui-dialog-content {
 	float: right;
 }
@@ -20,21 +21,32 @@
 	width: 67% !important;
 	height: 0% !important;
 }
-
 </style>
 	<h:form id="form-tc-input" class="container-fluid"
 		enctype="multipart/form-data">
 		<div class="row formFieldMg">
 			<div class="col-xs-12 col-md-12">
-				<div class="col-xs-12" align="center">
+				<div class="col-xs-12" align="right">
 					<p:fileUpload
 						fileUploadListener="#{testScoreBean.handleFileUpload}"
-						mode="advanced" dragDropSupport="true" multiple="true"
-						sizeLimit="9999999" fileLimit="6000000" 
+						rendered="#{!testScoreBean.isEdit}" mode="advanced"
+						dragDropSupport="true" multiple="true" sizeLimit="9999999"
+						fileLimit="6000000"
 						update="form-tc-list:dtTestScore form-tc-input:dtTestScoreDLG form-tc-input"
 						fileLimitMessage="#{msg['validate.fileLimit']}"
 						invalidSizeMessage="#{msg['validate.importSize']}"
 						invalidFileMessage="#{msg['validate.importFormatPDF']}"
+						allowTypes="/(\.|\/)(pdf)$/" />
+
+					<p:fileUpload styleClass="btn_edit_file_upload_sb"
+						rendered="#{testScoreBean.isEdit}"
+						fileUploadListener="#{testScoreBean.editFileUpload}"
+						mode="advanced" dragDropSupport="true" multiple="false"
+						auto="true" sizeLimit="999999" fileLimit="60000"
+						update="form-tc-list:dtTestScore form-tc-input:dtTestScoreDLG form-tc-input"
+						fileLimitMessage="#{msg['validate.fileLimit']}"
+						invalidSizeMessage="#{msg['validate.importSize']}"
+						invalidFileMessage="#{msg['validate.importFormatXLS']}"
 						allowTypes="/(\.|\/)(pdf)$/" />
 				</div>
 				<!-- 				<div class="col-xs-12 col-md-2"> -->
@@ -52,7 +64,8 @@
 				id="dtTestScoreDLG" rowKey="#{item.testScoreId}"
 				emptyMessage="#{msg['common.noData']}" paginator="true" rows="20"
 				paginatorPosition="bottom" rowIndexVar="rowIndex"
-				widgetVar="tblTCWidgetVarDLG" rendered="#{not empty testScoreBean.lstTestScoreDLG}"
+				widgetVar="tblTCWidgetVarDLG"
+				rendered="#{not empty testScoreBean.lstTestScoreDLG}"
 				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 				rowsPerPageTemplate="10,20,50,100">
 
@@ -101,6 +114,11 @@
 					headerText="#{msg['ts.test']}">
 					<h:outputText value="#{item.test}" />
 				</p:column>
+				<f:facet name="footer">
+					<p:outputLabel value="Tổng số file : ">
+					#{testScoreBean.lstTestScoreDLG.size()}
+				</p:outputLabel>
+				</f:facet>
 
 			</p:dataTable>
 		</div>
@@ -172,8 +190,8 @@
 
 			<f:facet name="header">
 				<p:commandButton value="+" type="submit" resetValues="true"
-					actionListener="#{testScoreBean.showDialogTS(null)}"
-					update="dlgTS" styleClass="btn btn-primary">
+					actionListener="#{testScoreBean.showDialogTS(null)}" update="dlgTS"
+					styleClass="btn btn-primary">
 				</p:commandButton>
 			</f:facet>
 
@@ -189,10 +207,8 @@
 				<i class="fa fa-download"></i>
 			</h:commandLink>
 
-			<p:commandLink actionListener="#{testScoreBean.editFileItem(item)}"
-				update="dtTestScore"
-				oncomplete="$('.btn_edit_file_upload_sb input[type=file]').click();"
-				styleClass="btn btn-sm btn-action-edit colorBlue">
+			<p:commandLink actionListener="#{testScoreBean.showDialogTS(item)}"
+				update="dlgTS" styleClass="btn btn-sm btn-action-edit colorBlue">
 				<i class="fa fa-pencil icon-only mr-0"></i>
 			</p:commandLink>
 
@@ -230,14 +246,6 @@
 		</f:facet>
 
 	</p:dataTable>
-	<p:fileUpload styleClass="hidden btn_edit_file_upload_sb"
-		fileUploadListener="#{testScoreBean.editFileUpload}" mode="advanced"
-		dragDropSupport="true" multiple="false" auto="true" sizeLimit="999999"
-		fileLimit="60000" update="form-tc-list:dtTestScore @this"
-		fileLimitMessage="#{msg['validate.fileLimit']}"
-		invalidSizeMessage="#{msg['validate.importSize']}"
-		invalidFileMessage="#{msg['validate.importFormatXLS']}"
-		allowTypes="/(\.|\/)(pdf)$/" />
 
 </h:form>
 

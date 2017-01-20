@@ -1767,7 +1767,7 @@ button.ui-button::-moz-focus-inner {
 
 .ui-growl-message {
 	padding:0 0 5px 0;
-	width:220px;
+	width:400px;
 	float:right;
 }
 

@@ -13,10 +13,11 @@
 
 		<h:form id="form-doc-list" class="container-fluid">
 			<p:dataTable var="item" value="#{documentBean.documents}"
-				id="dtDocument" rowKey="#{item.documentId}" selectionMode="single"
-				emptyMessage="#{msg['common.noData']}" paginator="true" rows="20"
-				paginatorPosition="bottom" rowIndexVar="rowIndex"
-				widgetVar="dtDocumentWV" filteredValue="#{documentBean.filteredDocuments}"
+				resizableColumns="true" id="dtDocument" rowKey="#{item.documentId}"
+				selectionMode="single" emptyMessage="#{msg['common.noData']}"
+				paginator="true" rows="20" paginatorPosition="bottom"
+				rowIndexVar="rowIndex" widgetVar="dtDocumentWV"
+				filteredValue="#{documentBean.filteredDocuments}"
 				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 				rowsPerPageTemplate="10,20,50,100">
 
@@ -26,22 +27,26 @@
 					</p:outputLabel>
 				</f:facet>
 
-				<p:column style="text-align:center; width:3%" headerText="#{msg['common.index']}">
+				<p:column style="text-align:center; width:3%"
+					headerText="#{msg['common.index']}">
 					<h:outputText value="#{rowIndex + 1}" />
 				</p:column>
 
-				<p:column sortBy="#{item.documentNumber}" style="text-align:center; width:10%"
+				<p:column sortBy="#{item.documentNumber}"
+					style="text-align:center; width:10%"
 					filterBy="#{item.documentNumber}" filterMatchMode="contains"
 					headerText="#{msg['doc.documentNumber']}">
 					<h:outputText value="#{item.documentNumber}" />
 				</p:column>
 
-				<p:column sortBy="#{item.remark}" filterBy="#{item.remark}" style="width:25%"
-					filterMatchMode="contains" headerText="#{msg['doc.remark']}">
+				<p:column sortBy="#{item.remark}" filterBy="#{item.remark}"
+					style="width:25%" filterMatchMode="contains"
+					headerText="#{msg['doc.remark']}">
 					<h:outputText value="#{item.remark}" />
 				</p:column>
 
-				<p:column sortBy="#{item.issuanceDate}" style="text-align:center;"
+				<p:column sortBy="#{item.issuanceDate}"
+					style="text-align:center; width:12%"
 					filterBy="#{item.issuanceDate}" filterMatchMode="contains"
 					headerText="#{msg['doc.issuanceDate']}">
 					<h:outputText value="#{item.issuanceDate}">
@@ -49,7 +54,7 @@
 					</h:outputText>
 				</p:column>
 
-				<p:column sortBy="#{item.uploadDate}" filterBy="#{item.uploadDate}" 
+				<p:column sortBy="#{item.uploadDate}" filterBy="#{item.uploadDate}"
 					style="text-align:center; width:12%" filterMatchMode="contains"
 					headerText="#{msg['common.uploadDate']}">
 					<h:outputText value="#{item.uploadDate}">
@@ -57,21 +62,29 @@
 					</h:outputText>
 				</p:column>
 
+				<p:column sortBy="#{item.fileName}" filterBy="#{item.fileName}"
+					style="text-align:center; width:12%" filterMatchMode="contains"
+					headerText="#{msg['common.fileName']}">
+					<h:outputText value="#{item.fileName}">
+					</h:outputText>
+				</p:column>
+
 				<p:column sortBy="#{item.numberDL}" filterBy="#{item.numberDL}"
-					id="numberDL" style="text-align:center; width:10%" filterMatchMode="contains"
-					headerText="#{msg['common.numberDL']}">
+					id="numberDL" style="text-align:center; width:10%"
+					filterMatchMode="contains" headerText="#{msg['common.numberDL']}">
 					<h:outputText value="#{item.numberDL}" />
 				</p:column>
 
 				<p:column sortBy="#{documentBean.getUserName(item)}"
-					style="text-align:center; width:11%" filterBy="#{documentBean.getUserName(item)}"
+					style="text-align:center; width:11%"
+					filterBy="#{documentBean.getUserName(item)}"
 					filterMatchMode="contains"
 					headerText="#{msg['common.uploadUserId']}">
 					<h:outputText value="#{documentBean.getUserName(item)}" />
 				</p:column>
 
 				<p:column headerText="#{msg['common.action']}"
-					style="text-align:center; width:16%">
+					style="text-align:center; width:18%">
 
 					<h:commandLink action="#{documentBean.newTabFilePDF(item)}"
 						target="_blank" onclick="reloadPage();"
@@ -100,8 +113,7 @@
 					</p:commandLink>
 
 					<f:facet name="header">
-						<p:commandButton value="+" type="submit"
-							resetValues="true"
+						<p:commandButton value="+" type="submit" resetValues="true"
 							actionListener="#{documentBean.showDialogDoc(null)}"
 							update="dlgDoc" styleClass="btn btn-primary" immediate="true">
 						</p:commandButton>
@@ -109,7 +121,13 @@
 				</p:column>
 
 				<f:facet name="footer">
-
+						<p:commandButton value="#{msg['common.deleteAll']}"
+							update="dtDocument"
+							actionListener="#{documentBean.removeAll()}"
+							styleClass="pull-right">
+							<p:confirm header="#{msg['common.delete']}"
+								message="#{msg['common.confirmDelete']}" icon="ui-icon-alert" />
+						</p:commandButton>
 				</f:facet>
 			</p:dataTable>
 		</h:form>
@@ -122,7 +140,7 @@
 			styleClass="dlg-center-fix">
 			<style>
 #dlgDoc.dlg-center-fix {
-	height: 305px !important;
+	height: 400px !important;
 	width: 730px !important;
 	min-height: 305px !important;
 }
@@ -145,7 +163,22 @@
 									styleClass="form-control" />
 							</div>
 						</div>
-
+					</div>
+					<div class="col-xs-12 col-sm-6">
+						<div class="row">
+							<div class="col-xs-12">
+								<p:outputLabel value="#{msg['common.uploadDate']}"
+									for="clUploadDate" />
+							</div>
+							<div class="col-xs-12">
+								<p:inputText value="#{documentBean.document.uploadDate}"
+									readonly="true" styleClass="form-control" id="clUploadDate">
+									<f:convertDateTime pattern="dd-MM-yyyy" />
+								</p:inputText>
+							</div>
+						</div>
+					</div>
+					<div class="col-xs-12 col-sm-12">
 						<div class="row">
 							<div class="col-xs-12">
 								<p:outputLabel value="#{msg['doc.remark']}" />
@@ -155,23 +188,33 @@
 									styleClass="form-control" />
 							</div>
 						</div>
-
 					</div>
 					<div class="col-xs-12 col-sm-6">
 
-						<div class="row">
-							<div class="col-xs-12">
-								<p:outputLabel value="#{msg['common.uploadDate']}"
-									for="clUploadDate" />
-							</div>
-							<div class="col-xs-12">
-								<p:inputText value="#{documentBean.document.uploadDate}"
-									disabled="true" styleClass="form-control" id="clUploadDate">
-									<f:convertDateTime pattern="dd-MM-yyyy" />
-								</p:inputText>
-							</div>
-						</div>
+						<p:panel rendered="#{documentBean.isEdit}">
+							<div class="row">
+								<div class="col-xs-12">
+									<p:outputLabel value="#{msg['common.fileName']}" />
+								</div>
+								<div class="col-xs-12">
+									<table class="table-choosing">
+										<tr>
+											<td><p:inputText
+													value="#{documentBean.document.fileName}" readonly="true"
+													id="txtFileName" styleClass="form-control" /></td>
+											<td class="td-btn-fix"><p:commandLink immediate="true"
+													action="#{documentBean.delFile()}"
+													styleClass="btn btn-sm btn-action-del btn-refresh-rt btn-remove-background">
+													<i class="fa fa-times icon-only mr-0"></i>
+												</p:commandLink></td>
+										</tr>
+									</table>
 
+								</div>
+							</div>
+						</p:panel>
+					</div>
+					<div class="col-xs-12 col-sm-6">
 						<div class="row">
 							<div class="col-xs-12">
 								<p:outputLabel value="#{msg['doc.issuanceDate']}"
@@ -184,16 +227,17 @@
 								</p:calendar>
 							</div>
 						</div>
-
-
 					</div>
+
 					<div class="col-xs-12 col-sm-12">
 						<div class="row">
 							<div class="col-xs-12 col-md-10">
-								<p:fileUpload
+								<p:fileUpload disabled="#{!documentBean.isUpload}"
+									id="btnUploadDoc"
 									fileUploadListener="#{documentBean.handleFileUpload}"
 									mode="advanced" dragDropSupport="true" multiple="false"
-									sizeLimit="99999999" fileLimit="60000" update="@this"
+									sizeLimit="99999999" fileLimit="60000"
+									update="@this form-dlg-doc:txtFileName"
 									fileLimitMessage="#{msg['validate.fileLimit']}"
 									invalidSizeMessage="#{msg['validate.importSize']}"
 									invalidFileMessage="#{msg['validate.importFormatPDF']}"

@@ -1,6 +1,5 @@
 package vn.edu.nuce.datn.bean;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Serializable;
@@ -9,10 +8,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
+import java.util.Objects;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -21,7 +19,6 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
-import javax.servlet.http.HttpServletRequest;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
@@ -32,27 +29,26 @@ import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.DateUtil;
+import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.util.DateFormatConverter;
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.primefaces.component.datatable.DataTable;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.UploadedFile;
 
-import net.sf.jasperreports.engine.JasperReport;
 import vn.edu.nuce.datn.dao.CertificateDAO;
-import vn.edu.nuce.datn.dao.GraduationPeriodDAO;
 import vn.edu.nuce.datn.dao.MajorDAO;
 import vn.edu.nuce.datn.entity.Certificate;
 import vn.edu.nuce.datn.entity.DateToSearch;
 import vn.edu.nuce.datn.entity.Major;
 import vn.edu.nuce.datn.entity.ReportResultDTO;
-import vn.edu.nuce.datn.entity.Student;
+import vn.edu.nuce.datn.entity.SubjectDictionary;
 import vn.edu.nuce.datn.entity.YearReport;
 import vn.edu.nuce.datn.util.ContantsUtil;
-import vn.edu.nuce.datn.util.ReportUtils;
 
 @SuppressWarnings("serial")
 @ManagedBean(name = "certificateBean")
@@ -73,9 +69,11 @@ public class CertificateBean extends BaseController implements Serializable {
 
 	private Date toDate;
 	private Date fromDate;
+	public Boolean isEdit;
 
 	@PostConstruct
 	public void init() {
+		this.isEdit = false;
 		this.certificate = new Certificate();
 		this.certificateDAO = new CertificateDAO();
 		this.lstcertificate = new ArrayList<Certificate>();
@@ -87,6 +85,24 @@ public class CertificateBean extends BaseController implements Serializable {
 
 		this.toDate = new Date();
 		this.fromDate = new Date();
+	}
+	
+	public void showDialogImport(Certificate certificate) {
+		if (certificate == null) {
+			this.certificate = new Certificate();
+			lstcertificate = new ArrayList<Certificate>();
+			RequestContext context = RequestContext.getCurrentInstance();
+			context.execute("PF('dlgCerImportWV').show();");
+		}else {
+			//Do nothing
+		}
+	}
+	
+	public void saveCer() {
+		certificateDAO.saveCertificate(lstcertificate);
+		RequestContext context = RequestContext.getCurrentInstance();
+		context.execute("PF('dlgCerImportWV').hide();");
+		super.showNotificationSuccsess();
 	}
 
 	public String getMajorName(String majorId) {
@@ -427,19 +443,74 @@ public class CertificateBean extends BaseController implements Serializable {
 		majors = majorDAO.findAll();
 	}
 
+//	public void postProcessXLS(Object document) {
+//		HSSFWorkbook wb = (HSSFWorkbook) document;
+//		HSSFSheet sheet = wb.getSheetAt(0);
+//		HSSFRow header = sheet.getRow(0);
+//
+//		HSSFCellStyle cellStyle = wb.createCellStyle();
+//		cellStyle.setFillForegroundColor(HSSFColor.GREEN.index);
+//		cellStyle.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+//
+//		for (int i = 0; i < header.getPhysicalNumberOfCells(); i++) {
+//			HSSFCell cell = header.getCell(i);
+//			cell.setCellStyle(cellStyle);
+//		}
+//	}
+	
 	public void postProcessXLS(Object document) {
+		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/YYYY");
 		HSSFWorkbook wb = (HSSFWorkbook) document;
-		HSSFSheet sheet = wb.getSheetAt(0);
-		HSSFRow header = sheet.getRow(0);
+		try {
+			HSSFSheet sheet = wb.getSheetAt(0);
+			sheet.shiftRows(0, sheet.getLastRowNum(), 1);
+			sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 7));
+			Row row = sheet.getRow(0);
+			row.setHeight((short) 550);
+			Cell cell00 = row.createCell(0);
+			cell00.setCellValue("Danh sách thông tin tốt nghiệp " + " "
+					+ "tính đến" + dateFormat.format(toDate));
+			CellStyle styleHeader = wb.createCellStyle();
+			Font boldHeader = wb.createFont();
+			boldHeader.setBoldweight(Font.BOLDWEIGHT_BOLD);
+			boldHeader.setFontHeightInPoints((short) 12);
+			boldHeader.setFontName("Times New Roman");
+			styleHeader.setAlignment(CellStyle.ALIGN_CENTER);
+			styleHeader.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+			styleHeader.setFont(boldHeader);
+			styleHeader.setFillForegroundColor(IndexedColors.LIGHT_GREEN.getIndex());
+			styleHeader.setFillPattern(CellStyle.SOLID_FOREGROUND);
+			cell00.setCellStyle(styleHeader);
+			sheet.shiftRows(1, sheet.getLastRowNum(), 1);
 
-		HSSFCellStyle cellStyle = wb.createCellStyle();
-		cellStyle.setFillForegroundColor(HSSFColor.GREEN.index);
-		cellStyle.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
-
-		for (int i = 0; i < header.getPhysicalNumberOfCells(); i++) {
-			HSSFCell cell = header.getCell(i);
-			cell.setCellStyle(cellStyle);
-		}
+			HSSFRow header = sheet.getRow(2);
+			header.setHeight((short) 300);
+			HSSFCellStyle cellStyle = wb.createCellStyle();
+			cellStyle.setAlignment(CellStyle.ALIGN_CENTER);
+			cellStyle.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+			cellStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+			cellStyle.setFillPattern(CellStyle.SOLID_FOREGROUND);
+			cellStyle.setWrapText(true);
+			Font bold = wb.createFont();
+			bold.setBoldweight(Font.BOLDWEIGHT_BOLD);
+			bold.setFontHeightInPoints((short) 10);
+			bold.setFontName("Times New Roman");
+			cellStyle.setFont(bold);
+			for (int i = 0; i < header.getPhysicalNumberOfCells(); i++) {
+				HSSFCell cell = header.getCell(i);
+				cell.setCellStyle(cellStyle);
+			}
+			for (int colNum = 0; colNum < header.getLastCellNum(); colNum++)
+				wb.getSheetAt(0).autoSizeColumn(colNum);
+		} catch (Exception e) {
+			// TODO: handle exception
+		} finally {
+			try {
+				wb.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}		
 	}
 
 	public void loadCerHome() {
@@ -448,12 +519,14 @@ public class CertificateBean extends BaseController implements Serializable {
 					|| certificate.getBirthday() != null || certificate.getCertificateNo() != null) {
 				lstCertificateHome = certificateDAO.findCertificateHomeNew(certificate.getStudentId(),
 						certificate.getStudentName(), certificate.getBirthday(), certificate.getCertificateNo());
-				if (lstCertificateHome.size() <= 0) {
-					FacesContext context = FacesContext.getCurrentInstance();
-					context.addMessage(null,
-							new FacesMessage(FacesMessage.SEVERITY_WARN, "", "Không tìm thấy kết quả"));
-				}
+
 			}
+			if (lstCertificateHome.size() < 1) {
+				this.lstCertificateHome.clear();
+				FacesContext context = FacesContext.getCurrentInstance();
+				context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "", "Không tìm thấy kết quả"));
+			}
+
 		}
 
 	}
@@ -465,6 +538,7 @@ public class CertificateBean extends BaseController implements Serializable {
 			FacesContext context = FacesContext.getCurrentInstance();
 			context.addMessage(null,
 					new FacesMessage(FacesMessage.SEVERITY_WARN, "", this.readProperties("cer.checkNullAll")));
+			this.lstCertificateHome.clear();
 			result = false;
 		} else if (certificate.getStudentId() == "" && certificate.getCertificateNo() == "") {
 			if (certificate.getStudentName() != "" && certificate.getBirthday() == "") {
@@ -485,27 +559,44 @@ public class CertificateBean extends BaseController implements Serializable {
 	public void cmdDeleteCer(Certificate certificate) {
 		certificateDAO.delete(certificate);
 		lstcertificate.remove(certificate);
+		DataTable dataTable = (DataTable) FacesContext.getCurrentInstance().getViewRoot().findComponent("form-cer-list:dtCer");
+		if (!dataTable.getFilters().isEmpty()) {
+			dataTable.reset();// working
+			RequestContext requestContext = RequestContext.getCurrentInstance();
+			requestContext.update("form-cer-list:dtCer");
+		}
 		super.showNotificationSuccsess();
 	}
 
 	public void cmdApplyDLGCer() {
-		boolean checkNew = true;
-		for (int i = 0; i < lstcertificate.size(); i++) {
-			if (certificate.getStudentId() == (lstcertificate.get(i).getStudentId())) {
-				lstcertificate.set(i, certificate);
-				checkNew = false;
-				break;
+		if (validateCer()) {
+			boolean checkNew = true;
+			for (int i = 0; i < lstcertificate.size(); i++) {
+				if (certificate.getStudentId() == (lstcertificate.get(i).getStudentId())) {
+					lstcertificate.set(i, certificate);
+					checkNew = false;
+					break;
+				}
 			}
+			if (checkNew) {
+				lstcertificate.add(certificate);
+			}
+			certificate.setUpdateDate(new Date());
+			certificateDAO.saveOrUpdate(certificate);
+			super.showNotificationSuccsess();
+			RequestContext context = RequestContext.getCurrentInstance();
+			context.execute("PF('dlgCerWV').hide();");
 		}
-		if (checkNew) {
-			lstcertificate.add(certificate);
+
+	}
+
+	private boolean validateCer() {
+		boolean result = true;
+		if (certificateDAO.checkStudentId(certificate.getStudentId()) && !this.isEdit) {
+			this.showMessageWARN("st.studentId", super.readProperties("validate.checkValueExist"));
+			result = false;
 		}
-		certificate.setUpdateDate(new Date());
-		certificateDAO.saveOrUpdate(certificate);
-		super.showNotificationSuccsess();
-		RequestContext context = RequestContext.getCurrentInstance();
-		context.execute("PF('dlgCerWV').hide();");
-		;
+		return result;
 	}
 
 	/*** load combo Education System ***/
@@ -564,9 +655,12 @@ public class CertificateBean extends BaseController implements Serializable {
 
 	/** show dialog Certificate Detail **/
 	public void showDialogCer(Certificate certificate) {
-		if (certificate == null) {
+		if (Objects.isNull(certificate)) {
 			certificate = new Certificate();
 			certificate.setUpdateDate(new Date());
+			this.isEdit = false;
+		} else {
+			this.isEdit = true;
 		}
 		this.certificate = certificate;
 		RequestContext context = RequestContext.getCurrentInstance();
@@ -577,10 +671,6 @@ public class CertificateBean extends BaseController implements Serializable {
 		lstcertificate = certificateDAO.findAll();
 	}
 
-	public void saveCer() {
-		certificateDAO.saveCertificate(lstcertificate);
-		super.showNotificationSuccsess();
-	}
 
 	/** Upload Certificate **/
 	public void uploadExel(FileUploadEvent event) throws IOException {
@@ -656,16 +746,15 @@ public class CertificateBean extends BaseController implements Serializable {
 							stIDDuplicate.add(studentId);
 							hasError = true;
 						} else {
-							// if (studentId != null &&
-							// !certificateDAO.checkStudentId(studentId)) {
+							if (studentId != null && !certificateDAO.checkStudentId(studentId)) {
+								certificate.setStudentId(studentId);
+								hasError = false;
+							} else {
+								stIDDuplicate.add(studentId);
+								hasError = true;
+							}
 							// certificate.setStudentId(studentId);
 							// hasError = false;
-							// } else {
-							// stIDDuplicate.add(studentId);
-							// hasError = true;
-							// }
-							certificate.setStudentId(studentId);
-							hasError = false;
 						}
 						break;
 					case 1:
@@ -787,9 +876,12 @@ public class CertificateBean extends BaseController implements Serializable {
 					listIDDuplicate += "," + stIDDuplicate.get(i);
 				}
 			}
-			this.showMessageWARN("Certificate ",
-					super.readProperties("your import file") + " has " + count + " success record and "
-							+ stIDDuplicate.size() + " duplicate record with name : " + listIDDuplicate);
+//			this.showMessageWARN("Certificate ",
+//					super.readProperties("your import file") + " has " + count + " success record and "
+//							+ stIDDuplicate.size() + " duplicate record with name : " + listIDDuplicate);
+			this.showMessageWARN("Bạn đã import thành công ",
+					super.readProperties(" ") + count + " bản ghi và "
+							+ stIDDuplicate.size() + "bản ghi bị trùng : " + listIDDuplicate);
 		} else {
 			this.showMessageINFO("Student your import file", count + "");
 		}

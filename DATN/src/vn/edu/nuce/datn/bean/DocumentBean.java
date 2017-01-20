@@ -9,9 +9,12 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.nio.channels.FileChannel;
+import java.nio.file.Files;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PostConstruct;
@@ -24,10 +27,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.poi.util.IOUtils;
+import org.primefaces.component.datatable.DataTable;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
 
 import vn.edu.nuce.datn.dao.DocumentDAO;
+import vn.edu.nuce.datn.dao.SysUserDAO;
 import vn.edu.nuce.datn.entity.Document;
 import vn.edu.nuce.datn.util.ResourceBundleUtil;
 import vn.edu.nuce.datn.util.SessionUtils;
@@ -41,19 +46,40 @@ public class DocumentBean extends BaseController implements Serializable {
 	private Document document;
 	private DocumentDAO documentDAO;
 	private List<Document> filteredDocuments;
+	private Boolean isEdit;
+	private FileUploadEvent eventUpload;
+	private Boolean isUpload;
 
 	@PostConstruct
 	public void init() {
+		this.isUpload = false;
+		this.isEdit = false;
+		this.eventUpload = null; 
 		this.document = new Document();
 		this.documentDAO = new DocumentDAO();
 		this.documents = new ArrayList<Document>();
 //		this.filteredDocuments = new ArrayList<Document>();
 		loadDocuments();
 	}
+	
+
+	public void removeAll() {
+		for (Document document : documents) {
+			File file = new File(document.getFilePath());
+			file.delete();
+		}
+		documentDAO.delListDoc(documents);
+		documents.clear();
+		super.showNotificationSuccsess();
+	}
+	
+
 
 	public String getUserName(Document item) {
 		String userName = "";
-		userName = SessionUtils.getUserName();
+		SysUserDAO sysUserDAO = new SysUserDAO();
+		userName = sysUserDAO.get(item.getUploadUserId()).getUserName();
+//		userName = SessionUtils.getUserName();
 		return userName;
 	}
 
@@ -65,6 +91,12 @@ public class DocumentBean extends BaseController implements Serializable {
 				documents.remove(document);
 				File file = new File(document.getFilePath());
 				file.delete();
+				DataTable dataTable = (DataTable) FacesContext.getCurrentInstance().getViewRoot().findComponent("form-doc-list:dtDocument");
+				if (!dataTable.getFilters().isEmpty()) {
+					dataTable.reset();// working
+					RequestContext requestContext = RequestContext.getCurrentInstance();
+					requestContext.update("form-doc-list:dtDocument");
+				}
 				super.showNotificationSuccsess();
 			}
 		} catch (Exception e) {
@@ -179,6 +211,18 @@ public class DocumentBean extends BaseController implements Serializable {
 		}
 		return result;
 	}
+	
+	public void delFile() {
+		File file = new File(ResourceBundleUtil.getString("server.path.document") + document.getFileName());
+//		File file = new File(ResourceBundleUtil.getString("local.path.document") + document.getFileName());
+		file.delete();
+		document.setFileName(null);
+		this.isUpload = true;
+		RequestContext.getCurrentInstance().update("form-dlg-doc:txtFileName");
+		RequestContext.getCurrentInstance().update("form-dlg-doc:btnUploadDoc");
+		this.showMessageWARN("", "", "Bạn đã delete file thành công, vui lòng chọn (Choose) file mới trước khi lưu");
+		
+	}
 
 	// Upload File PDF
 	public void handleFileUpload(FileUploadEvent event) {
@@ -189,15 +233,31 @@ public class DocumentBean extends BaseController implements Serializable {
 
 			File file = new File(ResourceBundleUtil.getString("server.path.document") + fileName);
 //			File file = new File(ResourceBundleUtil.getString("local.path.document") + fileName);
+			
+			String newFileName = generateFileName(fileName);
+			if(!this.isEdit){
+				if (file.exists()) {
+//					file = new File(ResourceBundleUtil.getString("local.path.document") + newFileName);
+					file = new File(ResourceBundleUtil.getString("server.path.document") + newFileName);
+				}
+			} else {
+//				if (file.exists()) {
+//					file.createNewFile();
+//					file.delete();
+//				} else if (Objects.nonNull(this.document)){
+//					file = new File(ResourceBundleUtil.getString("local.path.document") + this.document.getFileName());
+//					file = new File(ResourceBundleUtil.getString("server.path.document") + this.document.getFileName());
+//					if (file.exists()) {
+//						file.createNewFile();
+//						file.delete();
+//					}
+//				}
+			}
 
 			InputStream inputStream = event.getFile().getInputstream();
 			OutputStream outputStream = new FileOutputStream(file);
 			IOUtils.copy(inputStream, outputStream);
 			inputStream.close();
-
-			if (!file.exists()) {
-				file.delete();
-			}
 
 			file.createNewFile();
 
@@ -206,23 +266,36 @@ public class DocumentBean extends BaseController implements Serializable {
 
 			document.setFilePath(file.getPath());
 			document.setFileName(file.getName());
-			document.setNumberDL(0L);
 			
-			FacesMessage message = new FacesMessage("Succesful", event.getFile().getFileName() + " is uploaded.");
-			FacesContext.getCurrentInstance().addMessage(null, message);
-
+			if (!this.isEdit) {
+				document.setNumberDL(0L);
+			}
+			this.showMessageWARN("", "", "Bạn đã upload file thành công vui lòng chọn Lưu lại để hoàn thành tiến trình");
 		} catch (IOException e) {
 			e.printStackTrace();
-			super.showNotificationFail();
+			
 		}
+	}
+	
+	public String generateFileName(String fileName){
+		LocalDateTime localDateTime = LocalDateTime.now();
+		String ext = fileName.substring(fileName.indexOf(".pdf"), fileName.length());
+		fileName = fileName.replace(".pdf", "");
+		fileName += "_" + String.valueOf(localDateTime.getYear()) + String.valueOf(localDateTime.getMonthValue()) + String.valueOf(localDateTime.getDayOfMonth()) +
+				String.valueOf(localDateTime.getHour()) + String.valueOf(localDateTime.getMinute()) + String.valueOf(localDateTime.getSecond()) + ext;
+		return fileName;
 	}
 
 	public void showDialogDoc(Document document) {
 		if (document == null) {
 			this.document = new Document();
 			this.document.setUploadDate(new Date());
+			this.isEdit = false;
+			this.isUpload = true;
 		} else {
 			this.document = document;
+			this.isEdit = true;
+			this.isUpload = false;
 		}
 		RequestContext context = RequestContext.getCurrentInstance();
 		context.execute("PF('dlgDocWV').show();");
@@ -254,6 +327,30 @@ public class DocumentBean extends BaseController implements Serializable {
 
 	public void setFilteredDocuments(List<Document> filteredDocuments) {
 		this.filteredDocuments = filteredDocuments;
+	}
+
+	public Boolean getIsEdit() {
+		return isEdit;
+	}
+
+	public void setIsEdit(Boolean isEdit) {
+		this.isEdit = isEdit;
+	}
+
+	public FileUploadEvent getEventUpload() {
+		return eventUpload;
+	}
+
+	public void setEventUpload(FileUploadEvent eventUpload) {
+		this.eventUpload = eventUpload;
+	}
+
+	public Boolean getIsUpload() {
+		return isUpload;
+	}
+
+	public void setIsUpload(Boolean isUpload) {
+		this.isUpload = isUpload;
 	}
 	
 }

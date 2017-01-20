@@ -61,7 +61,21 @@ aside nav ul li a {
 
 .cate-leftpn {
 	/* 	border-bottom: #DFDFDF 1px solid !important; */
-	
+	border-top: solid 5px #FFF;
+    margin-top: -5px;
+}
+
+.nav-header-bot , .nav-header-top{
+	background: #FFF;
+	height: 5px;
+}
+
+.nav-header-bot {
+	box-shadow: 0px 1px 3px #7E7E7E;
+}
+.nav-header-top {
+	box-shadow: 0px -1px 3px #7E7E7E;
+	margin-top: 2px;
 }
 
 aside nav ul li a:hover {
@@ -741,6 +755,10 @@ minified aside nav ul li a:hover {
 
 .cate-leftpn.open:hover {
 	background: none !important;
+}
+
+.cate-leftpn:hover {
+	border-top: solid 5px #CB0200;
 }
 
 .cate-leftpn.open>a:hover {

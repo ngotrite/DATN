@@ -1,21 +1,24 @@
 package vn.edu.nuce.datn.bean;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 
+import org.apache.poi.util.StringUtil;
 import org.primefaces.event.SelectEvent;
 
+import vn.edu.nuce.datn.dao.SysGroupDAO;
 import vn.edu.nuce.datn.dao.SysRoleDAO;
 import vn.edu.nuce.datn.dao.SysUserDAO;
+import vn.edu.nuce.datn.entity.SysGroup;
 import vn.edu.nuce.datn.entity.SysRole;
 import vn.edu.nuce.datn.entity.SysUser;
 import vn.edu.nuce.datn.util.CommonUtil;
 import vn.edu.nuce.datn.util.PasswordUtil;
-
-
+import vn.edu.nuce.datn.util.SessionUtils;
 
 @ManagedBean(name = "userBean")
 @ViewScoped
@@ -29,9 +32,10 @@ public class UserBean extends BaseController implements Serializable {
 	private String password;
 	private List<SysUser> listSysUser;
 	private List<SysRole> listSysRole;
-//	private long roleID;
+	private SysGroupDAO sysGroupDAO;
+	// private long roleID;
 	private boolean isEditing;
-	
+
 	private String pass;
 
 	private SysUserDAO userDao;
@@ -79,9 +83,9 @@ public class UserBean extends BaseController implements Serializable {
 
 	public void btnSave() {
 
-		if(!this.validateSave())
+		if (!this.validateSave())
 			return;
-				
+
 		if (sysUser.getId() > 0) {
 
 			userDao.update(sysUser);
@@ -96,19 +100,19 @@ public class UserBean extends BaseController implements Serializable {
 	}
 
 	private boolean validateSave() {
-		
+
 		SysUser checkObj = userDao.findByUserName(sysUser.getUserName(), sysUser.getId());
-		if(checkObj != null) {
-			
+		if (checkObj != null) {
+
 			super.showMessageERROR("common.save", " User ", "common.duplicateName");
 			return false;
 		}
-		
-		if(sysUser.getId() <= 0) {
+
+		if (sysUser.getId() <= 0) {
 			// Neu them moi thi bat buoc validate password
-			
-			if(!PasswordUtil.validatePassword(password)) {
-				
+
+			if (!PasswordUtil.validatePassword(password)) {
+
 				super.showMessageERROR("common.save", " User ", "user.formatPassword");
 				return false;
 			} else {
@@ -116,10 +120,10 @@ public class UserBean extends BaseController implements Serializable {
 			}
 		} else {
 			// Neu update thi chi validate password khi doi password
-			
-			if(!CommonUtil.isEmpty(password)) {				
-				if(!PasswordUtil.validatePassword(password)) {
-					
+
+			if (!CommonUtil.isEmpty(password)) {
+				if (!PasswordUtil.validatePassword(password)) {
+
 					super.showMessageERROR("common.save", " User ", "user.formatPassword");
 					return false;
 				} else {
@@ -130,13 +134,12 @@ public class UserBean extends BaseController implements Serializable {
 			}
 		}
 		if (!password.equals(pass)) {
-//			super.showMessageINFO(actionKey, objName);
+			// super.showMessageINFO(actionKey, objName);
 			return false;
 		}
-		
+
 		return true;
 	}
-	
 
 	public void onRowSelect(SelectEvent event) {
 	}
@@ -148,12 +151,42 @@ public class UserBean extends BaseController implements Serializable {
 	}
 
 	public void onRowDelete(SysUser user) {
-
-		if (this.sysUser.getId() == user.getId()) {
-			btnCancel();
+//
+//		if (this.sysUser.getId() == user.getId()) {
+//			btnCancel();
+//		}
+//		userDao.delete(user);
+//		listSysUser.remove(user);
+//		
+		if (user.getId() != 0L && (user.getId() != SessionUtils.getUser().getId())) {
+			if (this.sysUser.getId() == user.getId()) {
+				btnCancel();
+			}
+			userDao.delete(user);
+			listSysUser.remove(user);
+			super.showNotificationSuccsess();
+		}else {
+			super.showMessageWARN("validate.accUsed", "");
 		}
-		userDao.delete(user);
-		listSysUser.remove(user);
+	}
+
+	public String getGroupUser(SysUser sysUser) {
+		String result = "";
+		if(sysUser.getId() > 0){
+			List<SysGroup> lstSysGroup = new ArrayList<SysGroup>();
+			sysGroupDAO = new SysGroupDAO();
+			lstSysGroup = sysGroupDAO.findByUser(sysUser.getId(), true);
+			if(lstSysGroup.size() > 0){
+				for(int i = 0; i < lstSysGroup.size(); i++){
+					if(result.isEmpty()){
+						result += lstSysGroup.get(i).getName();
+					} else {
+						result += "," +lstSysGroup.get(i).getName();
+					}
+				}
+			}
+		}
+		return result;
 	}
 
 	/** GET SET **/
@@ -177,13 +210,13 @@ public class UserBean extends BaseController implements Serializable {
 		this.listSysUser = listSysUser;
 	}
 
-//	public long getRoleID() {
-//		return roleID;
-//	}
-//
-//	public void setRoleID(long roleID) {
-//		this.roleID = roleID;
-//	}
+	// public long getRoleID() {
+	// return roleID;
+	// }
+	//
+	// public void setRoleID(long roleID) {
+	// this.roleID = roleID;
+	// }
 
 	public List<SysRole> getListSysRole() {
 		return listSysRole;
@@ -208,6 +241,5 @@ public class UserBean extends BaseController implements Serializable {
 	public void setPass(String pass) {
 		this.pass = pass;
 	}
-	
-	
+
 }

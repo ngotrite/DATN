@@ -54,7 +54,7 @@
 									<i class="fa fa-pencil icon-only mr-0"></i>
 								</p:commandLink>
 
-								<p:commandLink update="form-major dtMajor" resetValues="true"
+								<p:commandLink update="form-major dtMajor" resetValues="true" oncomplete="PF('dtMajorWV').clearFilters();"
 									process="@this" actionListener="#{majorBean.deleleMajor(item)}"
 									styleClass="btn btn-sm btn-action-del colorRed">
 									<i class="fa fa-times icon-only mr-0"></i>

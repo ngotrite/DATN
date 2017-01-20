@@ -163,7 +163,13 @@
 					filterBy="#{user.remark}" filterMatchMode="contains">
 					<h:outputText value="#{user.remark}" title="#{user.remark}" />
 				</p:column>
-
+				
+				<p:column headerText="Tên nhóm" filterBy="#{userBean.getGroupUser(user)}" sortBy="#{userBean.getGroupUser(user)}"
+					styleClass="text-truncate" resizable="true"
+					filterMatchMode="contains">
+					<h:outputText value="#{userBean.getGroupUser(user)}" />
+				</p:column>
+				
 				<p:column headerText="#{msg['common.active']}" style="text-align:center; width:10%">
 					<p:selectBooleanCheckbox value="#{user.isActive}" disabled="true">
 					</p:selectBooleanCheckbox>

@@ -11,6 +11,152 @@
 <ui:composition template="../templates/vcbsContentTemplate.xhtml">
 	<ui:define name="content">
 
+		<p:dialog header="Import thông tin sinh viên tốt nghiệp"
+			id="dlgCerImport" resizable="false" modal="true"
+			widgetVar="dlgCerImportWV" styleClass="dlg-center-fix">
+			<style>
+#dlgCerImport.ui-dialog .ui-dialog-content {
+	float: right;
+}
+
+#dlgCerImport {
+	width: 88% !important;
+	height: 0% !important;
+}
+</style>
+
+			<h:form id="form-sd-dlg" class="container-fluid"
+				enctype="multipart/form-data">
+
+				<div class="row formFieldMg">
+					<div class="col-xs-12 col-sm-12">
+<!-- 						<div class="row"> -->
+
+							<div class="col-xs-12" align="right">
+								<p:fileUpload fileUploadListener="#{certificateBean.uploadExel}"
+									mode="advanced" multiple="true" dragDropSupport="false"
+									update="form-sd-dlg dtCerDLG" label="Import"
+									styleClass="fupload" allowTypes="/(\.|\/)(xls)$/"
+									sizeLimit="10000000"
+									invalidSizeMessage="#{msg['validate.importSize']}"
+									invalidFileMessage="#{msg['validate.importFormatXLS']}" />
+							</div>
+<!-- 							<div class="col-xs-12 col-md-2" align="right"> -->
+<!-- 								<p:commandButton value="#{msg['common.apply']}" type="submit" -->
+<!-- 									actionListener="#{certificateBean.saveCer()}" -->
+<!-- 									update="form-cer-list form-cer-list:dtCer" -->
+<!-- 									styleClass="btn btn-default pull-right"> -->
+<!-- 									<p:confirm header="#{msg['common.apply']}" -->
+<!-- 										message="#{msg['common.confirm_apply']}" icon="ui-icon-alert" /> -->
+<!-- 								</p:commandButton> -->
+<!-- 							</div> -->
+
+<!-- 						</div> -->
+					</div>
+
+					<div class="col-xs-12 col-md-12">
+						<p:dataTable var="item" value="#{certificateBean.lstcertificate}"
+							id="dtCerDLG" rowKey="#{item.studentId}" selectionMode="single"
+							emptyMessage="#{msg['common.noData']}" paginator="true" rows="20"
+							paginatorPosition="bottom" rowIndexVar="rowIndex"
+							rendered="#{not empty certificateBean.lstcertificate}"
+							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							rowsPerPageTemplate="10,20,50,100">
+
+							<p:column style="width:3%" headerText="#{msg['common.index']}">
+								<h:outputText value="#{rowIndex + 1}" />
+							</p:column>
+
+							<p:column sortBy="#{item.studentId}" filterBy="#{item.studentId}"
+								filterMatchMode="contains" headerText="#{msg['st.studentId']}">
+								<h:outputText value="#{item.studentId}" />
+							</p:column>
+
+							<p:column sortBy="#{item.studentName}"
+								filterBy="#{item.studentName}" filterMatchMode="contains"
+								headerText="#{msg['st.studentName']}">
+								<h:outputText value="#{item.studentName}" />
+							</p:column>
+
+							<p:column sortBy="#{item.birthday}" filterBy="#{item.birthday}"
+								filterMatchMode="contains" headerText="#{msg['cer.birthday']}">
+								<!-- 						<p:calendar effect="fold" value="#{item.birthday}" disabled="true" /> -->
+								<h:outputText value="#{item.birthday}" />
+							</p:column>
+
+							<p:column sortBy="#{item.birthPlace}"
+								filterBy="#{item.birthPlace}" filterMatchMode="contains"
+								headerText="#{msg['cer.birthPlace']}">
+								<h:outputText value="#{item.birthPlace}" />
+							</p:column>
+
+							<p:column sortBy="#{item.educationSystem}"
+								filterBy="#{item.educationSystem}" filterMatchMode="contains"
+								headerText="#{msg['cer.educationSystem']}">
+								<h:outputText value="#{item.educationSystem}" />
+							</p:column>
+
+							<p:column sortBy="#{item.program}" filterBy="#{item.program}"
+								filterMatchMode="contains" headerText="#{msg['cer.program']}">
+								<h:outputText value="#{item.program}" />
+							</p:column>
+
+							<p:column sortBy="#{certificateBean.getMajorName(item.major)}"
+								filterBy="#{certificateBean.getMajorName(item.major)}"
+								filterMatchMode="contains" headerText="#{msg['cer.major']}">
+								<h:outputText
+									value="#{certificateBean.getMajorName(item.major)}" />
+							</p:column>
+
+							<p:column sortBy="#{item.certificateNo}"
+								filterBy="#{item.certificateNo}" filterMatchMode="contains"
+								headerText="#{msg['cer.certificateNo']}">
+								<h:outputText value="#{item.certificateNo}" />
+							</p:column>
+
+							<p:column sortBy="#{item.graduationYear}"
+								filterBy="#{item.graduationYear}" filterMatchMode="contains"
+								headerText="#{msg['cer.graduationYear']}">
+								<h:outputText value="#{item.graduationYear}" />
+							</p:column>
+
+							<p:column sortBy="#{item.issuanceDate}"
+								filterBy="#{item.issuanceDate}" filterMatchMode="contains"
+								headerText="#{msg['cer.issuanceDate']}">
+
+								<p:calendar effect="fold" value="#{item.issuanceDate}"
+									disabled="true" />
+							</p:column>
+
+							<p:column sortBy="#{item.grade}" filterBy="#{item.grade}"
+								filterMatchMode="contains" headerText="#{msg['cer.grade']}">
+								<h:outputText value="#{item.grade}" />
+							</p:column>
+
+							<p:column sortBy="#{item.updateDate}"
+								filterBy="#{item.updateDate}" filterMatchMode="contains"
+								headerText="#{msg['cer.updateDate']}">
+								<h:outputText value="#{item.updateDate}">
+									<f:convertDateTime pattern="dd-MM-yyyy" />
+								</h:outputText>
+							</p:column>
+							<f:facet name="footer">
+								<p:commandButton value="#{msg['common.apply']}" type="submit"
+									actionListener="#{certificateBean.saveCer()}"
+									update="form-cer-list form-cer-list:dtCer"
+									styleClass="btn btn-default pull-right">
+									<p:confirm header="#{msg['common.apply']}"
+										message="#{msg['common.confirm_apply']}" icon="ui-icon-alert" />
+								</p:commandButton>
+							</f:facet>
+						</p:dataTable>
+					</div>
+				</div>
+			</h:form>
+
+		</p:dialog>
+
+
 		<h:form id="form-cer-list" class="container-fluid">
 			<div class="row formFieldMg">
 				<div class="col-xs-12 col-sm-12">
@@ -20,34 +166,34 @@
 								styleClass="line32" />
 						</div>
 
-						<div class="col-xs-12 col-md-4">
-							<p:fileUpload fileUploadListener="#{certificateBean.uploadExel}"
-								mode="advanced" multiple="true" dragDropSupport="false"
-								update="dtCer" label="Import" styleClass="fupload"
-								allowTypes="/(\.|\/)(xls)$/" sizeLimit="10000000"
-								invalidSizeMessage="#{msg['validate.importSize']}"
-								invalidFileMessage="#{msg['validate.importFormatXLS']}" />
-						</div>
+						<!-- 						<div class="col-xs-12 col-md-4"> -->
+						<!-- 							<p:fileUpload fileUploadListener="#{certificateBean.uploadExel}" -->
+						<!-- 								mode="advanced" multiple="true" dragDropSupport="false" -->
+						<!-- 								update="dtCer" label="Import" styleClass="fupload" -->
+						<!-- 								allowTypes="/(\.|\/)(xls)$/" sizeLimit="10000000" -->
+						<!-- 								invalidSizeMessage="#{msg['validate.importSize']}" -->
+						<!-- 								invalidFileMessage="#{msg['validate.importFormatXLS']}" /> -->
+						<!-- 						</div> -->
 
-						<div class="col-xs-12 col-md-2" align="right">
-							<p:commandButton value="#{msg['common.apply']}" type="submit"
-								actionListener="#{certificateBean.saveCer()}"
-								update="form-cer-list" styleClass="btn btn-default pull-right">
-								<p:confirm header="#{msg['common.apply']}"
-									message="#{msg['common.confirm_apply']}" icon="ui-icon-alert" />
-							</p:commandButton>
+						<!-- 						<div class="col-xs-12 col-md-2" align="right"> -->
+						<!-- 							<p:commandButton value="#{msg['common.apply']}" type="submit" -->
+						<!-- 								actionListener="#{certificateBean.saveCer()}" -->
+						<!-- 								update="form-cer-list" styleClass="btn btn-default pull-right"> -->
+						<!-- 								<p:confirm header="#{msg['common.apply']}" -->
+						<!-- 									message="#{msg['common.confirm_apply']}" icon="ui-icon-alert" /> -->
+						<!-- 							</p:commandButton> -->
 
-						</div>
+						<!-- 						</div> -->
 					</div>
 				</div>
 
 				<p:dataTable var="item" value="#{certificateBean.lstcertificate}"
 					id="dtCer" rowKey="#{item.studentId}" selectionMode="single"
-					emptyMessage="#{msg['common.noData']}" paginator="true" rows="20"
+					emptyMessage="#{msg['common.noData']}" paginator="true" rows="5"
 					paginatorPosition="bottom" rowIndexVar="rowIndex"
 					widgetVar="dtCerWV"
 					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-					rowsPerPageTemplate="10,20,50,100">
+					rowsPerPageTemplate="5,10,20,50,100">
 
 					<p:column style="width:3%" headerText="#{msg['common.index']}">
 						<h:outputText value="#{rowIndex + 1}" />
@@ -111,13 +257,13 @@
 					<p:column sortBy="#{item.issuanceDate}"
 						filterBy="#{item.issuanceDate}" filterMatchMode="contains"
 						headerText="#{msg['cer.issuanceDate']}">
-<!-- 						<f:facet name="filter"> -->
-<!-- 							<p:calendar pattern="dd/MM/yyyy"> -->
-<!-- 								<p:ajax event="dateSelect" oncomplete="PF('dtCerWV').filter()" /> -->
-<!-- 								<p:ajax event="change" execute="@this" -->
-<!-- 									oncomplete="PF('dtCerWV').filter()" update="dtCer" /> -->
-<!-- 							</p:calendar> -->
-<!-- 						</f:facet> -->
+						<!-- 						<f:facet name="filter"> -->
+						<!-- 							<p:calendar pattern="dd/MM/yyyy"> -->
+						<!-- 								<p:ajax event="dateSelect" oncomplete="PF('dtCerWV').filter()" /> -->
+						<!-- 								<p:ajax event="change" execute="@this" -->
+						<!-- 									oncomplete="PF('dtCerWV').filter()" update="dtCer" /> -->
+						<!-- 							</p:calendar> -->
+						<!-- 						</f:facet> -->
 
 						<p:calendar effect="fold" value="#{item.issuanceDate}"
 							disabled="true" />
@@ -145,7 +291,7 @@
 						</p:commandLink>
 
 						<p:commandLink update="dtCer"
-							actionListener="#{certificateBean.cmdDeleteCer(item)}"
+							actionListener="#{certificateBean.cmdDeleteCer(item)}"   
 							styleClass="btn btn-sm btn-action-del colorRed">
 							<i class="fa fa-times icon-only mr-0"></i>
 							<p:confirm header="#{msg['common.delete']}"
@@ -161,14 +307,19 @@
 
 
 					<f:facet name="footer">
-						<div class="col-xs-12 col-md-10"></div>
-						<div class="col-xs-12 col-md-2">
+						<div class="col-xs-12 col-md-6"></div>
+						<div class="col-xs-12 col-md-6">
 							<h:commandButton value="#{msg['common.export']}"
 								styleClass="btn-export-zone pull-right">
 								<p:dataExporter type="xls" target="dtCer"
-									fileName="Danh_sach_van_bang" pageOnly="true"
+									fileName="Danh_sach_van_bang" 
 									postProcessor="#{certificateBean.postProcessXLS}" />
 							</h:commandButton>
+							<p:commandButton value="Import" type="submit" resetValues="true"
+								actionListener="#{certificateBean.showDialogImport(null)}"
+								update="dlgCerImport" styleClass="btn btn-primary pull-right"
+								immediate="true">
+							</p:commandButton>
 						</div>
 					</f:facet>
 				</p:dataTable>
@@ -204,6 +355,7 @@
 							</div>
 							<div class="col-xs-12">
 								<p:inputText value="#{certificateBean.certificate.studentId}"
+									readonly="#{certificateBean.certificate.studentId ne null}"
 									styleClass="form-control" required="true" id="itStudentId" />
 							</div>
 						</div>

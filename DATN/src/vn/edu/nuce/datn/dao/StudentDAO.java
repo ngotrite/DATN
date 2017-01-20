@@ -1,6 +1,7 @@
 package vn.edu.nuce.datn.dao;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -11,6 +12,7 @@ import vn.edu.nuce.datn.db.HibernateUtil;
 import vn.edu.nuce.datn.db.Operator;
 import vn.edu.nuce.datn.entity.GraduationPeriod;
 import vn.edu.nuce.datn.entity.Student;
+import vn.edu.nuce.datn.entity.SubjectDictionary;
 
 @SuppressWarnings("serial")
 public class StudentDAO extends BaseDAO<Student> implements Serializable {
@@ -163,6 +165,32 @@ public class StudentDAO extends BaseDAO<Student> implements Serializable {
 			result = true;
 		}
 		return result;
+	}
+	
+	public boolean delListStudent(List<Student> students) {
+		Session session = HibernateUtil.getOpenSession();
+		session.getTransaction().begin();
+		List<String> studentsId = new ArrayList<String>();
+		if (students.size() > 0) {
+			for (Student st : students) {
+				studentsId.add(st.getStudentId());
+			}
+		}
+		try {
+			StringBuffer hql = new StringBuffer("DELETE FROM Student b");
+			hql.append(" WHERE b.studentId IN (:studentsId)");
+
+			Query<Student> query = session.createQuery(hql.toString());
+			query.setParameterList("studentsId", studentsId);
+			query.executeUpdate();
+			session.getTransaction().commit();
+			return true;
+		} catch (Exception e) {
+			session.getTransaction().rollback();
+			return false;
+		} finally {
+			session.close();
+		}
 	}
 
 	

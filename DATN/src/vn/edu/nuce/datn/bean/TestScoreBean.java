@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.poi.util.IOUtils;
+import org.primefaces.component.datatable.DataTable;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
 
@@ -48,6 +49,7 @@ public class TestScoreBean extends BaseController implements Serializable {
 	private TestScoreDAO testScoreDAO;
 
 	private List<SubjectDictionary> lstSD;
+	private Boolean isEdit;
 
 	@PostConstruct
 	public void init() {
@@ -56,18 +58,21 @@ public class TestScoreBean extends BaseController implements Serializable {
 		this.testScoreDAO = new TestScoreDAO();
 		this.lstTestScoreDLG = new ArrayList<TestScore>();
 		loadTestScore();
+		this.isEdit = false;
 	}
 
 	public void showDialogTS(TestScore testScore) {
 		if (testScore == null) {
 			this.testScore = new TestScore();
 			lstTestScoreDLG = new ArrayList<TestScore>();
-			RequestContext context = RequestContext.getCurrentInstance();
-			context.execute("PF('dlgTSWV').show();");
+			this.isEdit = false;
 		} else {
-			// Do nothing
+			this.testScore = testScore;
+			this.isEdit = true;
+			lstTestScoreDLG = new ArrayList<TestScore>();
 		}
-
+		RequestContext context = RequestContext.getCurrentInstance();
+		context.execute("PF('dlgTSWV').show();");
 	}
 
 	/***** SELECTION DELETE *****/
@@ -166,6 +171,12 @@ public class TestScoreBean extends BaseController implements Serializable {
 				testScores.remove(testScore);
 				File file = new File(testScore.getFilePath());
 				file.delete();
+				DataTable dataTable = (DataTable) FacesContext.getCurrentInstance().getViewRoot().findComponent("form-tc-list:dtTestScore");
+				if (!dataTable.getFilters().isEmpty()) {
+					dataTable.reset();// working
+					RequestContext requestContext = RequestContext.getCurrentInstance();
+					requestContext.update("form-tc-list:dtTestScore");
+				}
 				super.showNotificationSuccsess();
 			}
 		} catch (Exception e) {
@@ -251,13 +262,14 @@ public class TestScoreBean extends BaseController implements Serializable {
 	}
 
 	public void editFileUpload(FileUploadEvent event) {
-		FacesMessage message = new FacesMessage("Succesful", event.getFile().getFileName() + " is uploaded.");
-		FacesContext.getCurrentInstance().addMessage(null, message);
 		try {
 			String fileName = event.getFile().getFileName();
 			// File file = new File(ResourceBundleUtil.getString("link") +
 			// fileName);
+			
 			File file = new File(ResourceBundleUtil.getString("server.path.document") + fileName);
+//			File file = new File(ResourceBundleUtil.getString("local.path.document") + fileName);
+
 
 			InputStream inputStream = event.getFile().getInputstream();
 			OutputStream outputStream = new FileOutputStream(file);
@@ -274,13 +286,13 @@ public class TestScoreBean extends BaseController implements Serializable {
 			outputStream.flush();
 			outputStream.close();
 
-			if (selectedTestScore.getTestScoreId() != null) {
-				testScores.remove(selectedTestScore);
+			if (testScore.getTestScoreId() != null) {
+				testScores.remove(testScore);
 
-				File fileItem = new File(selectedTestScore.getFilePath());
+				File fileItem = new File(testScore.getFilePath());
 				fileItem.delete();
-				testScores.remove(selectedTestScore);
-				testScoreDAO.delete(selectedTestScore);
+				testScores.remove(testScore);
+				testScoreDAO.delete(testScore);
 
 				String[] values = fileName.substring(0, fileName.lastIndexOf(".")).split("_");
 
@@ -298,15 +310,18 @@ public class TestScoreBean extends BaseController implements Serializable {
 						test = values[2].substring(4, 5);
 					}
 				}
-				selectedTestScore.setSubjectId(subjectId);
-				selectedTestScore.setGroupId(groupId);
-				selectedTestScore.setSchoolYear(schoolYear);
-				selectedTestScore.setTest(test);
-				selectedTestScore.setFilePath(file.getPath());
-				selectedTestScore.setFileName(file.getName());
+				testScore.setSubjectId(subjectId);
+				testScore.setGroupId(groupId);
+				testScore.setSchoolYear(schoolYear);
+				testScore.setTest(test);
+				testScore.setFilePath(file.getPath());
+				testScore.setFileName(file.getName());
 
-				testScoreDAO.save(selectedTestScore);
-				testScores.add(selectedTestScore);
+				testScoreDAO.save(testScore);
+//				testScores.add(testScore);
+				lstTestScoreDLG.add(testScore);
+				loadTestScore();
+				this.showNotificationSuccsess();
 			} else {
 				System.out.println("selectedTestScore is null");
 			}
@@ -321,7 +336,7 @@ public class TestScoreBean extends BaseController implements Serializable {
 
 		try {
 			String fileName = event.getFile().getFileName();
-
+//			File file = new File(ResourceBundleUtil.getString("server.path.document.ex") + fileName);
 			File file = new File(ResourceBundleUtil.getString("server.path.document") + fileName);
 //			File file = new File(ResourceBundleUtil.getString("local.path.document") + fileName);
 
@@ -366,8 +381,7 @@ public class TestScoreBean extends BaseController implements Serializable {
 			lstTestScoreDLG.add(testScore);
 			testScores.add(testScore);
 			loadTestScore();
-			FacesMessage message = new FacesMessage("Succesful", event.getFile().getFileName() + " is uploaded.");
-			FacesContext.getCurrentInstance().addMessage(null, message);
+			this.showNotificationSuccsess();
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -388,17 +402,15 @@ public class TestScoreBean extends BaseController implements Serializable {
 			// name you want, this only won't work in MSIE, it will use current
 			// request URL as file name instead.
 			ec.setResponseHeader("Content-Disposition", "attachment; filename=\"" + testScore.getFileName() + "\"");
-			// FileOutputStream fos = new FileOutputStream(new
-			// File(ec.getRealPath(testScore.getFileName())));
-			// byte[] data = IOUtils.toByteArray(fis);
-			// fos.write(data, 0, data.length);
-			// fos.close();
-			HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext()
-					.getRequest();
-			HttpServletResponse response = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext()
-					.getResponse();
-			response.sendRedirect(
-					request.getContextPath() + ResourceBundleUtil.getString("link.document") + testScore.getFileName());
+//			 FileOutputStream fos = new FileOutputStream(new
+//			 File(ec.getRealPath(testScore.getFileName())));
+//			 byte[] data = IOUtils.toByteArray(fis);
+//			 fos.write(data, 0, data.length);
+//			 fos.close();
+			HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+			HttpServletResponse response = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
+			response.sendRedirect(request.getContextPath() + ResourceBundleUtil.getString("link.document") + testScore.getFileName());
+//			response.sendRedirect(request.getContextPath() + "/" + testScore.getFileName());
 			return "";
 		} catch (FileNotFoundException fnfex) {
 			return "";
@@ -468,5 +480,14 @@ public class TestScoreBean extends BaseController implements Serializable {
 	public void setLstTestScoreDLG(List<TestScore> lstTestScoreDLG) {
 		this.lstTestScoreDLG = lstTestScoreDLG;
 	}
+
+	public Boolean getIsEdit() {
+		return isEdit;
+	}
+
+	public void setIsEdit(Boolean isEdit) {
+		this.isEdit = isEdit;
+	}
+	
 
 }
