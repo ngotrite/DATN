@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
 /**
  *  General Utilities
  *
- *  @author     huannn
+ *  @author     tent
  */
 public class CommonUtil
 {
@@ -668,7 +668,7 @@ public class CommonUtil
 	}
 
 	/***
-	 * huannn: Kiem tra chuoi co ky tu dac biet
+	 * tent: Kiem tra chuoi co ky tu dac biet
 	 * @param inputStr
 	 * @return
 	 */

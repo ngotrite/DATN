@@ -15,7 +15,7 @@ import vn.edu.nuce.datn.util.CommonUtil;
 /**
  * Use manual Hibernate implement
  * 
- * @author huannn
+ * @author tent
  *
  * @param <T>
  */

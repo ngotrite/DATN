@@ -60,6 +60,7 @@ public class GraduationScoreBean extends BaseController implements Serializable 
 		loadGraScores();
 		this.isEdit = false;
 	}
+	String srcPath = ResourceBundleUtil.getString("server.path.document");
 
 	public void showDialogGS(GraduationScore graScore) {
 		if (graScore == null) {
@@ -115,7 +116,8 @@ public class GraduationScoreBean extends BaseController implements Serializable 
 	public void cmdRemoveGS() {
 		if (graScoresSelection.size() > 0) {
 			for (GraduationScore graScore : graScoresSelection) {
-				File file = new File(graScore.getFilePath());
+//				File file = new File(graScore.getFilePath());
+				File file = new File(srcPath + graScore.getFileName());
 				file.delete();
 			}
 			graScoreDAO.delListGS(graScoresSelection);
@@ -144,7 +146,8 @@ public class GraduationScoreBean extends BaseController implements Serializable 
 			if (graScore.getStudentId() != null) {
 				graScoreDAO.delete(graScore);
 				graScores.remove(graScore);
-				File file = new File(graScore.getFilePath());
+//				File file = new File(graScore.getFilePath());
+				File file = new File(srcPath + graScore.getFileName());
 				file.delete();
 				DataTable dataTable = (DataTable) FacesContext.getCurrentInstance().getViewRoot().findComponent("form-gs-list:dtGraScore");
 				if (!dataTable.getFilters().isEmpty()) {
@@ -205,8 +208,8 @@ public class GraduationScoreBean extends BaseController implements Serializable 
 	public String newTabFilePDF(GraduationScore graScore) {
 		try {
 
-			String srcPath = graScore.getFilePath();
-			FileInputStream fis = new FileInputStream(new File(srcPath));
+//			String srcPath = graScore.getFilePath();
+			FileInputStream fis = new FileInputStream(new File(srcPath + graScore.getFileName()));
 			FacesContext fc = FacesContext.getCurrentInstance();
 			ExternalContext ec = fc.getExternalContext();
 			ec.responseReset();
@@ -276,7 +279,8 @@ public class GraduationScoreBean extends BaseController implements Serializable 
 			outputStream.close();
 
 			if (graScore.getStudentId() != null) {
-				File fileItem = new File(graScore.getFilePath());
+//				File fileItem = new File(graScore.getFilePath());
+				File fileItem = new File(srcPath + graScore.getFileName());
 				fileItem.delete();
 				graScores.remove(graScore);
 				graScoreDAO.delete(graScore);
@@ -304,12 +308,12 @@ public class GraduationScoreBean extends BaseController implements Serializable 
 	// DownLoad File PDF
 	public void downloadFileDemoSignature(GraduationScore graScore) {
 		try {
-			String srcPath = graScore.getFilePath();
-			FileInputStream fis = new FileInputStream(new File(srcPath));
+//			String srcPath = graScore.getFilePath();
+			FileInputStream fis = new FileInputStream(new File(srcPath + graScore.getFileName()));
 			FacesContext fc = FacesContext.getCurrentInstance();
 			ExternalContext ec = fc.getExternalContext();
 			ec.responseReset();
-			ec.setResponseContentType(ec.getMimeType(srcPath));
+			ec.setResponseContentType(ec.getMimeType(srcPath + graScore.getFileName()));
 			// The Save As popup magic is done here. You can give it any file
 			// name you want, this only won't work in MSIE, it will use current
 			// request URL as file name instead.

@@ -62,10 +62,11 @@ public class DocumentBean extends BaseController implements Serializable {
 		loadDocuments();
 	}
 	
-
+	String srcPath = ResourceBundleUtil.getString("server.path.document");
 	public void removeAll() {
 		for (Document document : documents) {
-			File file = new File(document.getFilePath());
+//			File file = new File(document.getFilePath());
+			File file = new File(srcPath + document.getFileName());
 			file.delete();
 		}
 		documentDAO.delListDoc(documents);
@@ -89,7 +90,8 @@ public class DocumentBean extends BaseController implements Serializable {
 			if (document.getDocumentId() != null) {
 				documentDAO.delete(document);
 				documents.remove(document);
-				File file = new File(document.getFilePath());
+				File file = new File(srcPath + document.getFileName());
+//				File file = new File(document.getFilePath());
 				file.delete();
 				DataTable dataTable = (DataTable) FacesContext.getCurrentInstance().getViewRoot().findComponent("form-doc-list:dtDocument");
 				if (!dataTable.getFilters().isEmpty()) {
@@ -108,12 +110,12 @@ public class DocumentBean extends BaseController implements Serializable {
 	// DownLoad File PDF
 	public void downloadFileDemoSignature(Document document) {
 		try {
-			String srcPath = document.getFilePath();
-			FileInputStream fis = new FileInputStream(new File(srcPath));
+//			String srcPath = document.getFilePath();
+			FileInputStream fis = new FileInputStream(new File(srcPath + document.getFileName()));
 			FacesContext fc = FacesContext.getCurrentInstance();
 			ExternalContext ec = fc.getExternalContext();
 			ec.responseReset();
-			ec.setResponseContentType(ec.getMimeType(srcPath));
+			ec.setResponseContentType(ec.getMimeType(srcPath + document.getFileName()));
 			// The Save As popup magic is done here. You can give it any file
 			// name you want, this only won't work in MSIE, it will use current
 			// request URL as file name instead.
@@ -131,8 +133,8 @@ public class DocumentBean extends BaseController implements Serializable {
 	public String newTabFilePDF(Document document) {
 		try {
 			
-			String srcPath = document.getFilePath();
-			FileInputStream fis = new FileInputStream(new File(srcPath));
+//			String srcPath = document.getFilePath();
+			FileInputStream fis = new FileInputStream(new File(srcPath + document.getFileName()));
 			FacesContext fc = FacesContext.getCurrentInstance();
 			ExternalContext ec = fc.getExternalContext();
 			ec.responseReset();
@@ -196,14 +198,7 @@ public class DocumentBean extends BaseController implements Serializable {
 
 	public boolean validateDoc() {
 		boolean result = true;
-		// if (!documentDAO.checkName(document)) {
-		// FacesContext context = FacesContext.getCurrentInstance();
-		// context.addMessage(null,
-		// new FacesMessage(FacesMessage.SEVERITY_WARN, "",
-		// this.readProperties("common.alreadyExists")));
-		// result = false;
-		// }
-		if (document.getFileName() == null || document.getFilePath() == null) {
+		if (document.getFileName() == null) {
 			FacesContext context = FacesContext.getCurrentInstance();
 			context.addMessage(null,
 					new FacesMessage(FacesMessage.SEVERITY_WARN, "", this.readProperties("validate.upLoad")));

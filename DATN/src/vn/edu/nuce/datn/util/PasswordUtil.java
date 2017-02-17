@@ -38,7 +38,7 @@ public class PasswordUtil {
 		if(CommonUtil.isEmpty(rawPass))
 			return null;
 //		if(CommonUtil.isEmpty(salt))
-//			salt = "Huannn123";
+//			salt = "huannn123";
 		
 		try {
 			

@@ -17,7 +17,7 @@ import org.xml.sax.SAXException;
 
 /***
  * Xml Utils
- * @author huannn
+ * @author tent
  *
  */
 public class XMLUtil {

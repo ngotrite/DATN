@@ -60,7 +60,8 @@ public class TestScoreBean extends BaseController implements Serializable {
 		loadTestScore();
 		this.isEdit = false;
 	}
-
+	
+	String srcPath = ResourceBundleUtil.getString("server.path.document");
 	public void showDialogTS(TestScore testScore) {
 		if (testScore == null) {
 			this.testScore = new TestScore();
@@ -169,7 +170,8 @@ public class TestScoreBean extends BaseController implements Serializable {
 			if (testScore.getTestScoreId() != null) {
 				testScoreDAO.delete(testScore);
 				testScores.remove(testScore);
-				File file = new File(testScore.getFilePath());
+//				File file = new File(testScore.getFilePath());
+				File file = new File(srcPath + testScore.getFileName());
 				file.delete();
 				DataTable dataTable = (DataTable) FacesContext.getCurrentInstance().getViewRoot().findComponent("form-tc-list:dtTestScore");
 				if (!dataTable.getFilters().isEmpty()) {
@@ -213,7 +215,8 @@ public class TestScoreBean extends BaseController implements Serializable {
 		try {
 			if (testScoresSelection.size() > 0) {
 				for (TestScore testScore : testScoresSelection) {
-					File file = new File(testScore.getFilePath());
+//					File file = new File(testScore.getFilePath());
+					File file = new File(srcPath + testScore.getFileName());
 					file.delete();
 				}
 				testScoreDAO.delListTestScore(testScoresSelection);
@@ -236,12 +239,12 @@ public class TestScoreBean extends BaseController implements Serializable {
 	// DownLoad File PDF
 	public void downloadFileDemoSignature(TestScore testScore) {
 		try {
-			String srcPath = testScore.getFilePath();
-			FileInputStream fis = new FileInputStream(new File(srcPath));
+//			String srcPath = testScore.getFilePath();
+			FileInputStream fis = new FileInputStream(new File(srcPath + testScore.getFileName()));
 			FacesContext fc = FacesContext.getCurrentInstance();
 			ExternalContext ec = fc.getExternalContext();
 			ec.responseReset();
-			ec.setResponseContentType(ec.getMimeType(srcPath));
+			ec.setResponseContentType(ec.getMimeType(srcPath + testScore.getFileName()));
 			// The Save As popup magic is done here. You can give it any file
 			// name you want, this only won't work in MSIE, it will use current
 			// request URL as file name instead.
@@ -289,7 +292,8 @@ public class TestScoreBean extends BaseController implements Serializable {
 			if (testScore.getTestScoreId() != null) {
 				testScores.remove(testScore);
 
-				File fileItem = new File(testScore.getFilePath());
+//				File fileItem = new File(testScore.getFilePath());
+				File fileItem = new File(srcPath + testScore.getFileName());
 				fileItem.delete();
 				testScores.remove(testScore);
 				testScoreDAO.delete(testScore);
@@ -392,8 +396,8 @@ public class TestScoreBean extends BaseController implements Serializable {
 	public String newTabFilePDF(TestScore testScore) {
 		try {
 
-			String srcPath = testScore.getFilePath();
-			FileInputStream fis = new FileInputStream(new File(srcPath));
+//			String srcPath = testScore.getFilePath();
+			FileInputStream fis = new FileInputStream(new File(srcPath + testScore.getFileName()));
 			FacesContext fc = FacesContext.getCurrentInstance();
 			ExternalContext ec = fc.getExternalContext();
 			ec.responseReset();
