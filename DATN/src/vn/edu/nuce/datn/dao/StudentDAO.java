@@ -122,6 +122,16 @@ public class StudentDAO extends BaseDAO<Student> implements Serializable {
 		}
 	}
 	
+	public List<Student> checkStudentIdNew(String studentId) {
+		List<Student> lst = new ArrayList<>();
+		String[] cols = { "studentId"};
+		Operator[] operators = { Operator.EQ};
+		Object[] values = { studentId  };
+		lst = findByConditionsWithoutDomain(cols, operators, values, "");
+		
+		return lst;
+	}
+	
 	public boolean checkStudentId(String studentId) {
 		List<Student> lst = null;
 		String[] cols = { "studentId"};
@@ -192,6 +202,28 @@ public class StudentDAO extends BaseDAO<Student> implements Serializable {
 			session.close();
 		}
 	}
+	
+	public Boolean updateStudents(List<Student> lstST) {
+		boolean result = true;
+		Session session = HibernateUtil.getOpenSession();
+		session.getTransaction().begin();
+		try {
+			// UPDATE STUDENTS
+			for (int i = 0; i < lstST.size(); i++) {
+				Student stMap = lstST.get(i);
+				session.update(stMap);
+			}
+			session.getTransaction().commit();
+		} catch (Exception e) {
+			session.getTransaction().rollback();
+			result = false;
+			throw e;
+		} finally {
+			session.close();
+		}
+		return result;
+	}
+
 
 	
 	@Override

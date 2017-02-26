@@ -200,25 +200,21 @@
 					</f:facet>
 					<p:selectBooleanCheckbox value="#{item.schoolFeeStatus}"
 						disabled="#{graPeriodBean.readOnly}">
-						<p:ajax event="change" update="cSchoolFeeUpdateTime dtStudent"
+						<p:ajax event="change" update="dtStudent"
 							ignoreAutoUpdate="true"
 							listener="#{graPeriodBean.autoUpdateDate(item)}" />
 					</p:selectBooleanCheckbox>
 				</p:column>
 
-				<p:column sortBy="#{item.schoolFeeUpdateTime}"
-					style="text-align:center; width:12%"
-					filterBy="#{item.schoolFeeUpdateTime}" filterMatchMode="contains"
-					headerText="#{msg['st.schoolFeeUpdateTime']}">
-					<!-- 					<p:calendar effect="fold" value="#{item.schoolFeeUpdateTime}" -->
-					<!-- 						id="cSchoolFeeUpdateTime" disabled="true"> -->
-					<!-- 						<f:convertDateTime pattern="dd-MM-yyyy" /> -->
-					<!-- 					</p:calendar> -->
-					<h:outputText value="#{item.schoolFeeUpdateTime}"
-						id="cSchoolFeeUpdateTime">
-						<f:convertDateTime pattern="dd-MM-yyyy" />
-					</h:outputText>
-				</p:column>
+<!-- 				<p:column sortBy="#{item.schoolFeeUpdateTime}" -->
+<!-- 					style="text-align:center; width:12%" -->
+<!-- 					filterBy="#{item.schoolFeeUpdateTime}" filterMatchMode="contains" -->
+<!-- 					headerText="#{msg['st.schoolFeeUpdateTime']}"> -->
+<!-- 					<h:outputText value="#{item.schoolFeeUpdateTime}" -->
+<!-- 						id="cSchoolFeeUpdateTime"> -->
+<!-- 						<f:convertDateTime pattern="dd-MM-yyyy" /> -->
+<!-- 					</h:outputText> -->
+<!-- 				</p:column> -->
 
 				<p:column filterBy="#{item.libraryStatus}" styleClass="text-center"
 					style="text-align:center;" headerText="#{msg['st.libraryStatus']}"
@@ -236,24 +232,20 @@
 					</f:facet>
 					<p:selectBooleanCheckbox value="#{item.libraryStatus}"
 						disabled="#{graPeriodBean.readOnly}">
-						<p:ajax event="change" update="cLibraryUpdateTime dtStudent"
+						<p:ajax event="change" update="dtStudent"
 							listener="#{graPeriodBean.autoUpdateDate(item)}" />
 					</p:selectBooleanCheckbox>
 				</p:column>
 
-				<p:column sortBy="#{item.libraryUpdateTime}"
-					style="text-align:center;" filterBy="#{item.libraryUpdateTime}"
-					filterMatchMode="contains"
-					headerText="#{msg['st.libraryUpdateTime']}">
-					<!-- 					<p:calendar effect="fold" value="#{item.libraryUpdateTime}" -->
-					<!-- 						id="cLibraryUpdateTime" disabled="true"> -->
-					<!-- 						<f:convertDateTime pattern="dd-MM-yyyy" /> -->
-					<!-- 					</p:calendar> -->
-					<h:outputText value="#{item.libraryUpdateTime}"
-						id="cLibraryUpdateTime">
-						<f:convertDateTime pattern="dd-MM-yyyy" />
-					</h:outputText>
-				</p:column>
+<!-- 				<p:column sortBy="#{item.libraryUpdateTime}" -->
+<!-- 					style="text-align:center;" filterBy="#{item.libraryUpdateTime}" -->
+<!-- 					filterMatchMode="contains" -->
+<!-- 					headerText="#{msg['st.libraryUpdateTime']}"> -->
+<!-- 					<h:outputText value="#{item.libraryUpdateTime}" -->
+<!-- 						id="cLibraryUpdateTime"> -->
+<!-- 						<f:convertDateTime pattern="dd-MM-yyyy" /> -->
+<!-- 					</h:outputText> -->
+<!-- 				</p:column> -->
 
 				<p:column filterBy="#{item.departmentStatus}"
 					styleClass="text-center" headerText="#{msg['st.departmentStatus']}"
@@ -270,24 +262,20 @@
 					</f:facet>
 					<p:selectBooleanCheckbox value="#{item.departmentStatus}"
 						disabled="#{graPeriodBean.readOnly}">
-						<p:ajax event="change" update="cDepartmentUpdateTime dtStudent"
+						<p:ajax event="change" update="dtStudent"
 							listener="#{graPeriodBean.autoUpdateDate(item)}" />
 					</p:selectBooleanCheckbox>
 				</p:column>
 
-				<p:column sortBy="#{item.departmentUpdateTime}"
-					style="text-align:center; width:12%"
-					filterBy="#{item.departmentUpdateTime}" filterMatchMode="contains"
-					headerText="#{msg['st.departmentUpdateTime']}">
-					<!-- 					<p:calendar effect="fold" value="#{item.departmentUpdateTime}" -->
-					<!-- 						id="cDepartmentUpdateTime" disabled="true"> -->
-					<!-- 						<f:convertDateTime pattern="dd-MM-yyyy" /> -->
-					<!-- 					</p:calendar> -->
-					<h:outputText value="#{item.departmentUpdateTime}"
-						id="cDepartmentUpdateTime">
-						<f:convertDateTime pattern="dd-MM-yyyy" />
-					</h:outputText>
-				</p:column>
+<!-- 				<p:column sortBy="#{item.departmentUpdateTime}" -->
+<!-- 					style="text-align:center; width:12%" -->
+<!-- 					filterBy="#{item.departmentUpdateTime}" filterMatchMode="contains" -->
+<!-- 					headerText="#{msg['st.departmentUpdateTime']}"> -->
+<!-- 					<h:outputText value="#{item.departmentUpdateTime}" -->
+<!-- 						id="cDepartmentUpdateTime"> -->
+<!-- 						<f:convertDateTime pattern="dd-MM-yyyy" /> -->
+<!-- 					</h:outputText> -->
+<!-- 				</p:column> -->
 
 				<f:facet name="footer">
 					<div class="col-xs-12 col-sm-12">

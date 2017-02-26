@@ -41,13 +41,24 @@ VIETTEL PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
 }
 </style>
 					<div class="col-xs-12">
-						<h:outputText value="Xin chào :  #{userSession.viewUserName()}"
-							styleClass="colorWhite" />
-						<i class="fa fa-sign-out"></i>
-						<p:commandLink value="Đăng xuất" id="btnLogout"
+<!-- 						<i > -->
+<!-- 						<h:outputText value="Xin chào :  #{userSession.viewUserName()}" -->
+<!-- 							styleClass="colorWhite" /> -->
+<!-- 						</i>	 -->
+						<i class="fa fa-user"> 
+							<p:commandLink id="btnuserInfo" styleClass="colorWhite"
+								action="#{userProfileBean.getUserByLogin()}" update="tab:form-password"
+								oncomplete="PF('wvUserProfile').show()" ajax="true">
+							<h:outputText value="Xin chào :  #{userSession.viewUserName()}" />
+							</p:commandLink>
+						</i> 
+						<i class="fa fa-sign-out">
+						<p:commandLink  id="btnLogout"
 							styleClass="colorWhite" action="#{userSession.doLogout()}"
 							ajax="false" title="Đăng xuất">
+							<h:outputText value="Đăng xuất"></h:outputText>
 						</p:commandLink>
+						</i>
 					</div>
 
 
@@ -224,4 +235,5 @@ VIETTEL PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
 	cursor: pointer !important;
 }
 </style>
+<ui:include src="user_profile.xhtml"></ui:include>
 </html>

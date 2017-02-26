@@ -57,6 +57,8 @@ public class ContantsUtil {
 		public static final String DEPARTMENT= "DEPARTMENT";
 		public static final String LIBRARY= "LIBRARY";
 		public static final String SCHOOLFEE= "SCHOOLFEE";
+		public static final String OCOM= "OCOM";
+		public static final String BRIEF= "BRIEF";
 	}
 	
 	public class InfoStu{

@@ -73,6 +73,9 @@ public class GraduationPeriodBean extends BaseController implements Serializable
 	public Boolean isEdit;
 	private Date toDate;
 
+	private List<Student> lstImport;
+	private List<Student> lstIFin;
+
 	@PostConstruct
 	public void init() {
 		this.graduationPeriod = new GraduationPeriod();
@@ -88,6 +91,138 @@ public class GraduationPeriodBean extends BaseController implements Serializable
 		this.readOnly = true;
 		this.isEdit = false;
 		this.toDate = new Date();
+		this.lstImport = new ArrayList<Student>();
+	}
+	
+	public void updateStudentsL() {
+		for (Student sI : lstImport) {
+			List<Student> students = studentDAO.checkStudentIdNew(sI.getStudentId());
+			if (students.size() > 0) {
+				students.get(0).setLibraryStatus(true);
+				autoUpdateDateI(students.get(0));
+				studentDAO.update(students.get(0));
+			}
+		}
+
+		loadStudentByGP(graduationPeriod.getGraduationPeriodId());
+		countStudentsSF();
+		countStudentsD();
+		countStudentsL();
+		RequestContext context = RequestContext.getCurrentInstance();
+		context.execute("PF('wvIDepartment').hide();");
+		context.update("form-sd-list:dtStudent");
+		this.showNotificationSuccsess();
+	}
+	
+	public void updateStudentsF() {
+		for (Student sI : lstImport) {
+			List<Student> students = studentDAO.checkStudentIdNew(sI.getStudentId());
+			if (students.size() > 0) {
+				students.get(0).setSchoolFeeStatus(true);
+				autoUpdateDateI(students.get(0));
+				studentDAO.update(students.get(0));
+			}
+		}
+
+		loadStudentByGP(graduationPeriod.getGraduationPeriodId());
+		countStudentsSF();
+		countStudentsD();
+		countStudentsL();
+		RequestContext context = RequestContext.getCurrentInstance();
+		context.execute("PF('wvIDepartment').hide();");
+		context.update("form-sd-list:dtStudent");
+		this.showNotificationSuccsess();
+	}
+
+	public void updateStudents() {
+		for (Student sI : lstImport) {
+			List<Student> students = studentDAO.checkStudentIdNew(sI.getStudentId());
+			if (students.size() > 0) {
+				students.get(0).setDepartmentStatus(true);
+				autoUpdateDateI(students.get(0));
+				studentDAO.update(students.get(0));
+			}
+		}
+		loadStudentByGP(graduationPeriod.getGraduationPeriodId());
+		countStudentsSF();
+		countStudentsD();
+		countStudentsL();
+		RequestContext context = RequestContext.getCurrentInstance();
+		context.execute("PF('wvIDepartment').hide();");
+//		context.update("form-sd-list:dtStudent");
+//		context.update("form-sd-list");
+		resetDataTable("form-sd-list:dtStudent");
+		this.showNotificationSuccsess();
+	}
+
+	public void autoUpdateDateI(Student student) {
+		if (student.getDepartmentStatus() != null && student.getDepartmentStatus() == true) {
+			student.setDepartmentUpdateTime(new Date());
+			student.setDepartmentUserId(SessionUtils.getUser().getId());
+		} else {
+			student.setDepartmentUpdateTime(null);
+		}
+		if (student.getLibraryStatus() != null && student.getLibraryStatus() == true) {
+			student.setLibraryUpdateTime(new Date());
+			student.setLibraryUserId(SessionUtils.getUser().getId());
+		} else {
+			student.setLibraryUpdateTime(null);
+		}
+		if (student.getSchoolFeeStatus() != null && student.getSchoolFeeStatus() == true) {
+			student.setSchoolFeeUpdateTime(new Date());
+			student.setSchoolFeeUserId(SessionUtils.getUser().getId());
+		} else {
+			student.setSchoolFeeUpdateTime(null);
+		}
+	}
+
+	public void uploadDep(FileUploadEvent event) throws IOException {
+		file = event.getFile();
+
+		try {
+			readIDep(file);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public void readIDep(UploadedFile file) throws IOException {
+		Workbook workbook = new HSSFWorkbook(file.getInputstream());
+		Sheet firstSheet = workbook.getSheetAt(0);
+		Iterator<Row> iterator = firstSheet.iterator();
+		while (iterator.hasNext()) {
+			Row nextRow = iterator.next();
+			if (nextRow.getRowNum() == 0) {
+				continue;
+			}
+			Iterator<Cell> cellIterator = nextRow.cellIterator();
+			Student student = new Student();
+			while (cellIterator.hasNext()) {
+				Cell nextCell = cellIterator.next();
+				int columnIndex = nextCell.getColumnIndex();
+
+				switch (columnIndex) {
+				case 0:
+					String studentId = getCellValue(nextCell).toString();
+					if (studentId.indexOf(".") != -1) {
+						studentId = studentId.substring(0, studentId.indexOf("."));
+					}
+					if (Objects.nonNull(studentId) && !studentId.trim().isEmpty()) {
+						student.setStudentId(studentId);
+					}
+					break;
+				}
+			}
+			lstImport.add(student);
+		}
+		workbook.close();
+	}
+
+	public void showDLGIDep() {
+		lstImport.clear();
+		RequestContext context = RequestContext.getCurrentInstance();
+		context.execute("PF('wvIDepartment').show();");
 	}
 
 	public void removeAll() {
@@ -111,19 +246,16 @@ public class GraduationPeriodBean extends BaseController implements Serializable
 		switch (type) {
 		case ContantsUtil.GroupUser.DEPARTMENT:
 			if (item.getDepartmentStatus()) {
-				// userName = SessionUtils.getUserName();
 				userName = sysUserDAO.get(item.getDepartmentUserId()).getUserName();
 			}
 			break;
 		case ContantsUtil.GroupUser.LIBRARY:
 			if (item.getLibraryStatus()) {
 				userName = sysUserDAO.get(item.getLibraryUserId()).getUserName();
-				// userName = SessionUtils.getUserName();
 			}
 			break;
 		case ContantsUtil.GroupUser.SCHOOLFEE:
 			if (item.getSchoolFeeStatus()) {
-				// userName = SessionUtils.getUserName();
 				userName = sysUserDAO.get(item.getSchoolFeeUserId()).getUserName();
 			}
 			break;
@@ -181,8 +313,7 @@ public class GraduationPeriodBean extends BaseController implements Serializable
 			Row row = sheet.getRow(0);
 			row.setHeight((short) 550);
 			Cell cell00 = row.createCell(0);
-			cell00.setCellValue("Danh sách sinh viên tốt nghiệp " + " "
-					+ "tính đến" + dateFormat.format(toDate));
+			cell00.setCellValue("Danh sách sinh viên tốt nghiệp " + " " + "tính đến" + dateFormat.format(toDate));
 			CellStyle styleHeader = wb.createCellStyle();
 			Font boldHeader = wb.createFont();
 			boldHeader.setBoldweight(Font.BOLDWEIGHT_BOLD);
@@ -223,7 +354,7 @@ public class GraduationPeriodBean extends BaseController implements Serializable
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-		}		
+		}
 	}
 
 	public void resetFilters() {
@@ -546,7 +677,9 @@ public class GraduationPeriodBean extends BaseController implements Serializable
 					if (studentId.indexOf(".") != -1) {
 						studentId = studentId.substring(0, studentId.indexOf("."));
 					}
-					student.setStudentId(studentId);
+					if (Objects.nonNull(studentId) && !studentId.trim().isEmpty()) {
+						student.setStudentId(studentId);
+					}
 					break;
 
 				case 1:
@@ -587,7 +720,7 @@ public class GraduationPeriodBean extends BaseController implements Serializable
 		}
 		return result;
 	}
-	
+
 	public void saveGraPeriod() {
 		if (validateGraPeriod()) {
 			checkTimeToDisableStatus(graduationPeriod);
@@ -595,9 +728,11 @@ public class GraduationPeriodBean extends BaseController implements Serializable
 				checkValidListST();
 				boolean errorImports = graduationPeriodDAO.saveGraPeriodAndST(graduationPeriod, students);
 				if (errorImports) {
-					this.showMessageWARN("", "Bạn đã import thành công" + " " + this.students.size() + " " + " bản ghi ");
-//					this.showMessageWARN("Bạn đã import thành công ",
-//							super.readProperties(" ") + this.students.size() + " " + " bản ghi ");
+					this.showMessageWARN("",
+							"Bạn đã import thành công" + " " + this.students.size() + " " + " bản ghi ");
+					// this.showMessageWARN("Bạn đã import thành công ",
+					// super.readProperties(" ") + this.students.size() + " " +
+					// " bản ghi ");
 
 				} else {
 					this.showMessageINFO("Import lỗi : ", students.size() + " bản ghi");
@@ -618,7 +753,6 @@ public class GraduationPeriodBean extends BaseController implements Serializable
 
 	}
 
-
 	// check name isExist
 	public void checkValidListST() {
 		List<String> stIDDuplicate = new ArrayList<>();
@@ -628,8 +762,8 @@ public class GraduationPeriodBean extends BaseController implements Serializable
 			List<String> lstStudentId = new ArrayList<>();
 			int nullCountStudentId = 0;
 			int duplicateCountStudentId = 0;
-			
-			for(int i = this.students.size() -1 ; i >= 0; i--){
+
+			for (int i = this.students.size() - 1; i >= 0; i--) {
 				if (Objects.nonNull(this.students.get(i).getStudentId())) {
 					lstStudentId.add(this.students.get(i).getStudentId());
 				} else {
@@ -648,15 +782,15 @@ public class GraduationPeriodBean extends BaseController implements Serializable
 					uniqueSet.add(stId);
 				}
 			}
-			
-			for(int i = this.students.size() -1 ; i >= 0; i--){
+
+			for (int i = this.students.size() - 1; i >= 0; i--) {
 				if (stIDDuplicate.contains(this.students.get(i).getStudentId())) {
 					this.students.remove(this.students.get(i));
 					duplicateCountStudentId++;
-				} 
+				}
 			}
 			studentDAO = new StudentDAO();
-			for(int i = this.students.size() -1 ; i >= 0; i--){
+			for (int i = this.students.size() - 1; i >= 0; i--) {
 				if (studentDAO.checkStudentId(this.students.get(i).getStudentId())) {
 					if (!stIDDuplicateInDb.contains(this.students.get(i).getStudentId())) {
 						stIDDuplicateInDb.add(this.students.get(i).getStudentId());
@@ -666,13 +800,16 @@ public class GraduationPeriodBean extends BaseController implements Serializable
 			}
 
 			if (stIDDuplicate.size() > 0 || stIDDuplicateInDb.size() > 0 || nullCountStudentId > 0) {
-				if(nullCountStudentId > 0)
-					this.showMessageWARN("", "", "Số bản ghi null : " + nullCountStudentId + "Số bản ghi bị trùng trên file:" + stIDDuplicate.size());
-				if(stIDDuplicate.size() > 0)
-					this.showMessageWARN("", "","Số bản ghi bị trùng trên file:" + stIDDuplicate.size() + "\n" + stIDDuplicate.toString());
-				if(stIDDuplicateInDb.size() > 0)
-					this.showMessageWARN("", "","Số bản ghi trùng trong csdl: " + stIDDuplicateInDb.size() + "\n "+ stIDDuplicateInDb.toString());
-				
+				if (nullCountStudentId > 0)
+					this.showMessageWARN("", "", "Số bản ghi null : " + nullCountStudentId
+							+ "Số bản ghi bị trùng trên file:" + stIDDuplicate.size());
+				if (stIDDuplicate.size() > 0)
+					this.showMessageWARN("", "",
+							"Số bản ghi bị trùng trên file:" + stIDDuplicate.size() + "\n" + stIDDuplicate.toString());
+				if (stIDDuplicateInDb.size() > 0)
+					this.showMessageWARN("", "", "Số bản ghi trùng trong csdl: " + stIDDuplicateInDb.size() + "\n "
+							+ stIDDuplicateInDb.toString());
+
 			}
 
 		}
@@ -799,6 +936,14 @@ public class GraduationPeriodBean extends BaseController implements Serializable
 
 	public void setIsEdit(Boolean isEdit) {
 		this.isEdit = isEdit;
+	}
+
+	public List<Student> getLstImport() {
+		return lstImport;
+	}
+
+	public void setLstImport(List<Student> lstImport) {
+		this.lstImport = lstImport;
 	}
 
 }

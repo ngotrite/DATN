@@ -54,6 +54,28 @@ public class Student implements Serializable{
 	@Column(name = "DEPARTMENT_UPDATE_TIME")
 	private Date departmentUpdateTime;
 	
+	@Column(name = "OCOM_STATUS")
+	private Boolean cComStatus;
+	
+	@Column(name = "MCOM_STATUS")
+	private Boolean mComStatus;
+	
+	@Column(name = "MCOM_USER_ID")
+	private Long mComUserId;
+	
+	@Column(name = "MCOM_UPDATE_TIME")
+	private Date mComUpdateTime;
+	
+	@Column(name = "BRIEF_STATUS")
+	private Boolean briefStatus;
+	
+	@Column(name = "BRIEF_USER_ID")
+	private Long briefUserId;
+	
+	@Column(name = "BRIEF_UPDATE_TIME")
+	private Date briefUpdateTime;
+	
+	
 	public String getStudentId() {
 		return studentId;
 	}
@@ -132,5 +154,47 @@ public class Student implements Serializable{
 	}
 	public void setDepartmentUpdateTime(Date departmentUpdateTime) {
 		this.departmentUpdateTime = departmentUpdateTime;
+	}
+	public Boolean getcComStatus() {
+		return cComStatus;
+	}
+	public void setcComStatus(Boolean cComStatus) {
+		this.cComStatus = cComStatus;
+	}
+	public Boolean getmComStatus() {
+		return mComStatus;
+	}
+	public void setmComStatus(Boolean mComStatus) {
+		this.mComStatus = mComStatus;
+	}
+	public Long getmComUserId() {
+		return mComUserId;
+	}
+	public void setmComUserId(Long mComUserId) {
+		this.mComUserId = mComUserId;
+	}
+	public Date getmComUpdateTime() {
+		return mComUpdateTime;
+	}
+	public void setmComUpdateTime(Date mComUpdateTime) {
+		this.mComUpdateTime = mComUpdateTime;
+	}
+	public Boolean getBriefStatus() {
+		return briefStatus;
+	}
+	public void setBriefStatus(Boolean briefStatus) {
+		this.briefStatus = briefStatus;
+	}
+	public Long getBriefUserId() {
+		return briefUserId;
+	}
+	public void setBriefUserId(Long briefUserId) {
+		this.briefUserId = briefUserId;
+	}
+	public Date getBriefUpdateTime() {
+		return briefUpdateTime;
+	}
+	public void setBriefUpdateTime(Date briefUpdateTime) {
+		this.briefUpdateTime = briefUpdateTime;
 	}
 }

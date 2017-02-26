@@ -96,7 +96,7 @@
 		<h:form id="form-sd-list" class="container-fluid">
 
 			<p:dataTable var="item" value="#{graPeriodBean.students}"
-				id="dtStudent" rowKey="#{item.studentId}" selectionMode="single"
+				id="dtStudentD" rowKey="#{item.studentId}" selectionMode="single"
 				disabledSelection="#{graPeriodBean.readOnly == true}"
 				filteredValue="#{graPeriodBean.filteredStudents}"
 				rendered="#{graPeriodBean.students.size() > 0}"
@@ -199,12 +199,17 @@
 							<h:commandButton value="#{msg['common.export']}"
 								styleClass="btn-export-zone pull-right">
 								<p:dataExporter type="xls" target="dtStudent"
-									fileName="Danh_sach_sinh_vien_theo_dot" pageOnly="true"
+									fileName="Danh_sach_sinh_vien_theo_dot"
 									postProcessor="#{graPeriodBean.postProcessXLS}" />
 							</h:commandButton>
-							<p:commandButton value="#{msg['common.apply']}" type="submit" rendered="false"
-								actionListener="#{graPeriodBean.saveStudent}" update="dtStudent"
-								styleClass="btn btn-default pull-right">
+							<p:commandButton value="#{msg['common.updateImp']}" type="submit"
+								actionListener="#{graPeriodBean.showDLGIDep()}"
+								update="fIDepartment:dtStudentI"
+								styleClass="btn btn-default pull-right" immediate="true">
+							</p:commandButton>
+							<p:commandButton value="#{msg['common.apply']}" type="submit"
+								rendered="false" actionListener="#{graPeriodBean.saveStudent}"
+								update="dtStudent" styleClass="btn btn-default pull-right">
 								<p:confirm header="#{msg['common.apply']}"
 									message="#{msg['common.confirm_apply']}" icon="ui-icon-alert" />
 							</p:commandButton>
@@ -220,13 +225,8 @@
 			</p:dataTable>
 
 		</h:form>
-
-
-
-
-
-
-
+		<ui:include src="/admin/dlg_import_department.xhtml">
+		</ui:include>
 	</ui:define>
 </ui:composition>
 </html>

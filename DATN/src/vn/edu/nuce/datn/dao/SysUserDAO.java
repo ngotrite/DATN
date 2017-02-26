@@ -135,6 +135,7 @@ public class SysUserDAO extends BaseDAO<SysUser> implements Serializable{
 	 */
 	public SysUser findByUserName(String userName, long notId) {
 		
+
 		if(CommonUtil.isEmpty(userName))
 			return null;
 		

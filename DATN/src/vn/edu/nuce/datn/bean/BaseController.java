@@ -12,6 +12,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.application.FacesMessage.Severity;
 import javax.faces.context.FacesContext;
 
+import org.primefaces.component.datatable.DataTable;
 import org.primefaces.context.RequestContext;
 
 import vn.edu.nuce.datn.util.LocaleUtils;
@@ -242,6 +243,15 @@ public class BaseController {
 		lstPara.add(objID + ";" + t.getName());
 		mapPara.put("treeType", lstPara);
 		RequestContext.getCurrentInstance().openDialog("/pages/show_dependencies", options, mapPara);
+	}
+	
+	public void resetDataTable(String dataTableId) {
+		DataTable dataTable = (DataTable) FacesContext.getCurrentInstance().getViewRoot().findComponent(dataTableId);
+		if (!dataTable.getFilters().isEmpty()) {
+			dataTable.reset();// working
+			RequestContext requestContext = RequestContext.getCurrentInstance();
+			requestContext.update(dataTableId);
+		}
 	}
 
 }

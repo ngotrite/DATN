@@ -158,9 +158,9 @@
 							<p:ajax event="change" update="dtStudent" />
 						</p:selectOneMenu>
 					</f:facet>
-					<p:selectBooleanCheckbox value="#{item.libraryStatus}" 
+					<p:selectBooleanCheckbox value="#{item.libraryStatus}"
 						disabled="#{graPeriodBean.readOnly}">
-						<p:ajax event="change" 
+						<p:ajax event="change"
 							update="cLibraryUpdateTime txtlibraryUserId dtStudent"
 							listener="#{graPeriodBean.autoUpdateDate(item)}" />
 					</p:selectBooleanCheckbox>
@@ -197,12 +197,17 @@
 							<h:commandButton value="#{msg['common.export']}"
 								styleClass="btn-export-zone pull-right">
 								<p:dataExporter type="xls" target="dtStudent"
-									fileName="Danh_sach_sinh_vien_theo_dot" pageOnly="true"
+									fileName="Danh_sach_sinh_vien_theo_dot"
 									postProcessor="#{graPeriodBean.postProcessXLS}" />
 							</h:commandButton>
-							<p:commandButton value="#{msg['common.apply']}" type="submit" rendered="false"
-								actionListener="#{graPeriodBean.saveStudent}" update="dtStudent"
-								styleClass="btn btn-default pull-right">
+							<p:commandButton value="#{msg['common.updateImp']}" type="submit"
+								actionListener="#{graPeriodBean.showDLGIDep()}"
+								update="fIDepartment:dtStudentI"
+								styleClass="btn btn-default pull-right" immediate="true">
+							</p:commandButton>
+							<p:commandButton value="#{msg['common.apply']}" type="submit"
+								rendered="false" actionListener="#{graPeriodBean.saveStudent}"
+								update="dtStudent" styleClass="btn btn-default pull-right">
 								<p:confirm header="#{msg['common.apply']}"
 									message="#{msg['common.confirm_apply']}" icon="ui-icon-alert" />
 							</p:commandButton>
@@ -218,7 +223,8 @@
 			</p:dataTable>
 
 		</h:form>
-
+		<ui:include src="/admin/dlg_import_library.xhtml">
+		</ui:include>
 	</ui:define>
 </ui:composition>
 </html>
