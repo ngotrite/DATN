@@ -47,18 +47,18 @@
 			<f:facet name="footer">
 				<div class="col-xs-12 col-sm-12">
 					<div class="row">
-						<div class="col-xs-12 col-md-10">
+						<div class="col-xs-12 col-md-8">
 							<p:outputLabel value="#{msg['common.total']}">
 					#{fn:length(graPeriodBean.finishedStudents)}
 			</p:outputLabel>
 						</div>
 
-						<div class="col-xs-12 col-md-2">
+						<div class="col-xs-12 col-md-4">
 							<h:commandButton value="#{msg['common.export']}"
 								styleClass="col-xs-12 btn-export-zone">
 								<p:dataExporter type="xls" target="dtStudentFinished"
 									fileName="Danh_sach_sinh_vien_da_hoan_thanh_ho_so_tot_nghiep"
-									 postProcessor="#{graPeriodBean.postProcessXLS}" />
+									 postProcessor="#{graPeriodBean.postProcessXLSGP}" />
 							</h:commandButton>
 						</div>
 					</div>

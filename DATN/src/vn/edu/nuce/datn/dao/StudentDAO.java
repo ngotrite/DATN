@@ -2,6 +2,7 @@ package vn.edu.nuce.datn.dao;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -26,6 +27,15 @@ public class StudentDAO extends BaseDAO<Student> implements Serializable {
 		return lst;
 	}
 	
+	public List<Student> findSTByGPOCOM(Long graduationPeriodId) {
+		List<Student> lst = null;
+		String[] cols = { "graduationPeriodId" , "oComStatus"};
+		Operator[] operators = { Operator.EQ , Operator.EQ};
+		Object[] values = { graduationPeriodId , true };
+		lst = findByConditionsWithoutDomain(cols, operators, values, "");
+		return lst;
+	}
+	
 	public List<Student> findSTFinishedByGP(Long graduationPeriodId) {
 		List<Student> lst = null;
 		String[] cols = { "graduationPeriodId" , "schoolFeeStatus", "libraryStatus" , "departmentStatus" };
@@ -35,6 +45,33 @@ public class StudentDAO extends BaseDAO<Student> implements Serializable {
 		return lst;
 	}
 	
+	public List<Student> findSTFinishedByGPmT(Long graduationPeriodId) {
+		List<Student> lst = null;
+		String[] cols = { "graduationPeriodId" , "schoolFeeStatus", "libraryStatus" , "departmentStatus" , "oComStatus", "mComStatus" };
+		Operator[] operators = { Operator.EQ , Operator.EQ , Operator.EQ, Operator.EQ, Operator.EQ, Operator.EQ };
+		Object[] values = { graduationPeriodId , true, true, true, true, true};
+		lst = findByConditionsWithoutDomain(cols, operators, values, "");
+		return lst;
+	}
+	
+	public List<Student> findSTFinishedByGPmF(Long graduationPeriodId) {
+		List<Student> lst = null;
+		String[] cols = { "graduationPeriodId" , "schoolFeeStatus", "libraryStatus" , "departmentStatus" , "oComStatus", "mComStatus" };
+		Operator[] operators = { Operator.EQ , Operator.EQ , Operator.EQ, Operator.EQ, Operator.EQ, Operator.EQ };
+		Object[] values = { graduationPeriodId , true, true, true, false, false};
+		lst = findByConditionsWithoutDomain(cols, operators, values, "");
+		return lst;
+	}
+	
+	public List<Student> findSTFinishedByGPmFT(Long graduationPeriodId) {
+		List<Student> lst = null;
+		String[] cols = { "graduationPeriodId" , "schoolFeeStatus", "libraryStatus" , "departmentStatus" , "oComStatus", "mComStatus" };
+		Operator[] operators = { Operator.EQ , Operator.EQ , Operator.EQ, Operator.EQ, Operator.EQ, Operator.EQ };
+		Object[] values = { graduationPeriodId , true, true, true, false, true};
+		lst = findByConditionsWithoutDomain(cols, operators, values, "");
+		return lst;
+	}
+
 	public List<Student> findSTUFinishedByGP(Long graduationPeriodId) {
 		List<Student> lst = null;
 		String[] cols = { "graduationPeriodId" , "schoolFeeStatus", "libraryStatus" , "departmentStatus" };
@@ -69,6 +106,21 @@ public class StudentDAO extends BaseDAO<Student> implements Serializable {
 			session.close();
 		}
 
+	}
+	
+	public int countStudentbyGP(Long graduationPeriodId) {
+		String hql = "SELECT COUNT(a) FROM Student a WHERE  a.graduationPeriodId =:graduationPeriodId ";
+		Session session = HibernateUtil.getOpenSession();
+		try {
+			Query<Long> query = session.createQuery(hql, Long.class);
+			query.setParameter("graduationPeriodId", graduationPeriodId);
+			return query.getSingleResult().intValue();
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			session.close();
+		}
 	}
 	
 	public int countStudentsSF(Long graduationPeriodId, boolean schoolFeeStatus) {
@@ -122,6 +174,59 @@ public class StudentDAO extends BaseDAO<Student> implements Serializable {
 		}
 	}
 	
+	public int countStudentsM(Long graduationPeriodId, boolean mComStatus, boolean oComStatus ) {
+		String hql = "SELECT COUNT(a) FROM Student a WHERE  a.graduationPeriodId =:graduationPeriodId ";
+		hql += " AND a.mComStatus = :mComStatus";
+		hql += " AND a.oComStatus = :oComStatus";
+		Session session = HibernateUtil.getOpenSession();
+		try {
+			Query<Long> query = session.createQuery(hql, Long.class);
+			query.setParameter("graduationPeriodId", graduationPeriodId);
+			query.setParameter("mComStatus", mComStatus);
+			query.setParameter("oComStatus", oComStatus);
+			return query.getSingleResult().intValue();
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			session.close();
+		}
+	}
+	
+	public int countStudentsO(Long graduationPeriodId, boolean oComStatus ) {
+		String hql = "SELECT COUNT(a) FROM Student a WHERE  a.graduationPeriodId =:graduationPeriodId ";
+		hql += " AND a.oComStatus = :oComStatus";
+		Session session = HibernateUtil.getOpenSession();
+		try {
+			Query<Long> query = session.createQuery(hql, Long.class);
+			query.setParameter("graduationPeriodId", graduationPeriodId);
+			query.setParameter("oComStatus", oComStatus);
+			return query.getSingleResult().intValue();
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			session.close();
+		}
+	}
+	
+	public int countStudentsB(Long graduationPeriodId, boolean briefStatus) {
+		String hql = "SELECT COUNT(a) FROM Student a WHERE  a.graduationPeriodId =:graduationPeriodId ";
+		hql += " AND a.briefStatus = :briefStatus";
+		Session session = HibernateUtil.getOpenSession();
+		try {
+			Query<Long> query = session.createQuery(hql, Long.class);
+			query.setParameter("graduationPeriodId", graduationPeriodId);
+			query.setParameter("briefStatus", briefStatus);
+			return query.getSingleResult().intValue();
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			session.close();
+		}
+	}
+	
 	public List<Student> checkStudentIdNew(String studentId) {
 		List<Student> lst = new ArrayList<>();
 		String[] cols = { "studentId"};
@@ -130,6 +235,116 @@ public class StudentDAO extends BaseDAO<Student> implements Serializable {
 		lst = findByConditionsWithoutDomain(cols, operators, values, "");
 		
 		return lst;
+	}
+	
+	public boolean updateStudentStatus(List<String> studentId, Date date, Long userId){
+		Session session = HibernateUtil.getOpenSession();
+		session.getTransaction().begin();
+		try {
+			StringBuffer hql = new StringBuffer("UPDATE student SET DEPARTMENT_STATUS = 1, DEPARTMENT_UPDATE_TIME = :updatedDate, DEPARTMENT_USER_ID = :userId ");
+			hql.append(" WHERE STUDENT_ID IN (:studentsId)");
+
+			Query<Student> query = session.createNativeQuery(hql.toString());
+			query.setParameterList("studentsId", studentId);
+			query.setParameter("updatedDate", date);
+			query.setParameter("userId", userId);
+			query.executeUpdate();
+			session.getTransaction().commit();
+			return true;
+		} catch (Exception e) {
+			session.getTransaction().rollback();
+			return false;
+		} finally {
+			session.close();
+		}
+	}
+	
+	public boolean updateStudentStatusF(List<String> studentId, Date date, Long userId){
+		Session session = HibernateUtil.getOpenSession();
+		session.getTransaction().begin();
+		try {
+			StringBuffer hql = new StringBuffer("UPDATE student SET SCHOOL_FEE_STATUS = 1, SCHOOL_FEE_UPDATE_TIME = :updatedDate, SCHOOL_FEE_USER_ID = :userId ");
+			hql.append(" WHERE STUDENT_ID IN (:studentsId)");
+
+			Query<Student> query = session.createNativeQuery(hql.toString());
+			query.setParameterList("studentsId", studentId);
+			query.setParameter("updatedDate", date);
+			query.setParameter("userId", userId);
+			query.executeUpdate();
+			session.getTransaction().commit();
+			return true;
+		} catch (Exception e) {
+			session.getTransaction().rollback();
+			return false;
+		} finally {
+			session.close();
+		}
+	}
+	
+	public boolean updateStudentStatusL(List<String> studentId, Date date, Long userId){
+		Session session = HibernateUtil.getOpenSession();
+		session.getTransaction().begin();
+		try {
+			StringBuffer hql = new StringBuffer("UPDATE student SET LIBRARY_STATUS = 1, LIBRARY_UPDATE_TIME = :updatedDate, LIBRARY_USER_ID = :userId ");
+			hql.append(" WHERE STUDENT_ID IN (:studentsId)");
+
+			Query<Student> query = session.createNativeQuery(hql.toString());
+			query.setParameterList("studentsId", studentId);
+			query.setParameter("updatedDate", date);
+			query.setParameter("userId", userId);
+			query.executeUpdate();
+			session.getTransaction().commit();
+			return true;
+		} catch (Exception e) {
+			session.getTransaction().rollback();
+			return false;
+		} finally {
+			session.close();
+		}
+	}
+	
+	public boolean updateStudentStatusO(List<String> studentId, Date date, Long userId){
+		Session session = HibernateUtil.getOpenSession();
+		session.getTransaction().begin();
+		try {
+			StringBuffer hql = new StringBuffer("UPDATE student SET MCOM_STATUS = 1, MCOM_UPDATE_TIME = :updatedDate, MCOM_USER_ID = :userId ");
+			hql.append(" WHERE STUDENT_ID IN (:studentsId)");
+
+			Query<Student> query = session.createNativeQuery(hql.toString());
+			query.setParameterList("studentsId", studentId);
+			query.setParameter("updatedDate", date);
+			query.setParameter("userId", userId);
+			query.executeUpdate();
+			session.getTransaction().commit();
+			return true;
+		} catch (Exception e) {
+			session.getTransaction().rollback();
+			return false;
+		} finally {
+			session.close();
+		}
+	}
+	
+	public boolean updateStudentStatusB(List<String> studentId, Date date, Long userId){
+		Session session = HibernateUtil.getOpenSession();
+		session.getTransaction().begin();
+		try {
+			StringBuffer hql = new StringBuffer("UPDATE student SET BRIEF_STATUS = 1, BRIEF_UPDATE_TIME = :updatedDate, BRIEF_USER_ID = :userId ");
+			hql.append(" WHERE STUDENT_ID IN (:studentsId)");
+
+			Query<Student> query = session.createNativeQuery(hql.toString());
+			query.setParameterList("studentsId", studentId);
+			query.setParameter("updatedDate", date);
+			query.setParameter("userId", userId);
+			query.executeUpdate();
+			session.getTransaction().commit();
+			return true;
+		} catch (Exception e) {
+			session.getTransaction().rollback();
+			return false;
+		} finally {
+			session.close();
+		}
 	}
 	
 	public boolean checkStudentId(String studentId) {

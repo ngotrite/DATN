@@ -29,6 +29,7 @@ import org.primefaces.component.datatable.DataTable;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
 
+import vn.edu.nuce.datn.dao.GraduationPeriodDAO;
 import vn.edu.nuce.datn.dao.GraduationScoreDAO;
 import vn.edu.nuce.datn.dao.StudentDAO;
 import vn.edu.nuce.datn.dao.SubjectDictionaryDAO;
@@ -90,6 +91,14 @@ public class GraduationScoreBean extends BaseController implements Serializable 
 				return studentDAO.get(item.getStudentId()).getStudentName();
 			case ContantsUtil.InfoStu._CLASS:
 				return studentDAO.get(item.getStudentId()).get_class();
+			case ContantsUtil.InfoStu.GRAPERIOD_NAME:
+				GraduationPeriodDAO gr = new GraduationPeriodDAO();
+				Long a = studentDAO.get(item.getStudentId()).getGraduationPeriodId();
+				if (a != null) {
+					return gr.get(a).getGraduationPeriodName();
+				}else {
+					return "";
+				}
 			default:
 				break;
 			}
@@ -193,7 +202,7 @@ public class GraduationScoreBean extends BaseController implements Serializable 
 			graScore.setFileName(file.getName());
 			graScore.setFilePath(file.getPath());
 
-			graScoreDAO.save(graScore);
+			graScoreDAO.saveOrUpdate(graScore);
 			lstgraScoresDLG.add(graScore);
 			graScores.add(graScore);
 			this.showNotificationSuccsess();
@@ -256,8 +265,6 @@ public class GraduationScoreBean extends BaseController implements Serializable 
 	}
 
 	public void editFileUpload(FileUploadEvent event) {
-		FacesMessage message = new FacesMessage("Succesful", event.getFile().getFileName() + " is uploaded.");
-		FacesContext.getCurrentInstance().addMessage(null, message);
 		try {
 			String fileName = event.getFile().getFileName();
 			File file = new File(ResourceBundleUtil.getString("server.path.document") + fileName);
@@ -291,11 +298,12 @@ public class GraduationScoreBean extends BaseController implements Serializable 
 				graScore.setFileName(file.getName());
 				graScore.setFilePath(file.getPath());
 
-				graScoreDAO.save(graScore);
+				graScoreDAO.saveOrUpdate(graScore);
 //				graScores.add(graScore);
 				lstgraScoresDLG.add(graScore);
 				loadGraScores();
-
+				FacesMessage message = new FacesMessage("Succesful", event.getFile().getFileName() + " is uploaded.");
+				FacesContext.getCurrentInstance().addMessage(null, message);
 			} else {
 				System.out.println("selectedTestScore is null");
 			}

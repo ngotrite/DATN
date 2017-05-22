@@ -16,15 +16,16 @@ import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.DateUtil;
@@ -49,7 +50,6 @@ import vn.edu.nuce.datn.entity.GraduationPeriod;
 import vn.edu.nuce.datn.entity.Student;
 import vn.edu.nuce.datn.util.ContantsUtil;
 import vn.edu.nuce.datn.util.SessionUtils;
-import vn.edu.nuce.datn.util.ValidateUtil;
 
 @SuppressWarnings("serial")
 @ManagedBean(name = "graPeriodBean")
@@ -74,14 +74,12 @@ public class GraduationPeriodBean extends BaseController implements Serializable
 	private Date toDate;
 
 	private List<Student> lstImport;
-	private List<Student> lstIFin;
 
 	@PostConstruct
 	public void init() {
 		this.graduationPeriod = new GraduationPeriod();
 		this.graduationPeriodDAO = new GraduationPeriodDAO();
 		this.graduationPeriods = new ArrayList<GraduationPeriod>();
-		loadGraduatonPeriods();
 
 		this.student = new Student();
 		this.studentDAO = new StudentDAO();
@@ -92,88 +90,133 @@ public class GraduationPeriodBean extends BaseController implements Serializable
 		this.isEdit = false;
 		this.toDate = new Date();
 		this.lstImport = new ArrayList<Student>();
+		loadGraduatonPeriods();
+		this.students.size();
 	}
 	
-	public void updateStudentsL() {
-		for (Student sI : lstImport) {
-			List<Student> students = studentDAO.checkStudentIdNew(sI.getStudentId());
-			if (students.size() > 0) {
-				students.get(0).setLibraryStatus(true);
-				autoUpdateDateI(students.get(0));
-				studentDAO.update(students.get(0));
-			}
-		}
-
-		loadStudentByGP(graduationPeriod.getGraduationPeriodId());
-		countStudentsSF();
-		countStudentsD();
-		countStudentsL();
-		RequestContext context = RequestContext.getCurrentInstance();
-		context.execute("PF('wvIDepartment').hide();");
-		context.update("form-sd-list:dtStudent");
-		this.showNotificationSuccsess();
+	public String createReportStudent() {
+		
+		
+		return "";
 	}
 	
-	public void updateStudentsF() {
-		for (Student sI : lstImport) {
-			List<Student> students = studentDAO.checkStudentIdNew(sI.getStudentId());
-			if (students.size() > 0) {
-				students.get(0).setSchoolFeeStatus(true);
-				autoUpdateDateI(students.get(0));
-				studentDAO.update(students.get(0));
+
+	public String viewInfoStu(Student item, String type) {
+		StudentDAO studentDAO = new StudentDAO();
+		if (item.getStudentId() != null && studentDAO.checkStudentId(item.getStudentId())) {
+			switch (type) {
+			case ContantsUtil.InfoStu.STUDENT_NAME:
+				return studentDAO.get(item.getStudentId()).getStudentName();
+			case ContantsUtil.InfoStu._CLASS:
+				return studentDAO.get(item.getStudentId()).get_class();
+			default:
+				break;
 			}
+			return "";
+		}
+		return "";
+
+	}
+
+	public void updateStudentsB() throws IOException {
+		List<String> studentIds = new ArrayList<>();
+
+		for (Student student : lstImport) {
+			studentIds.add(student.getStudentId());
 		}
 
-		loadStudentByGP(graduationPeriod.getGraduationPeriodId());
-		countStudentsSF();
-		countStudentsD();
+		if (studentIds.size() > 0) {
+			studentDAO.updateStudentStatusB(studentIds, new Date(), SessionUtils.getUser().getId());
+		}
+		loadGraduatonPeriods();
+		countStudentsB();
+		RequestContext context = RequestContext.getCurrentInstance();
+		context.execute("PF('wvIDepartment').hide();");
+		this.showNotificationSuccsess();
+		ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
+		HttpServletRequest req = (HttpServletRequest) ec.getRequest();
+		ec.redirect(req.getContextPath() + "/admin/lst_graduation_period.xhtml");
+	}
+
+	public void updateStudentsO() throws IOException {
+		List<String> studentIds = new ArrayList<>();
+
+		for (Student student : lstImport) {
+			studentIds.add(student.getStudentId());
+		}
+
+		if (studentIds.size() > 0) {
+			studentDAO.updateStudentStatusO(studentIds, new Date(), SessionUtils.getUser().getId());
+		}
+		loadGraduatonPeriods();
+		countStudentsO();
+		RequestContext context = RequestContext.getCurrentInstance();
+		context.execute("PF('wvIDepartment').hide();");
+		this.showNotificationSuccsess();
+		ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
+		HttpServletRequest req = (HttpServletRequest) ec.getRequest();
+		ec.redirect(req.getContextPath() + "/admin/lst_graduation_period_ocom.xhtml");
+	}
+
+	public void updateStudentsL() throws IOException {
+		List<String> studentIds = new ArrayList<>();
+
+		for (Student student : lstImport) {
+			studentIds.add(student.getStudentId());
+		}
+
+		if (studentIds.size() > 0) {
+			studentDAO.updateStudentStatusL(studentIds, new Date(), SessionUtils.getUser().getId());
+		}
+		loadGraduatonPeriods();
 		countStudentsL();
 		RequestContext context = RequestContext.getCurrentInstance();
 		context.execute("PF('wvIDepartment').hide();");
-		context.update("form-sd-list:dtStudent");
 		this.showNotificationSuccsess();
+		ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
+		HttpServletRequest req = (HttpServletRequest) ec.getRequest();
+		ec.redirect(req.getContextPath() + "/admin/lst_graduation_period_library.xhtml");
 	}
 
-	public void updateStudents() {
-		for (Student sI : lstImport) {
-			List<Student> students = studentDAO.checkStudentIdNew(sI.getStudentId());
-			if (students.size() > 0) {
-				students.get(0).setDepartmentStatus(true);
-				autoUpdateDateI(students.get(0));
-				studentDAO.update(students.get(0));
-			}
+	public void updateStudentsF() throws IOException {
+		List<String> studentIds = new ArrayList<>();
+
+		for (Student student : lstImport) {
+			studentIds.add(student.getStudentId());
 		}
-		loadStudentByGP(graduationPeriod.getGraduationPeriodId());
+
+		if (studentIds.size() > 0) {
+			studentDAO.updateStudentStatusF(studentIds, new Date(), SessionUtils.getUser().getId());
+		}
+		loadGraduatonPeriods();
 		countStudentsSF();
-		countStudentsD();
-		countStudentsL();
 		RequestContext context = RequestContext.getCurrentInstance();
 		context.execute("PF('wvIDepartment').hide();");
-//		context.update("form-sd-list:dtStudent");
-//		context.update("form-sd-list");
-		resetDataTable("form-sd-list:dtStudent");
 		this.showNotificationSuccsess();
+		ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
+		HttpServletRequest req = (HttpServletRequest) ec.getRequest();
+		ec.redirect(req.getContextPath() + "/admin/lst_graduation_period_finance.xhtml");
 	}
 
-	public void autoUpdateDateI(Student student) {
-		if (student.getDepartmentStatus() != null && student.getDepartmentStatus() == true) {
-			student.setDepartmentUpdateTime(new Date());
-			student.setDepartmentUserId(SessionUtils.getUser().getId());
-		} else {
-			student.setDepartmentUpdateTime(null);
+	public void updateStudents() throws IOException {
+		List<String> studentIds = new ArrayList<>();
+
+		for (Student student : lstImport) {
+			studentIds.add(student.getStudentId());
 		}
-		if (student.getLibraryStatus() != null && student.getLibraryStatus() == true) {
-			student.setLibraryUpdateTime(new Date());
-			student.setLibraryUserId(SessionUtils.getUser().getId());
-		} else {
-			student.setLibraryUpdateTime(null);
+
+		if (studentIds.size() > 0) {
+			studentDAO.updateStudentStatus(studentIds, new Date(), SessionUtils.getUser().getId());
 		}
-		if (student.getSchoolFeeStatus() != null && student.getSchoolFeeStatus() == true) {
-			student.setSchoolFeeUpdateTime(new Date());
-			student.setSchoolFeeUserId(SessionUtils.getUser().getId());
-		} else {
-			student.setSchoolFeeUpdateTime(null);
-		}
+		loadGraduatonPeriods();
+		loadStudentByGP(graduationPeriod.getGraduationPeriodId());
+		countStudentsD();
+		RequestContext context = RequestContext.getCurrentInstance();
+		context.execute("PF('wvIDepartment').hide();");
+		this.showNotificationSuccsess();
+		ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
+		HttpServletRequest req = (HttpServletRequest) ec.getRequest();
+		ec.redirect(req.getContextPath() + "/admin/lst_graduation_period_department.xhtml");
 	}
 
 	public void uploadDep(FileUploadEvent event) throws IOException {
@@ -259,11 +302,31 @@ public class GraduationPeriodBean extends BaseController implements Serializable
 				userName = sysUserDAO.get(item.getSchoolFeeUserId()).getUserName();
 			}
 			break;
+		case ContantsUtil.GroupUser.BRIEF:
+			if (item.getBriefStatus()) {
+				userName = sysUserDAO.get(item.getBriefUserId()).getUserName();
+			}
+			break;
+		case ContantsUtil.GroupUser.MCOM:
+			if (item.getmComStatus()) {
+				userName = sysUserDAO.get(item.getmComUserId()).getUserName();
+			}
+			break;
 		default:
 			break;
 		}
 
 		return userName;
+	}
+
+	public int countStudentbyGP(Long graduationPeriodId) {
+		if (graduationPeriod.getGraduationPeriodId() != null) {
+			int a = studentDAO.countStudentbyGP(graduationPeriod.getGraduationPeriodId());
+			graduationPeriod.setNumStudent((long) a);
+			graduationPeriodDAO.saveOrUpdate(graduationPeriod);
+			return a;
+		}
+		return 0;
 	}
 
 	public int countStudentsSF() {
@@ -303,7 +366,44 @@ public class GraduationPeriodBean extends BaseController implements Serializable
 		return 0;
 	}
 
-	public void postProcessXLS(Object document) {
+	public int countStudentsM() {
+		if (graduationPeriod.getGraduationPeriodId() != null) {
+			for (Student student : students) {
+				if (student.getmComStatus() != null && student.getoComStatus() != null
+						&& student.getmComStatus() == true && student.getoComStatus() == true) {
+					int c = studentDAO.countStudentsM(graduationPeriod.getGraduationPeriodId(), true, true);
+					return c;
+				}
+			}
+		}
+		return 0;
+	}
+
+	public int countStudentsO() {
+		if (graduationPeriod.getGraduationPeriodId() != null) {
+			for (Student student : students) {
+				if (student.getoComStatus() != null && student.getoComStatus() == true) {
+					int c = studentDAO.countStudentsO(graduationPeriod.getGraduationPeriodId(), true);
+					return c;
+				}
+			}
+		}
+		return 0;
+	}
+
+	public int countStudentsB() {
+		if (graduationPeriod.getGraduationPeriodId() != null) {
+			for (Student student : students) {
+				if (student.getBriefStatus() != null && student.getBriefStatus() == true) {
+					int c = studentDAO.countStudentsB(graduationPeriod.getGraduationPeriodId(), true);
+					return c;
+				}
+			}
+		}
+		return 0;
+	}
+
+	public void postProcessXLSTest(Object document) {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/YYYY");
 		HSSFWorkbook wb = (HSSFWorkbook) document;
 		try {
@@ -346,6 +446,343 @@ public class GraduationPeriodBean extends BaseController implements Serializable
 			}
 			for (int colNum = 0; colNum < header.getLastCellNum(); colNum++)
 				wb.getSheetAt(0).autoSizeColumn(colNum);
+
+			for (Row r : sheet) {
+				for (int colNum = 0; colNum < r.getLastCellNum(); colNum++) {
+//					wb.getSheetAt(0).autoSizeColumn(colNum);
+					Cell cell = r.getCell(colNum);
+					if (colNum == 4 || colNum == 5 || colNum == 6) {
+						if (cell.getStringCellValue().equalsIgnoreCase("true")) {
+							cell.setCellValue("Đã HT");
+						} else if (cell.getStringCellValue().equalsIgnoreCase("false")) {
+							cell.setCellValue("Chưa HT");
+						}
+					} else if (colNum == 7) {
+						if (cell.getStringCellValue().equalsIgnoreCase("true")) {
+							cell.setCellValue("Đã KN");
+						} else if (cell.getStringCellValue().equalsIgnoreCase("false")) {
+							cell.setCellValue("Chưa KN");
+						}
+					} else if (colNum == 8) {
+						if (cell.getStringCellValue().equalsIgnoreCase("true")) {
+							cell.setCellValue("Đã chuyển");
+						} else if (cell.getStringCellValue().equalsIgnoreCase("false")) {
+							cell.setCellValue("Chưa chuyển");
+						}
+					} else if (colNum == 9) {
+						if (cell.getStringCellValue().equalsIgnoreCase("true")) {
+							cell.setCellValue("Đã trả");
+						} else if (cell.getStringCellValue().equalsIgnoreCase("false")) {
+							cell.setCellValue("Chưa trả");
+						}
+					}
+
+				}
+			}
+
+		} catch (Exception e) {
+			// TODO: handle exception
+		} finally {
+			try {
+				wb.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public void postProcessXLS(Object document) {
+		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/YYYY");
+		HSSFWorkbook wb = (HSSFWorkbook) document;
+		try {
+			HSSFSheet sheet = wb.getSheetAt(0);
+			sheet.shiftRows(0, sheet.getLastRowNum(), 1);
+			sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 6));
+			Row row = sheet.getRow(0);
+			row.setHeight((short) 550);
+			Cell cell00 = row.createCell(0);
+			cell00.setCellValue(
+					"Danh sách sinh viên hoàn thủ tục tục ra trường " + graduationPeriod.getGraduationPeriodName()
+							+ " (" + "tính đến ngày " + dateFormat.format(toDate) + ")");
+			CellStyle styleHeader = wb.createCellStyle();
+			Font boldHeader = wb.createFont();
+			boldHeader.setBoldweight(Font.BOLDWEIGHT_BOLD);
+			boldHeader.setFontHeightInPoints((short) 12);
+			boldHeader.setFontName("Times New Roman");
+			styleHeader.setAlignment(CellStyle.ALIGN_CENTER);
+			styleHeader.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+			styleHeader.setFont(boldHeader);
+			styleHeader.setFillForegroundColor(IndexedColors.LIGHT_GREEN.getIndex());
+			styleHeader.setFillPattern(CellStyle.SOLID_FOREGROUND);
+			cell00.setCellStyle(styleHeader);
+			sheet.shiftRows(1, sheet.getLastRowNum(), 1);
+
+			HSSFRow header = sheet.getRow(2);
+			header.setHeight((short) 300);
+			HSSFCellStyle cellStyle = wb.createCellStyle();
+			cellStyle.setAlignment(CellStyle.ALIGN_CENTER);
+			cellStyle.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+			cellStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+			cellStyle.setFillPattern(CellStyle.SOLID_FOREGROUND);
+			cellStyle.setWrapText(true);
+			Font bold = wb.createFont();
+			bold.setBoldweight(Font.BOLDWEIGHT_BOLD);
+			bold.setFontHeightInPoints((short) 12);
+			bold.setFontName("Times New Roman");
+			cellStyle.setFont(bold);
+			for (int i = 0; i < header.getPhysicalNumberOfCells(); i++) {
+				HSSFCell cell = header.getCell(i);
+				cell.setCellStyle(cellStyle);
+			}
+			for (int colNum = 0; colNum < header.getLastCellNum(); colNum++)
+				wb.getSheetAt(0).autoSizeColumn(colNum);
+
+			for (Row r : sheet) {
+				for (int colNum = 0; colNum < r.getLastCellNum(); colNum++) {
+//					wb.getSheetAt(0).autoSizeColumn(colNum);
+					Cell cell = r.getCell(colNum);
+					if (colNum == 4) {
+						if (cell.getStringCellValue().equalsIgnoreCase("true")) {
+							cell.setCellValue("Đã HT");
+						} else if (cell.getStringCellValue().equalsIgnoreCase("false")) {
+							cell.setCellValue("Chưa HT");
+						}
+					}
+				}
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+		} finally {
+			try {
+				wb.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public void postProcessXLSGP(Object document) {
+		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/YYYY");
+		HSSFWorkbook wb = (HSSFWorkbook) document;
+		try {
+			HSSFSheet sheet = wb.getSheetAt(0);
+			sheet.shiftRows(0, sheet.getLastRowNum(), 1);
+			sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 9));
+			Row row = sheet.getRow(0);
+			row.setHeight((short) 550);
+			Cell cell00 = row.createCell(0);
+			cell00.setCellValue(
+					"Danh sách sinh viên hoàn thủ tục tục ra trường " + graduationPeriod.getGraduationPeriodName()
+							+ " (" + "tính đến ngày " + dateFormat.format(toDate) + ")");
+			CellStyle styleHeader = wb.createCellStyle();
+			Font boldHeader = wb.createFont();
+			boldHeader.setBoldweight(Font.BOLDWEIGHT_BOLD);
+			boldHeader.setFontHeightInPoints((short) 12);
+			boldHeader.setFontName("Times New Roman");
+			styleHeader.setAlignment(CellStyle.ALIGN_CENTER);
+			styleHeader.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+			styleHeader.setFont(boldHeader);
+			styleHeader.setFillForegroundColor(IndexedColors.LIGHT_GREEN.getIndex());
+			styleHeader.setFillPattern(CellStyle.SOLID_FOREGROUND);
+			cell00.setCellStyle(styleHeader);
+			sheet.shiftRows(1, sheet.getLastRowNum(), 1);
+
+			HSSFRow header = sheet.getRow(2);
+			header.setHeight((short) 300);
+			HSSFCellStyle cellStyle = wb.createCellStyle();
+			cellStyle.setAlignment(CellStyle.ALIGN_CENTER);
+			cellStyle.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+			cellStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+			cellStyle.setFillPattern(CellStyle.SOLID_FOREGROUND);
+			cellStyle.setWrapText(true);
+			Font bold = wb.createFont();
+			bold.setBoldweight(Font.BOLDWEIGHT_BOLD);
+			bold.setFontHeightInPoints((short) 12);
+			bold.setFontName("Times New Roman");
+			cellStyle.setFont(bold);
+			for (int i = 0; i < header.getPhysicalNumberOfCells(); i++) {
+				HSSFCell cell = header.getCell(i);
+				cell.setCellStyle(cellStyle);
+			}
+			for (int colNum = 0; colNum < header.getLastCellNum(); colNum++){
+				wb.getSheetAt(0).autoSizeColumn(colNum);}
+			for (Row r : sheet) {
+				for (int colNum = 0; colNum < r.getLastCellNum(); colNum++) {
+//					wb.getSheetAt(0).autoSizeColumn(colNum);
+					Cell cell = r.getCell(colNum);
+					if (colNum == 4 || colNum == 5 || colNum == 6) {
+						if (cell.getStringCellValue().equalsIgnoreCase("true")) {
+							cell.setCellValue("Đã HT");
+						} else if (cell.getStringCellValue().equalsIgnoreCase("false")) {
+							cell.setCellValue("Chưa HT");
+						}
+					} else if (colNum == 7) {
+						if (cell.getStringCellValue().equalsIgnoreCase("true")) {
+							cell.setCellValue("Đã KN");
+						} else if (cell.getStringCellValue().equalsIgnoreCase("false")) {
+							cell.setCellValue("Chưa KN");
+						}
+					} else if (colNum == 8) {
+						if (cell.getStringCellValue().equalsIgnoreCase("true")) {
+							cell.setCellValue("Đã chuyển");
+						} else if (cell.getStringCellValue().equalsIgnoreCase("false")) {
+							cell.setCellValue("Chưa chuyển");
+						}
+					} else if (colNum == 9) {
+						if (cell.getStringCellValue().equalsIgnoreCase("true")) {
+							cell.setCellValue("Đã trả");
+						} else if (cell.getStringCellValue().equalsIgnoreCase("false")) {
+							cell.setCellValue("Chưa trả");
+						}
+					}
+
+				}
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+		} finally {
+			try {
+				wb.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public void postProcessXLSD(Object document) {
+		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/YYYY");
+		HSSFWorkbook wb = (HSSFWorkbook) document;
+		try {
+			HSSFSheet sheet = wb.getSheetAt(0);
+			sheet.shiftRows(0, sheet.getLastRowNum(), 1);
+			sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 7));
+			Row row = sheet.getRow(0);
+			row.setHeight((short) 550);
+			Cell cell00 = row.createCell(0);
+			cell00.setCellValue(
+					"Danh sách sinh viên hoàn thủ tục tục ra trường " + graduationPeriod.getGraduationPeriodName()
+							+ " (" + "tính đến ngày " + dateFormat.format(toDate) + ")");
+			CellStyle styleHeader = wb.createCellStyle();
+			Font boldHeader = wb.createFont();
+			boldHeader.setBoldweight(Font.BOLDWEIGHT_BOLD);
+			boldHeader.setFontHeightInPoints((short) 12);
+			boldHeader.setFontName("Times New Roman");
+			styleHeader.setAlignment(CellStyle.ALIGN_CENTER);
+			styleHeader.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+			styleHeader.setFont(boldHeader);
+			styleHeader.setFillForegroundColor(IndexedColors.LIGHT_GREEN.getIndex());
+			styleHeader.setFillPattern(CellStyle.SOLID_FOREGROUND);
+			cell00.setCellStyle(styleHeader);
+			sheet.shiftRows(1, sheet.getLastRowNum(), 1);
+
+			HSSFRow header = sheet.getRow(2);
+			header.setHeight((short) 300);
+			HSSFCellStyle cellStyle = wb.createCellStyle();
+			cellStyle.setAlignment(CellStyle.ALIGN_CENTER);
+			cellStyle.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+			cellStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+			cellStyle.setFillPattern(CellStyle.SOLID_FOREGROUND);
+			cellStyle.setWrapText(true);
+			Font bold = wb.createFont();
+			bold.setBoldweight(Font.BOLDWEIGHT_BOLD);
+			bold.setFontHeightInPoints((short) 12);
+			bold.setFontName("Times New Roman");
+			cellStyle.setFont(bold);
+			for (int i = 0; i < header.getPhysicalNumberOfCells(); i++) {
+				HSSFCell cell = header.getCell(i);
+				cell.setCellStyle(cellStyle);
+			}
+			for (int colNum = 0; colNum < header.getLastCellNum(); colNum++)
+				wb.getSheetAt(0).autoSizeColumn(colNum);
+			for (Row r : sheet) {
+				for (int colNum = 0; colNum < r.getLastCellNum(); colNum++) {
+//					wb.getSheetAt(0).autoSizeColumn(colNum);
+					Cell cell = r.getCell(colNum);
+					if (colNum == 4) {
+						if (cell.getStringCellValue().equalsIgnoreCase("true")) {
+							cell.setCellValue("Đã trả");
+						} else if (cell.getStringCellValue().equalsIgnoreCase("false")) {
+							cell.setCellValue("Chưa trả");
+						}
+					} else if (colNum == 5) {
+						if (cell.getStringCellValue().equalsIgnoreCase("true")) {
+							cell.setCellValue("Đã HT");
+						} else if (cell.getStringCellValue().equalsIgnoreCase("false")) {
+							cell.setCellValue("Chưa HT");
+						}
+					}
+
+				}
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+		} finally {
+			try {
+				wb.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	public void postProcessXLSO(Object document) {
+		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/YYYY");
+		HSSFWorkbook wb = (HSSFWorkbook) document;
+		try {
+			HSSFSheet sheet = wb.getSheetAt(0);
+			sheet.shiftRows(0, sheet.getLastRowNum(), 1);
+			sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 7));
+			Row row = sheet.getRow(0);
+			row.setHeight((short) 550);
+			Cell cell00 = row.createCell(0);
+			cell00.setCellValue(
+					"Danh sách sinh viên hoàn thủ tục tục ra trường " + graduationPeriod.getGraduationPeriodName()
+							+ " (" + "tính đến ngày " + dateFormat.format(toDate) + ")");
+			CellStyle styleHeader = wb.createCellStyle();
+			Font boldHeader = wb.createFont();
+			boldHeader.setBoldweight(Font.BOLDWEIGHT_BOLD);
+			boldHeader.setFontHeightInPoints((short) 12);
+			boldHeader.setFontName("Times New Roman");
+			styleHeader.setAlignment(CellStyle.ALIGN_CENTER);
+			styleHeader.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+			styleHeader.setFont(boldHeader);
+			styleHeader.setFillForegroundColor(IndexedColors.LIGHT_GREEN.getIndex());
+			styleHeader.setFillPattern(CellStyle.SOLID_FOREGROUND);
+			cell00.setCellStyle(styleHeader);
+			sheet.shiftRows(1, sheet.getLastRowNum(), 1);
+
+			HSSFRow header = sheet.getRow(2);
+			header.setHeight((short) 300);
+			HSSFCellStyle cellStyle = wb.createCellStyle();
+			cellStyle.setAlignment(CellStyle.ALIGN_CENTER);
+			cellStyle.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+			cellStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+			cellStyle.setFillPattern(CellStyle.SOLID_FOREGROUND);
+			cellStyle.setWrapText(true);
+			Font bold = wb.createFont();
+			bold.setBoldweight(Font.BOLDWEIGHT_BOLD);
+			bold.setFontHeightInPoints((short) 12);
+			bold.setFontName("Times New Roman");
+			cellStyle.setFont(bold);
+			for (int i = 0; i < header.getPhysicalNumberOfCells(); i++) {
+				HSSFCell cell = header.getCell(i);
+				cell.setCellStyle(cellStyle);
+			}
+			for (int colNum = 0; colNum < header.getLastCellNum(); colNum++)
+				wb.getSheetAt(0).autoSizeColumn(colNum);
+			for (Row r : sheet) {
+				for (int colNum = 0; colNum < r.getLastCellNum(); colNum++) {
+//					wb.getSheetAt(0).autoSizeColumn(colNum);
+					Cell cell = r.getCell(colNum);
+					if (colNum == 4) {
+						if (cell.getStringCellValue().equalsIgnoreCase("true")) {
+							cell.setCellValue("Đã chuyển");
+						} else if (cell.getStringCellValue().equalsIgnoreCase("false")) {
+							cell.setCellValue("Chưa chuyển");
+						}
+					} 
+				}
+			}
 		} catch (Exception e) {
 			// TODO: handle exception
 		} finally {
@@ -396,23 +833,124 @@ public class GraduationPeriodBean extends BaseController implements Serializable
 			student.setDepartmentUserId(SessionUtils.getUser().getId());
 		} else {
 			student.setDepartmentUpdateTime(null);
+			student.setDepartmentUserId(null);
 		}
 		if (student.getLibraryStatus() != null && student.getLibraryStatus() == true) {
 			student.setLibraryUpdateTime(new Date());
 			student.setLibraryUserId(SessionUtils.getUser().getId());
 		} else {
 			student.setLibraryUpdateTime(null);
+			student.setLibraryUserId(null);
 		}
 		if (student.getSchoolFeeStatus() != null && student.getSchoolFeeStatus() == true) {
 			student.setSchoolFeeUpdateTime(new Date());
 			student.setSchoolFeeUserId(SessionUtils.getUser().getId());
 		} else {
 			student.setSchoolFeeUpdateTime(null);
+			student.setSchoolFeeUserId(null);
 		}
-		studentDAO.saveOrUpdate(student);
+		if (student.getBriefStatus() != null && student.getBriefStatus() == true) {
+			student.setBriefUpdateTime(new Date());
+			student.setBriefUserId(SessionUtils.getUser().getId());
+		} else {
+			student.setBriefUpdateTime(null);
+			student.setBriefUserId(null);
+		}
+		if (student.getoComStatus() != null && student.getmComStatus() != null && student.getmComStatus() == true
+				&& student.getoComStatus() == true) {
+			student.setmComUpdateTime(new Date());
+			student.setmComUserId(SessionUtils.getUser().getId());
+		} else {
+			student.setmComUpdateTime(null);
+			student.setmComUserId(null);
+		}
+		studentDAO.update(student);
 		countStudentsSF();
 		countStudentsD();
 		countStudentsL();
+		countStudentsB();
+		countStudentsO();
+	}
+
+	public void autoUpdateDate(Student student, String type) {
+		switch (type) {
+		case ContantsUtil.GroupUser.DEPARTMENT:
+			if (student.getDepartmentStatus() != null && student.getDepartmentStatus() == true) {
+				student.setDepartmentUpdateTime(new Date());
+				student.setDepartmentUserId(SessionUtils.getUser().getId());
+			} else {
+				student.setDepartmentUpdateTime(null);
+				student.setDepartmentUserId(null);
+			}
+			countStudentsD();
+			break;
+
+		case ContantsUtil.GroupUser.LIBRARY:
+			if (student.getLibraryStatus() != null && student.getLibraryStatus() == true) {
+				student.setLibraryUpdateTime(new Date());
+				student.setLibraryUserId(SessionUtils.getUser().getId());
+			} else {
+				student.setLibraryUpdateTime(null);
+				student.setLibraryUserId(null);
+			}
+			countStudentsL();
+			break;
+
+		case ContantsUtil.GroupUser.SCHOOLFEE:
+			if (student.getSchoolFeeStatus() != null && student.getSchoolFeeStatus() == true) {
+				student.setSchoolFeeUpdateTime(new Date());
+				student.setSchoolFeeUserId(SessionUtils.getUser().getId());
+			} else {
+				student.setSchoolFeeUpdateTime(null);
+				student.setSchoolFeeUserId(null);
+			}
+			countStudentsSF();
+			break;
+
+		case ContantsUtil.GroupUser.BRIEF:
+			if (student.getBriefStatus() != null && student.getBriefStatus() == true) {
+				student.setBriefUpdateTime(new Date());
+				student.setBriefUserId(SessionUtils.getUser().getId());
+			} else {
+				student.setBriefUpdateTime(null);
+				student.setBriefUserId(null);
+			}
+			countStudentsB();
+			break;
+
+		case ContantsUtil.GroupUser.MCOM:
+			if (student.getoComStatus() != null && student.getmComStatus() != null && student.getmComStatus() == true
+					&& student.getoComStatus() == true) {
+				student.setmComUpdateTime(new Date());
+				student.setmComUserId(SessionUtils.getUser().getId());
+			} else {
+				student.setmComUpdateTime(null);
+				student.setmComUserId(null);
+			}
+			countStudentsO();
+			break;
+		default:
+			break;
+		}
+		studentDAO.update(student);
+	}
+	
+	public void viewNumStudentF(){
+		loadGraduatonPeriods();
+		loadStudentFinishedByGP(graduationPeriod.getGraduationPeriodId());
+		if (graduationPeriod  != null  && graduationPeriod.getGraduationPeriodId() != null) {
+			if (loadStudentFinishedByGP(graduationPeriod.getGraduationPeriodId()).size() > 0) {
+				int a = loadStudentFinishedByGP(graduationPeriod.getGraduationPeriodId()).size();
+				if (a > 0) {
+					graduationPeriod.setNumStudentF((long) a);
+					graduationPeriodDAO.saveOrUpdate(graduationPeriod);
+				}else {
+					graduationPeriod.setNumStudentF(0L);
+				}
+			}
+			RequestContext requestContext = RequestContext.getCurrentInstance();
+			requestContext.update("form-gp-list:dtGP");
+		}
 	}
 
 	public void cmdDeleteGP(GraduationPeriod graduationPeriod) {
@@ -461,8 +999,36 @@ public class GraduationPeriodBean extends BaseController implements Serializable
 	// load list Student Finished by Graduation Period
 	public List<Student> loadStudentFinishedByGP(long graduationPeriodId) {
 		finishedStudents = new ArrayList<Student>();
-		finishedStudents = studentDAO.findSTFinishedByGP(graduationPeriodId);
-		return finishedStudents;
+		List<Student> finishedStudents1 = new ArrayList<Student>();
+		List<Student> finishedStudents2 = new ArrayList<Student>();
+		List<Student> finishedStudents3 = new ArrayList<Student>();
+
+		finishedStudents1 = studentDAO.findSTFinishedByGPmF(graduationPeriodId);
+		finishedStudents2 = studentDAO.findSTFinishedByGPmT(graduationPeriodId);
+		finishedStudents3 = studentDAO.findSTFinishedByGPmFT(graduationPeriodId);
+
+		if (finishedStudents1.size() > 0) {
+			finishedStudents.addAll(finishedStudents1);
+		}
+		if (finishedStudents2.size() > 0) {
+			finishedStudents.addAll(finishedStudents2);
+		}
+		if (finishedStudents3.size() > 0) {
+			finishedStudents.addAll(finishedStudents3);
+		}
+
+		if (finishedStudents.size() > 0) {
+			return finishedStudents;
+		}
+		return null;
+
+	}
+
+	// load list Student by Graduation Period and Ocom
+	public List<Student> loadStudentByGPOCOM(long graduationPeriodId) {
+		students = new ArrayList<Student>();
+		students = studentDAO.findSTByGPOCOM(graduationPeriodId);
+		return students;
 	}
 
 	public void checkTimeToDisableStatus(GraduationPeriod item) {
@@ -498,10 +1064,25 @@ public class GraduationPeriodBean extends BaseController implements Serializable
 		countStudentsSF();
 		countStudentsD();
 		countStudentsL();
+		countStudentsB();
+		countStudentsO();
 	}
 
 	public void onRowUnselect(UnselectEvent event) {
 		loadStudentByGP(((GraduationPeriod) event.getObject()).getGraduationPeriodId());
+	}
+
+	public void onRowSelectOCOM(SelectEvent event) {
+		loadStudentByGPOCOM(((GraduationPeriod) event.getObject()).getGraduationPeriodId());
+		checkTimeToDisableStatus((GraduationPeriod) event.getObject());
+		countStudentsO();
+		if (students.size() == 0) {
+			this.showMessageWARN("common.summary.warning", super.readProperties("validate.sTOCom"));
+		}
+	}
+
+	public void onRowUnselectOCOM(UnselectEvent event) {
+		loadStudentByGPOCOM(((GraduationPeriod) event.getObject()).getGraduationPeriodId());
 	}
 
 	/***** DIALOG STUDENT *****/
@@ -510,6 +1091,11 @@ public class GraduationPeriodBean extends BaseController implements Serializable
 		if (student == null) {
 			student = new Student();
 			this.student = new Student();
+			this.student.setDepartmentStatus(false);
+			this.student.setLibraryStatus(false);
+			this.student.setSchoolFeeStatus(false);
+			this.student.setmComStatus(false);
+			this.student.setBriefStatus(false);
 			this.isEdit = false;
 		} else {
 			this.student = student;
@@ -688,11 +1274,28 @@ public class GraduationPeriodBean extends BaseController implements Serializable
 				case 2:
 					student.set_class((String) getCellValue(nextCell));
 					break;
+				case 3:
+					String oComStatus = getCellValue(nextCell).toString();
+					if (Objects.nonNull(oComStatus) && !oComStatus.trim().isEmpty()) {
+						if (oComStatus.trim().equalsIgnoreCase("x")) {
+							student.setoComStatus(true);
+						} else {
+							student.setoComStatus(false);
+						}
+					} else {
+						student.setoComStatus(false);
+					}
+					break;
 				}
 				// student.setGraduationPeriodId(graduationPeriod.getGraduationPeriodId());
+				if (Objects.isNull(student.getoComStatus())) {
+					student.setoComStatus(false);
+				}
 				student.setDepartmentStatus(false);
 				student.setLibraryStatus(false);
 				student.setSchoolFeeStatus(false);
+				student.setmComStatus(false);
+				student.setBriefStatus(false);
 			}
 
 			students.add(student);
@@ -726,6 +1329,28 @@ public class GraduationPeriodBean extends BaseController implements Serializable
 			checkTimeToDisableStatus(graduationPeriod);
 			if (!this.isEdit) {
 				checkValidListST();
+				// ExecutorService threadPool =
+				// Executors.newFixedThreadPool(20);
+				// CompletionService<Boolean> pool = new
+				// ExecutorCompletionService<Boolean>(threadPool);
+				// boolean errorImports = false;
+				// graduationPeriodDAO.saveOrUpdate(graduationPeriod);
+				// for(int i = 0; i < students.size(); i++){
+				// pool.submit(new ImportStudentThread(graduationPeriod,
+				// students.get(i), graduationPeriodDAO));
+				// }
+				// for(int i = 0; i < students.size(); i++){
+				// try {
+				// errorImports = pool.take().get();
+				// } catch (InterruptedException e) {
+				// // TODO Auto-generated catch block
+				// e.printStackTrace();
+				// } catch (ExecutionException e) {
+				// // TODO Auto-generated catch block
+				// e.printStackTrace();
+				// }
+				// }
+				// threadPool.shutdown();
 				boolean errorImports = graduationPeriodDAO.saveGraPeriodAndST(graduationPeriod, students);
 				if (errorImports) {
 					this.showMessageWARN("",
@@ -742,6 +1367,7 @@ public class GraduationPeriodBean extends BaseController implements Serializable
 				graduationPeriodDAO.update(graduationPeriod);
 				super.showNotificationSuccsess();
 			}
+			countStudentbyGP(graduationPeriod.getGraduationPeriodId());
 			checkTimeToDisableStatus(graduationPeriod);
 			RequestContext context = RequestContext.getCurrentInstance();
 			context.execute("PF('dlgGPWV').hide();");
@@ -749,6 +1375,8 @@ public class GraduationPeriodBean extends BaseController implements Serializable
 			countStudentsSF();
 			countStudentsD();
 			countStudentsL();
+			countStudentsB();
+			countStudentsO();
 		}
 
 	}
@@ -818,13 +1446,6 @@ public class GraduationPeriodBean extends BaseController implements Serializable
 	// Validate
 	private boolean validateGraPeriod() {
 		boolean result = true;
-		// if
-		// (ValidateUtil.checkStringNullOrEmpty(graduationPeriod.getGraduationPeriodName()))
-		// {
-		// this.showMessageWARN("",
-		// super.readProperties("validate.checkGPNull"));
-		// result = false;
-		// } else
 		if (graduationPeriod.getStartDate() != null && graduationPeriod.getFinishDate() != null
 				&& graduationPeriod.getStartDate().getTime() > graduationPeriod.getFinishDate().getTime()) {
 			this.showMessageWARN("", super.readProperties("validate.startDateBeforeFinishDate"));
@@ -837,7 +1458,7 @@ public class GraduationPeriodBean extends BaseController implements Serializable
 	}
 
 	private void loadGraduatonPeriods() {
-		graduationPeriods = graduationPeriodDAO.findAll();
+		graduationPeriods = graduationPeriodDAO.findAllGP();
 	}
 
 	// GET SET

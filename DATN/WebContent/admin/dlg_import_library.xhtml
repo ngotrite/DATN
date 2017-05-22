@@ -7,20 +7,30 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core">
 
 <p:dialog id="dlgIDepartment" widgetVar="wvIDepartment"
-	header="Cập nhật thông tin sinh viên tại Khoa/Ban" 	
-	resizable="false" showEffect="fade" modal="true" height="400px"	width="800px">
+	header="Cập nhật thông tin sinh viên tại Thư Viện" 	
+	resizable="false" showEffect="fade" modal="true" styleClass="dlg-center-fix">
+<style>
+#dlgIDepartment.dlg-center-fix {
+	height: 500px !important;
+	width: 900px !important;
+	min-height: 500px !important;
+}
 
+#dlgIDepartment.ui-dialog .ui-dialog-content {
+	overflow: initial;
+}
+</style>
 	<h:form id="fIDepartment" class="container-fluid">
 		<div class="col-xs-12 col-md-12">
 			<p:fileUpload fileUploadListener="#{graPeriodBean.uploadDep}"
 				mode="advanced" multiple="true" dragDropSupport="false"
-				update="fIDepartment:dtStudentI" label="Import" styleClass="fupload pull-right"
+				update="fIDepartment fIDepartment:dtStudentI" label="Import" styleClass="fupload pull-right"
 				allowTypes="/(\.|\/)(xls)$/" sizeLimit="10000000"
 				invalidSizeMessage="#{msg['validate.importSize']}"
 				invalidFileMessage="#{msg['validate.importFormatXLS']}" />
 		</div>
 
-		<p:dataTable var="item" value="#{graPeriodBean.lstImport}" 
+		<p:dataTable var="item" value="#{graPeriodBean.lstImport}" rendered="#{not empty graPeriodBean.lstImport}"
 			id="dtStudentI" rowKey="#{item.studentId}" selectionMode="single"
 			filteredValue="#{graPeriodBean.filteredStudents}"
 			emptyMessage="#{msg['common.noData']}" paginator="true" rows="10"
@@ -29,21 +39,35 @@
 			paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 			rowsPerPageTemplate="10,20,50,100">
 
-			<p:column style="text-align:center; width:5%"
+			<p:column style="text-align:center; width:9%"
 				headerText="#{msg['common.index']}">
 				<h:outputText value="#{rowIndex + 1}" />
 			</p:column>
 
 			<p:column sortBy="#{item.studentId}" filterBy="#{item.studentId}"
-				style="text-align:center; width:11%" filterMatchMode="contains"
+				style="text-align:center;" filterMatchMode="contains"
 				headerText="#{msg['st.studentId']}">
 				<h:outputText value="#{item.studentId}" />
+			</p:column>
+			
+			<p:column sortBy="#{graPeriodBean.viewInfoStu(item, 'STUDENT_NAME')}"
+				filterBy="#{graPeriodBean.viewInfoStu(item, 'STUDENT_NAME')}"
+				filterMatchMode="contains" headerText="#{msg['st.studentName']}">
+				<h:outputText
+					value="#{graPeriodBean.viewInfoStu(item, 'STUDENT_NAME')}" />
+			</p:column>
+
+			<p:column sortBy="#{graPeriodBean.viewInfoStu(item, '_CLASS')}"
+				filterBy="#{graPeriodBean.viewInfoStu(item, '_CLASS')}"
+				style="text-align:center;" filterMatchMode="contains"
+				headerText="#{msg['st.class']}">
+				<h:outputText value="#{graPeriodBean.viewInfoStu(item, '_CLASS')}" />
 			</p:column>
 
 			<f:facet name="footer">
 				<p:commandButton value="#{msg['common.apply']}" type="submit"
 					actionListener="#{graPeriodBean.updateStudentsL}"
-					update="dtStudentI" styleClass="btn btn-default pull-right">
+					update="form-sd-list form-sd-list:dtStudent" styleClass="btn btn-default pull-right">
 					<p:confirm header="#{msg['common.apply']}"
 						message="#{msg['common.confirm_apply']}" icon="ui-icon-alert" />
 				</p:commandButton>

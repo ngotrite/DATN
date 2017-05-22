@@ -57,13 +57,14 @@ public class ContantsUtil {
 		public static final String DEPARTMENT= "DEPARTMENT";
 		public static final String LIBRARY= "LIBRARY";
 		public static final String SCHOOLFEE= "SCHOOLFEE";
-		public static final String OCOM= "OCOM";
+		public static final String MCOM= "MCOM";
 		public static final String BRIEF= "BRIEF";
 	}
 	
 	public class InfoStu{
 		public static final String STUDENT_NAME= "STUDENT_NAME";
 		public static final String _CLASS= "_CLASS";
+		public static final String GRAPERIOD_NAME= "GRAPERIOD_NAME";
 	}
 	
 	public class InfoSub{
@@ -77,4 +78,5 @@ public class ContantsUtil {
 		public static final String START_DATE= "START_DATE";
 		public static final String FINISH_DATE= "FINISH_DATE";
 	}
+	
 }

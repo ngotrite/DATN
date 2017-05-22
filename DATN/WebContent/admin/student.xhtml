@@ -154,6 +154,30 @@
 
 						<h:outputText value="#{msg['user.acc']}" />
 						<h:outputText value="#{studentBean.getUserName(studentBean.student.libraryUserId)}" />
+						
+						<h:outputText value="#{msg['st.oComStatus']}" />	
+						<h:outputText
+							value="#{studentBean.student.oComStatus eq true ? 'Đã kết nạp Đảng' : 'Chưa kết nạp Đảng'}" />
+
+						<h:outputText value="#{msg['st.mComStatus']}" />
+						<h:outputText
+							value="#{studentBean.student.mComStatus eq true ? 'Đã chuyển SH Đảng' : 'Chưa chuyển SH Đảng'}" />
+
+						<h:outputText value="#{msg['st.mComUpdateTime']}" />
+						<h:outputText value="#{studentBean.student.mComUpdateTime}" />
+
+						<h:outputText value="#{msg['user.acc']}" />
+						<h:outputText value="#{studentBean.getUserName(studentBean.student.mComUserId)}" />
+						
+						<h:outputText value="#{msg['st.briefStatus']}" />
+						<h:outputText
+							value="#{studentBean.student.briefStatus eq true ? 'Đã rút' : 'Chưa rút'}" />
+
+						<h:outputText value="#{msg['st.briefUpdateTime']}" />
+						<h:outputText value="#{studentBean.student.briefUpdateTime}" />
+
+						<h:outputText value="#{msg['user.acc']}" />
+						<h:outputText value="#{studentBean.getUserName(studentBean.student.briefUserId)}" />
 
 					</p:panelGrid>
 				</p:outputPanel>

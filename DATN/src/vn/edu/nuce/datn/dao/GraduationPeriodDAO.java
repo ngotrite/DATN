@@ -9,6 +9,8 @@ import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
 import vn.edu.nuce.datn.db.HibernateUtil;
+import vn.edu.nuce.datn.db.Operator;
+import vn.edu.nuce.datn.entity.Document;
 import vn.edu.nuce.datn.entity.GraduationPeriod;
 import vn.edu.nuce.datn.entity.Student;
 
@@ -19,6 +21,17 @@ public class GraduationPeriodDAO extends BaseDAO<GraduationPeriod> implements Se
 	protected Class<GraduationPeriod> getEntityClass() {
 		return GraduationPeriod.class;
 	}
+	
+	public List<GraduationPeriod> findAllGP() {
+		List<GraduationPeriod> lstGP = new ArrayList<GraduationPeriod>();
+		String[] cols = {};
+		Operator[] operators = {};
+		Object[] values = {};
+		String order = "status DESC";
+		lstGP = findByConditionsWithoutDomain(cols, operators, values, order);
+		return lstGP;
+	}
+
 
 	public void saveGraPeriod(GraduationPeriod graduationPeriod, List<Student> students) {
 		Session session = HibernateUtil.getOpenSession();
@@ -53,6 +66,29 @@ public class GraduationPeriodDAO extends BaseDAO<GraduationPeriod> implements Se
 				stMap.setGraduationPeriodId(graduationPeriod.getGraduationPeriodId());
 				session.save(stMap);
 			}
+			session.getTransaction().commit();
+		} catch (Exception e) {
+			session.getTransaction().rollback();
+			result = false;
+			throw e;
+		} finally {
+			session.close();
+		}
+		return result;
+	}
+	
+	public Boolean saveGraPeriodAndSTSerial(GraduationPeriod graduationPeriod, Student lstST) {
+		boolean result = true;
+		Session session = HibernateUtil.getOpenSession();
+		session.getTransaction().begin();
+		try {
+
+			// SAVE GRADUATION PERIOD
+//			session.saveOrUpdate(graduationPeriod);
+			// SAVE OR UPDATE STUDENTS
+			
+			lstST.setGraduationPeriodId(graduationPeriod.getGraduationPeriodId());
+			session.save(lstST);
 			session.getTransaction().commit();
 		} catch (Exception e) {
 			session.getTransaction().rollback();

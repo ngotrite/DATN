@@ -35,6 +35,12 @@ public class GraduationPeriod implements Serializable, Cloneable{
 	
 	@Column(name = "REMARK")
 	private String remark;
+	
+	@Column(name = "NUM_STUDENT")
+	private Long numStudent;
+	
+	@Column(name = "NUM_STUDENT_F")
+	private Long numStudentF;
 
 	public Long getGraduationPeriodId() {
 		return graduationPeriodId;
@@ -84,6 +90,22 @@ public class GraduationPeriod implements Serializable, Cloneable{
 		this.remark = remark;
 	}
 	
+	public Long getNumStudent() {
+		return numStudent;
+	}
+
+	public void setNumStudent(Long numStudent) {
+		this.numStudent = numStudent;
+	}
+
+	public Long getNumStudentF() {
+		return numStudentF;
+	}
+
+	public void setNumStudentF(Long numStudentF) {
+		this.numStudentF = numStudentF;
+	}
+
 	@Override
 	public GraduationPeriod clone() throws CloneNotSupportedException {
 		return (GraduationPeriod) super.clone();

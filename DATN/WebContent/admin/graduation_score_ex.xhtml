@@ -17,26 +17,38 @@
 		paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 		rowsPerPageTemplate="10,20,50,100">
 
-		<p:column style="text-align:center; width:5%" headerText="#{msg['common.index']}">
+		<p:column style="text-align:center; width:5%"
+			headerText="#{msg['common.index']}">
 			<h:outputText value="#{rowIndex + 1}" />
 		</p:column>
 
-		<p:column sortBy="#{item.studentId}" filterBy="#{item.studentId}" style="text-align:center;"
-			filterMatchMode="contains" headerText="#{msg['st.studentId']}">
+		<p:column sortBy="#{item.studentId}" filterBy="#{item.studentId}"
+			style="text-align:center;" filterMatchMode="contains"
+			headerText="#{msg['st.studentId']}">
 			<h:outputText value="#{item.studentId}" />
 		</p:column>
 
-		<p:column sortBy="#{graScoreBean.viewInfoStu(item, 'STUDENT_NAME')}" style="text-align:center;"
+		<p:column sortBy="#{graScoreBean.viewInfoStu(item, 'STUDENT_NAME')}"
+			style="text-align:left;"
 			filterBy="#{graScoreBean.viewInfoStu(item, 'STUDENT_NAME')}"
 			filterMatchMode="contains" headerText="#{msg['st.studentName']}">
 			<h:outputText
 				value="#{graScoreBean.viewInfoStu(item, 'STUDENT_NAME')}" />
 		</p:column>
 
-		<p:column sortBy="#{graScoreBean.viewInfoStu(item, '_CLASS')}" style="text-align:center;"
+		<p:column sortBy="#{graScoreBean.viewInfoStu(item, '_CLASS')}"
+			style="text-align:center;"
 			filterBy="#{graScoreBean.viewInfoStu(item, '_CLASS')}"
 			filterMatchMode="contains" headerText="#{msg['st.class']}">
 			<h:outputText value="#{graScoreBean.viewInfoStu(item, '_CLASS')}" />
+		</p:column>
+
+		<p:column sortBy="#{graScoreBean.viewInfoStu(item, 'GRAPERIOD_NAME')}"
+			filterBy="#{graScoreBean.viewInfoStu(item, 'GRAPERIOD_NAME')}"
+			style="text-align:center; width:17%" filterMatchMode="contains"
+			headerText="#{msg['gp.graPeriodName']}">
+			<h:outputText
+				value="#{graScoreBean.viewInfoStu(item, 'GRAPERIOD_NAME')}" />
 		</p:column>
 
 		<p:column headerText="#{msg['common.action']}"

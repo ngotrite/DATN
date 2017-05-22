@@ -27,7 +27,7 @@
 		<div class="row formFieldMg">
 			<div class="col-xs-12" align="right">
 				<p:fileUpload fileUploadListener="#{graScoreBean.handleFileUpload}"
-					rendered="#{!graScoreBean.isEdit}" mode="advanced"
+					rendered="#{!graScoreBean.isEdit}" mode="advanced" 
 					dragDropSupport="true" multiple="true" sizeLimit="99999999"
 					fileLimit="60000"
 					update="form-gs-list:dtGraScore form-gs-input:dtGraScoreDLG form-gs-input @this"
@@ -91,7 +91,16 @@
 						headerText="#{msg['st.class']}">
 						<h:outputText value="#{graScoreBean.viewInfoStu(item, '_CLASS')}" />
 					</p:column>
-										<f:facet name="footer">
+
+					<p:column
+						sortBy="#{graScoreBean.viewInfoStu(item, 'GRAPERIOD_NAME')}"
+						filterBy="#{graScoreBean.viewInfoStu(item, 'GRAPERIOD_NAME')}"
+						style="text-align:center; width:20%" filterMatchMode="contains"
+						headerText="#{msg['gp.graPeriodName']}">
+						<h:outputText
+							value="#{graScoreBean.viewInfoStu(item, 'GRAPERIOD_NAME')}" />
+					</p:column>
+					<f:facet name="footer">
 						<p:outputLabel value="Tổng số file : ">
 					#{graScoreBean.lstgraScoresDLG.size()}
 				</p:outputLabel>
@@ -142,8 +151,14 @@
 				<h:outputText value="#{graScoreBean.viewInfoStu(item, '_CLASS')}" />
 			</p:column>
 
-
-
+			<p:column
+				sortBy="#{graScoreBean.viewInfoStu(item, 'GRAPERIOD_NAME')}"
+				filterBy="#{graScoreBean.viewInfoStu(item, 'GRAPERIOD_NAME')}"
+				style="text-align:center; width:15%" filterMatchMode="contains"
+				headerText="#{msg['gp.graPeriodName']}">
+				<h:outputText
+					value="#{graScoreBean.viewInfoStu(item, 'GRAPERIOD_NAME')}" />
+			</p:column>
 
 			<p:column headerText="#{msg['common.action']}"
 				style="text-align:center; width:17%">

@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:p="http://primefaces.org/ui" xmlns:pe="http://primefaces.org/ui">
+<ui:composition template="../templates/vcbsContentTemplate.xhtml">
+	<ui:define name="content">
+		<style>
+#form-gp-list
+</style>
+		<h:form id="form-gp-list" class="container-fluid">
+			<p:dataTable var="item" value="#{graPeriodBean.graduationPeriods}"
+				id="dtGP" rowKey="#{item.graduationPeriodId}" selectionMode="single"
+				selection="#{graPeriodBean.graduationPeriod}"
+				emptyMessage="#{msg['common.noData']}" paginator="true" rows="5"
+				paginatorPosition="bottom" rowIndexVar="rowIndex" widgetVar="dtGPWV"
+				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="5,10,20,50,100">
+				<f:facet name="header">
+					<p:outputLabel value="#{msg['title.graduationPeriod']}" />
+					<p:outputLabel value=" ( tổng số :" />
+					#{fn:length(graPeriodBean.graduationPeriods)}
+					<p:outputLabel value=" đợt )" />
+				</f:facet>
+
+				<p:ajax event="rowSelect" listener="#{graPeriodBean.onRowSelectOCOM}"
+					oncomplete="$('.btnResetFilters').click();"
+					update="form-sd-list form-sd-list:dtStudent" />
+				<p:ajax event="rowUnselect"
+					listener="#{graPeriodBean.onRowUnselectOCOM}"
+					update="form-sd-list form-sd-list:dtStudent" />
+
+				<p:column style="text-align:center; width:4%"
+					headerText="#{msg['common.index']}">
+					<h:outputText value="#{rowIndex + 1}" />
+				</p:column>
+
+				<p:column 
+					style="text-align:center; width:45%"
+					headerText="#{msg['gp.graPeriodName']}">
+					<h:outputText value="#{item.graduationPeriodName}" />
+				</p:column>
+
+
+				<p:column 
+					style="text-align:center; width:10%"
+					headerText="#{msg['common.status']}">
+<!-- 					<f:facet name="filter"> -->
+<!-- 						<p:selectOneMenu onchange="PF('dtGPWV').filter()" -->
+<!-- 							value="#{graPeriodBean.student.schoolFeeStatus}" -->
+<!-- 							styleClass="form-control"> -->
+<!-- 							<f:converter converterId="javax.faces.Boolean" /> -->
+<!-- 							<f:selectItem itemLabel="#{msg['common.all']}" -->
+<!-- 								noSelectionOption="true" /> -->
+<!-- 							<f:selectItem itemLabel="#{msg['common.closed']}" -->
+<!-- 								itemValue="false" /> -->
+<!-- 							<f:selectItem itemLabel="#{msg['common.opened']}" -->
+<!-- 								itemValue="true" /> -->
+<!-- 							<p:ajax event="change" update="dtGP" /> -->
+<!-- 						</p:selectOneMenu> -->
+<!-- 					</f:facet> -->
+					<h:outputText
+						value="#{item.status eq true ? msg['common.opened'] : msg['common.closed'] }" />
+				</p:column>
+
+				<p:column 
+					style="text-align:center; width:10%" 
+					headerText="#{msg['gp.startDate']}">
+					<h:outputText value="#{item.startDate}">
+						<f:convertDateTime pattern="dd-MM-yyyy" />
+					</h:outputText>
+				</p:column>
+
+				<p:column 
+					style="text-align:center; width:10%" 
+					headerText="#{msg['gp.finishDate']}">
+					<h:outputText value="#{item.finishDate}">
+						<f:convertDateTime pattern="dd-MM-yyyy" />
+					</h:outputText>
+				</p:column>
+
+			</p:dataTable>
+
+		</h:form>
+
+		<div class="col-xs-12">
+			<p:outputLabel />
+		</div>
+
+
+		<h:form id="form-sd-list" class="container-fluid">
+
+			<p:dataTable var="item" value="#{graPeriodBean.students}"
+				id="dtStudent" rowKey="#{item.studentId}" selectionMode="single"
+				disabledSelection="#{graPeriodBean.readOnly == true}"
+				filteredValue="#{graPeriodBean.filteredStudents}"
+				rendered="#{graPeriodBean.students.size() > 0}"
+				emptyMessage="#{msg['common.noData']}" paginator="true" rows="20"
+				paginatorPosition="bottom" rowIndexVar="rowIndex"
+				widgetVar="dtStudentWV" editable="true" editMode="cell"
+				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="10,20,50,100">
+
+				<f:facet name="header">
+					<p:outputLabel value="#{msg['title.lstStudent']}"
+						style="font-weight:bold">
+					</p:outputLabel>
+					<p:outputLabel
+						value="#{graPeriodBean.graduationPeriod.graduationPeriodName}"
+						style="font-weight:bold">
+					</p:outputLabel>
+
+					<p:commandButton value="#{msg['common.resetValue']}"
+						styleClass="btn btn-default pull-right btnResetFilters hidden"
+						id="btnResetFilters" update="form-sd-list:dtStudent"
+						actionListener="#{graPeriodBean.resetFilters()}">
+					</p:commandButton>
+				</f:facet>
+
+
+
+				<p:column style="text-align:center; width:5%"
+					headerText="#{msg['common.index']}">
+					<h:outputText value="#{rowIndex + 1}" />
+				</p:column>
+
+				<p:column sortBy="#{item.studentId}" filterBy="#{item.studentId}"
+					style="text-align:center; width:11%" filterMatchMode="contains"
+					headerText="#{msg['st.studentId']}">
+					<h:outputText value="#{item.studentId}" />
+				</p:column>
+
+				<p:column sortBy="#{item.studentName}"
+					style="text-align:left; width:25%" filterBy="#{item.studentName}"
+					filterMatchMode="contains" headerText="#{msg['st.studentName']}">
+					<h:outputText value="#{item.studentName}" />
+				</p:column>
+
+				<p:column sortBy="#{item._class}" filterBy="#{item._class}"
+					style="text-align:center;" filterMatchMode="contains"
+					headerText="#{msg['st.class']}">
+					<h:outputText value="#{item._class}" />
+				</p:column>
+
+				<p:column filterBy="#{item.mComStatus}"
+					styleClass="text-center" headerText="#{msg['st.mComStatus']}"
+					filterMatchMode="equals">
+					<f:facet name="filter">
+						<p:selectOneMenu onchange="PF('dtStudentWV').filter()"
+							styleClass="form-control">
+							<f:converter converterId="javax.faces.Boolean" />
+							<f:selectItem itemLabel="Tất cả" noSelectionOption="true" />
+							<f:selectItem itemLabel="Chưa chuyển" itemValue="false" />
+							<f:selectItem itemLabel="Đã chuyển" itemValue="true" />
+							<p:ajax event="change" update="dtStudent" />
+						</p:selectOneMenu>
+					</f:facet>
+					<p:selectBooleanCheckbox value="#{item.mComStatus}"
+						disabled="#{graPeriodBean.readOnly}">
+						<p:ajax event="change"
+							update="cMComUpdateTime txtmComUserId dtStudent"
+							listener="#{graPeriodBean.autoUpdateDate(item, 'MCOM')}" />
+					</p:selectBooleanCheckbox>
+				</p:column>
+
+				<p:column sortBy="#{item.mComUpdateTime}"
+					style="text-align:center; width:20%"
+					filterBy="#{item.mComUpdateTime}" filterMatchMode="contains"
+					headerText="#{msg['st.libraryUT']}">
+					<h:outputText value="#{item.mComUpdateTime}"
+						id="cMComUpdateTime">
+						<f:convertDateTime pattern="dd-MM-yyyy HH:mm" />
+					</h:outputText>
+				</p:column>
+
+				<p:column sortBy="#{graPeriodBean.getUserName(item,'MCOM')}"
+					style="text-align:center;"
+					filterBy="#{graPeriodBean.getUserName(item,'MCOM')}"
+					filterMatchMode="contains" headerText="#{msg['user.acc']}">
+					<h:outputText
+						value="#{graPeriodBean.getUserName(item,'MCOM')}"
+						id="txtmComUserId" />
+				</p:column>
+				<f:facet name="footer">
+					<div class="col-xs-12 col-sm-12">
+						<div class="row">
+							<p:outputLabel value="Tổng số sinh viên trong đợt :">
+					#{fn:length(graPeriodBean.students)}
+					</p:outputLabel>
+							<h:commandButton value="#{msg['common.export']}"
+								styleClass="btn-export-zone pull-right">
+								<p:dataExporter type="xls" target="dtStudent"
+									fileName="Danh_sach_sinh_vien_theo_dot"
+									postProcessor="#{graPeriodBean.postProcessXLSO}" />
+							</h:commandButton>
+							<p:commandButton value="Cập nhật TT CSHĐ từ file excel" type="submit"
+								actionListener="#{graPeriodBean.showDLGIDep()}"
+								update="fIDepartment:dtStudentI"
+								styleClass="btn btn-default pull-right" immediate="true">
+							</p:commandButton>
+							<p:commandButton value="#{msg['common.apply']}" type="submit"
+								rendered="false" actionListener="#{graPeriodBean.saveStudent}"
+								update="dtStudent" styleClass="btn btn-default pull-right">
+								<p:confirm header="#{msg['common.apply']}"
+									message="#{msg['common.confirm_apply']}" icon="ui-icon-alert" />
+							</p:commandButton>
+						</div>
+
+						<div class="row">
+							<p:outputLabel
+								value="Tổng số sinh viên đã hoàn thành thủ tục chuyển SH Đảng : " />
+							<p:outputLabel value="#{graPeriodBean.countStudentsM()} / #{graPeriodBean.countStudentsO()}" />
+						</div>
+					</div>
+				</f:facet>
+			</p:dataTable>
+
+		</h:form>
+		<ui:include src="/admin/dlg_import_ocom.xhtml">
+		</ui:include>
+	</ui:define>
+</ui:composition>
+</html>

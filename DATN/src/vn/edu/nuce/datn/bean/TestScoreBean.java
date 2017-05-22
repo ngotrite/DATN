@@ -321,7 +321,7 @@ public class TestScoreBean extends BaseController implements Serializable {
 				testScore.setFilePath(file.getPath());
 				testScore.setFileName(file.getName());
 
-				testScoreDAO.save(testScore);
+				testScoreDAO.saveOrUpdate(testScore);
 //				testScores.add(testScore);
 				lstTestScoreDLG.add(testScore);
 				loadTestScore();
@@ -381,7 +381,7 @@ public class TestScoreBean extends BaseController implements Serializable {
 			testScore.setTest(test);
 			testScore.setFilePath(file.getPath());
 			testScore.setFileName(file.getName());
-			testScoreDAO.save(testScore);
+			testScoreDAO.saveOrUpdate(testScore);
 			lstTestScoreDLG.add(testScore);
 			testScores.add(testScore);
 			loadTestScore();

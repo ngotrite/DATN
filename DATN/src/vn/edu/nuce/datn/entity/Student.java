@@ -55,7 +55,7 @@ public class Student implements Serializable{
 	private Date departmentUpdateTime;
 	
 	@Column(name = "OCOM_STATUS")
-	private Boolean cComStatus;
+	private Boolean oComStatus;
 	
 	@Column(name = "MCOM_STATUS")
 	private Boolean mComStatus;
@@ -74,7 +74,6 @@ public class Student implements Serializable{
 	
 	@Column(name = "BRIEF_UPDATE_TIME")
 	private Date briefUpdateTime;
-	
 	
 	public String getStudentId() {
 		return studentId;
@@ -155,11 +154,12 @@ public class Student implements Serializable{
 	public void setDepartmentUpdateTime(Date departmentUpdateTime) {
 		this.departmentUpdateTime = departmentUpdateTime;
 	}
-	public Boolean getcComStatus() {
-		return cComStatus;
+	
+	public Boolean getoComStatus() {
+		return oComStatus;
 	}
-	public void setcComStatus(Boolean cComStatus) {
-		this.cComStatus = cComStatus;
+	public void setoComStatus(Boolean oComStatus) {
+		this.oComStatus = oComStatus;
 	}
 	public Boolean getmComStatus() {
 		return mComStatus;
@@ -197,4 +197,5 @@ public class Student implements Serializable{
 	public void setBriefUpdateTime(Date briefUpdateTime) {
 		this.briefUpdateTime = briefUpdateTime;
 	}
+	
 }

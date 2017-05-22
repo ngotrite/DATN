@@ -39,45 +39,40 @@
 					<h:outputText value="#{rowIndex + 1}" />
 				</p:column>
 
-				<p:column sortBy="#{item.graduationPeriodName}"
-					style="text-align:center; width:45%"
-					filterBy="#{item.graduationPeriodName}" filterMatchMode="contains"
+				<p:column style="text-align:center; width:45%"
 					headerText="#{msg['gp.graPeriodName']}">
 					<h:outputText value="#{item.graduationPeriodName}" />
 				</p:column>
 
 
-				<p:column sortBy="#{item.status}"
-					style="text-align:center; width:10%" filterBy="#{item.status}"
-					filterMatchMode="equals" headerText="#{msg['common.status']}">
-					<f:facet name="filter">
-						<p:selectOneMenu onchange="PF('dtGPWV').filter()"
-							value="#{graPeriodBean.student.schoolFeeStatus}"
-							styleClass="form-control">
-							<f:converter converterId="javax.faces.Boolean" />
-							<f:selectItem itemLabel="#{msg['common.all']}"
-								noSelectionOption="true" />
-							<f:selectItem itemLabel="#{msg['common.closed']}"
-								itemValue="false" />
-							<f:selectItem itemLabel="#{msg['common.opened']}"
-								itemValue="true" />
-							<p:ajax event="change" update="dtGP" />
-						</p:selectOneMenu>
-					</f:facet>
+				<p:column style="text-align:center; width:10%"
+					headerText="#{msg['common.status']}">
+					<!-- 					<f:facet name="filter"> -->
+					<!-- 						<p:selectOneMenu onchange="PF('dtGPWV').filter()" -->
+					<!-- 							value="#{graPeriodBean.student.schoolFeeStatus}" -->
+					<!-- 							styleClass="form-control"> -->
+					<!-- 							<f:converter converterId="javax.faces.Boolean" /> -->
+					<!-- 							<f:selectItem itemLabel="#{msg['common.all']}" -->
+					<!-- 								noSelectionOption="true" /> -->
+					<!-- 							<f:selectItem itemLabel="#{msg['common.closed']}" -->
+					<!-- 								itemValue="false" /> -->
+					<!-- 							<f:selectItem itemLabel="#{msg['common.opened']}" -->
+					<!-- 								itemValue="true" /> -->
+					<!-- 							<p:ajax event="change" update="dtGP" /> -->
+					<!-- 						</p:selectOneMenu> -->
+					<!-- 					</f:facet> -->
 					<h:outputText
 						value="#{item.status eq true ? msg['common.opened'] : msg['common.closed'] }" />
 				</p:column>
 
-				<p:column sortBy="#{item.startDate}" filterBy="#{item.startDate}"
-					style="text-align:center; width:10%" filterMatchMode="contains"
+				<p:column style="text-align:center; width:10%"
 					headerText="#{msg['gp.startDate']}">
 					<h:outputText value="#{item.startDate}">
 						<f:convertDateTime pattern="dd-MM-yyyy" />
 					</h:outputText>
 				</p:column>
 
-				<p:column sortBy="#{item.finishDate}" filterBy="#{item.finishDate}"
-					style="text-align:center; width:10%" filterMatchMode="contains"
+				<p:column style="text-align:center; width:10%"
 					headerText="#{msg['gp.finishDate']}">
 					<h:outputText value="#{item.finishDate}">
 						<f:convertDateTime pattern="dd-MM-yyyy" />
@@ -135,7 +130,7 @@
 				</p:column>
 
 				<p:column sortBy="#{item.studentName}"
-					style="text-align:center; width:25%" filterBy="#{item.studentName}"
+					style="text-align:left; width:25%" filterBy="#{item.studentName}"
 					filterMatchMode="contains" headerText="#{msg['st.studentName']}">
 					<h:outputText value="#{item.studentName}" />
 				</p:column>
@@ -162,7 +157,7 @@
 						disabled="#{graPeriodBean.readOnly}">
 						<p:ajax event="change"
 							update="cLibraryUpdateTime txtlibraryUserId dtStudent"
-							listener="#{graPeriodBean.autoUpdateDate(item)}" />
+							listener="#{graPeriodBean.autoUpdateDate(item, 'LIBRARY')}" />
 					</p:selectBooleanCheckbox>
 				</p:column>
 
@@ -176,7 +171,7 @@
 					<!-- 					</p:calendar> -->
 					<h:outputText value="#{item.libraryUpdateTime}"
 						id="cLibraryUpdateTime">
-						<f:convertDateTime pattern="dd-MM-yyyy" />
+						<f:convertDateTime pattern="dd-MM-yyyy HH:mm" />
 					</h:outputText>
 				</p:column>
 
@@ -200,7 +195,7 @@
 									fileName="Danh_sach_sinh_vien_theo_dot"
 									postProcessor="#{graPeriodBean.postProcessXLS}" />
 							</h:commandButton>
-							<p:commandButton value="#{msg['common.updateImp']}" type="submit"
+							<p:commandButton value="Cập nhật TT thư viện từ file excel" type="submit"
 								actionListener="#{graPeriodBean.showDLGIDep()}"
 								update="fIDepartment:dtStudentI"
 								styleClass="btn btn-default pull-right" immediate="true">

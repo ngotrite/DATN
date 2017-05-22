@@ -39,45 +39,42 @@
 					<h:outputText value="#{rowIndex + 1}" />
 				</p:column>
 
-				<p:column sortBy="#{item.graduationPeriodName}"
-					style="text-align:center; width:45%"
-					filterBy="#{item.graduationPeriodName}" filterMatchMode="contains"
+				<p:column style="text-align:center; width:45%"
 					headerText="#{msg['gp.graPeriodName']}">
 					<h:outputText value="#{item.graduationPeriodName}" />
 				</p:column>
 
 
-				<p:column sortBy="#{item.status}"
-					style="text-align:center; width:10%" filterBy="#{item.status}"
-					filterMatchMode="equals" headerText="#{msg['common.status']}">
-					<f:facet name="filter">
-						<p:selectOneMenu onchange="PF('dtGPWV').filter()"
-							value="#{graPeriodBean.student.schoolFeeStatus}"
-							styleClass="form-control">
-							<f:converter converterId="javax.faces.Boolean" />
-							<f:selectItem itemLabel="#{msg['common.all']}"
-								noSelectionOption="true" />
-							<f:selectItem itemLabel="#{msg['common.closed']}"
-								itemValue="false" />
-							<f:selectItem itemLabel="#{msg['common.opened']}"
-								itemValue="true" />
-							<p:ajax event="change" update="dtGP" />
-						</p:selectOneMenu>
-					</f:facet>
+				<p:column style="text-align:center; width:10%"
+					headerText="#{msg['common.status']}">
+					<!-- 					<f:facet name="filter"> -->
+					<!-- 						<p:selectOneMenu onchange="PF('dtGPWV').filter()" -->
+					<!-- 							value="#{graPeriodBean.student.schoolFeeStatus}" -->
+					<!-- 							styleClass="form-control"> -->
+					<!-- 							<f:converter converterId="javax.faces.Boolean" /> -->
+					<!-- 							<f:selectItem itemLabel="#{msg['common.all']}" -->
+					<!-- 								noSelectionOption="true" /> -->
+					<!-- 							<f:selectItem itemLabel="#{msg['common.closed']}" -->
+					<!-- 								itemValue="false" /> -->
+					<!-- 							<f:selectItem itemLabel="#{msg['common.opened']}" -->
+					<!-- 								itemValue="true" /> -->
+					<!-- 							<p:ajax event="change" update="dtGP" /> -->
+					<!-- 						</p:selectOneMenu> -->
+					<!-- 					</f:facet> -->
 					<h:outputText
 						value="#{item.status eq true ? msg['common.opened'] : msg['common.closed'] }" />
 				</p:column>
 
-				<p:column sortBy="#{item.startDate}" filterBy="#{item.startDate}"
-					style="text-align:center; width:10%" filterMatchMode="contains"
+				<p:column 
+					style="text-align:center; width:10%"
 					headerText="#{msg['gp.startDate']}">
 					<h:outputText value="#{item.startDate}">
 						<f:convertDateTime pattern="dd-MM-yyyy" />
 					</h:outputText>
 				</p:column>
 
-				<p:column sortBy="#{item.finishDate}" filterBy="#{item.finishDate}"
-					style="text-align:center; width:10%" filterMatchMode="contains"
+				<p:column
+					style="text-align:center; width:10%" 
 					headerText="#{msg['gp.finishDate']}">
 					<h:outputText value="#{item.finishDate}">
 						<f:convertDateTime pattern="dd-MM-yyyy" />
@@ -96,7 +93,7 @@
 		<h:form id="form-sd-list" class="container-fluid">
 
 			<p:dataTable var="item" value="#{graPeriodBean.students}"
-				id="dtStudentD" rowKey="#{item.studentId}" selectionMode="single"
+				id="dtStudent" rowKey="#{item.studentId}" selectionMode="single"
 				disabledSelection="#{graPeriodBean.readOnly == true}"
 				filteredValue="#{graPeriodBean.filteredStudents}"
 				rendered="#{graPeriodBean.students.size() > 0}"
@@ -136,7 +133,7 @@
 				</p:column>
 
 				<p:column sortBy="#{item.studentName}"
-					style="text-align:center; width:25%" filterBy="#{item.studentName}"
+					style="text-align:left; width:20%" filterBy="#{item.studentName}"
 					filterMatchMode="contains" headerText="#{msg['st.studentName']}">
 					<h:outputText value="#{item.studentName}" />
 				</p:column>
@@ -147,7 +144,27 @@
 					<h:outputText value="#{item._class}" />
 				</p:column>
 
-				<p:column filterBy="#{item.departmentStatus}"
+				<p:column filterBy="#{item.briefStatus}" styleClass="text-center"
+					style="text-align:center;" headerText="#{msg['st.briefStatus']}"
+					filterMatchMode="equals">
+					<f:facet name="filter">
+						<p:selectOneMenu onchange="PF('dtStudentWV').filter()"
+							styleClass="form-control" style="width:100px">
+							<f:converter converterId="javax.faces.Boolean" />
+							<f:selectItem itemLabel="Tất cả" noSelectionOption="true" />
+							<f:selectItem itemLabel="Chưa trả" itemValue="false" />
+							<f:selectItem itemLabel="Đã trả" itemValue="true" />
+							<p:ajax event="change" update="dtStudent" />
+						</p:selectOneMenu>
+					</f:facet>
+					<p:selectBooleanCheckbox value="#{item.briefStatus}"
+						disabled="true">
+						<p:ajax event="change" update="dtStudent"
+							listener="#{graPeriodBean.autoUpdateDate(item, 'BRIEF')}" />
+					</p:selectBooleanCheckbox>
+				</p:column>
+
+				<p:column filterBy="#{item.departmentStatus}" style="width:12%"
 					styleClass="text-center" headerText="#{msg['st.departmentS']}"
 					filterMatchMode="equals">
 					<f:facet name="filter">
@@ -164,12 +181,12 @@
 						disabled="#{graPeriodBean.readOnly}">
 						<p:ajax event="change"
 							update="cDepartmentUpdateTime txtdepartmentUserId dtStudent"
-							listener="#{graPeriodBean.autoUpdateDate(item)}" />
+							listener="#{graPeriodBean.autoUpdateDate(item, 'DEPARTMENT')}" />
 					</p:selectBooleanCheckbox>
 				</p:column>
 
 				<p:column sortBy="#{item.departmentUpdateTime}"
-					style="text-align:center; width:20%"
+					style="text-align:center; width:18%"
 					filterBy="#{item.departmentUpdateTime}" filterMatchMode="contains"
 					headerText="#{msg['st.departmentUT']}">
 					<!-- 					<p:calendar effect="fold" value="#{item.departmentUpdateTime}" -->
@@ -178,12 +195,12 @@
 					<!-- 					</p:calendar> -->
 					<h:outputText value="#{item.departmentUpdateTime}"
 						id="cDepartmentUpdateTime">
-						<f:convertDateTime pattern="dd-MM-yyyy" />
+						<f:convertDateTime pattern="dd-MM-yyyy HH:mm" />
 					</h:outputText>
 				</p:column>
 
 				<p:column sortBy="#{graPeriodBean.getUserName(item,'DEPARTMENT')}"
-					style="text-align:center;"
+					style="text-align:center;width:15%"
 					filterBy="#{graPeriodBean.getUserName(item,'DEPARTMENT')}"
 					filterMatchMode="contains" headerText="#{msg['user.acc']}">
 					<h:outputText
@@ -200,9 +217,9 @@
 								styleClass="btn-export-zone pull-right">
 								<p:dataExporter type="xls" target="dtStudent"
 									fileName="Danh_sach_sinh_vien_theo_dot"
-									postProcessor="#{graPeriodBean.postProcessXLS}" />
+									postProcessor="#{graPeriodBean.postProcessXLSD}" />
 							</h:commandButton>
-							<p:commandButton value="#{msg['common.updateImp']}" type="submit"
+							<p:commandButton value="Cập nhật TT tại Khoa/Ban từ file excel" type="submit"
 								actionListener="#{graPeriodBean.showDLGIDep()}"
 								update="fIDepartment:dtStudentI"
 								styleClass="btn btn-default pull-right" immediate="true">
@@ -219,6 +236,10 @@
 							<p:outputLabel
 								value="Tổng số sinh viên đã hoàn thành thủ tục tại khoa :" />
 							<p:outputLabel value="#{graPeriodBean.countStudentsD()}" />
+						</div>
+						<div class="row">
+							<p:outputLabel value="Tổng số sinh viên đã rút hồ sơ sinh viên :" />
+							<p:outputLabel value="#{graPeriodBean.countStudentsB()}" />
 						</div>
 					</div>
 				</f:facet>
