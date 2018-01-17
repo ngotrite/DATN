@@ -117,7 +117,7 @@ public class AuthorizationFilter implements Filter {
 				}
 				
 				if (reqURI.indexOf("home.xhtml;jsessionid") > 0){
-					resp.sendRedirect(reqt.getContextPath() + "/");
+					resp.sendRedirect(reqt.getContextPath() + "/admin/login.xhtml");
 				}
 				if (reqURI.indexOf("/admin") > 0){
 					resp.sendRedirect(reqt.getContextPath() + "/admin/login.xhtml");

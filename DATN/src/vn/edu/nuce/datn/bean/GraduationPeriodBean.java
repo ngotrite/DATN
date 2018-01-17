@@ -75,6 +75,8 @@ public class GraduationPeriodBean extends BaseController implements Serializable
 
 	private List<Student> lstImport;
 
+	private List<Student> lstStudentByGraNotComplete;
+	
 	@PostConstruct
 	public void init() {
 		this.graduationPeriod = new GraduationPeriod();
@@ -92,6 +94,7 @@ public class GraduationPeriodBean extends BaseController implements Serializable
 		this.lstImport = new ArrayList<Student>();
 		loadGraduatonPeriods();
 		this.students.size();
+		this.lstStudentByGraNotComplete = new ArrayList<Student>();
 	}
 	
 	public String createReportStudent() {
@@ -793,6 +796,68 @@ public class GraduationPeriodBean extends BaseController implements Serializable
 			}
 		}
 	}
+	
+	public void postProcessXLSStudentByGraNotComplete(Object document) {
+		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/YYYY");
+		HSSFWorkbook wb = (HSSFWorkbook) document;
+		try {
+			HSSFSheet sheet = wb.getSheetAt(0);
+			sheet.shiftRows(0, sheet.getLastRowNum(), 1);
+			sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 2));
+			Row row = sheet.getRow(0);
+			row.setHeight((short) 550);
+			Cell cell00 = row.createCell(0);
+			cell00.setCellValue(
+					"Danh sách sinh viên chưa upload bảng điểm tốt nghiệp đợt " + graduationPeriod.getGraduationPeriodName()
+							+ " (" + "tính đến ngày " + dateFormat.format(toDate) + ")");
+			CellStyle styleHeader = wb.createCellStyle();
+			Font boldHeader = wb.createFont();
+			boldHeader.setBoldweight(Font.BOLDWEIGHT_BOLD);
+			boldHeader.setFontHeightInPoints((short) 12);
+			boldHeader.setFontName("Times New Roman");
+			styleHeader.setAlignment(CellStyle.ALIGN_CENTER);
+			styleHeader.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+			styleHeader.setFont(boldHeader);
+			styleHeader.setFillForegroundColor(IndexedColors.LIGHT_GREEN.getIndex());
+			styleHeader.setFillPattern(CellStyle.SOLID_FOREGROUND);
+			cell00.setCellStyle(styleHeader);
+			sheet.shiftRows(1, sheet.getLastRowNum(), 1);
+
+			HSSFRow header = sheet.getRow(2);
+			header.setHeight((short) 300);
+			HSSFCellStyle cellStyle = wb.createCellStyle();
+			cellStyle.setAlignment(CellStyle.ALIGN_CENTER);
+			cellStyle.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+			cellStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+			cellStyle.setFillPattern(CellStyle.SOLID_FOREGROUND);
+			cellStyle.setWrapText(true);
+			Font bold = wb.createFont();
+			bold.setBoldweight(Font.BOLDWEIGHT_BOLD);
+			bold.setFontHeightInPoints((short) 12);
+			bold.setFontName("Times New Roman");
+			cellStyle.setFont(bold);
+			for (int i = 0; i < header.getPhysicalNumberOfCells(); i++) {
+				HSSFCell cell = header.getCell(i);
+				cell.setCellStyle(cellStyle);
+			}
+			for (int colNum = 0; colNum < header.getLastCellNum(); colNum++)
+				wb.getSheetAt(0).autoSizeColumn(colNum);
+			for (Row r : sheet) {
+				for (int colNum = 0; colNum < r.getLastCellNum(); colNum++) {
+					Cell cell = r.getCell(colNum);
+				}
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+		} finally {
+			try {
+				wb.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
 
 	public void resetFilters() {
 		DataTable dataTable = (DataTable) FacesContext.getCurrentInstance().getViewRoot()
@@ -993,6 +1058,22 @@ public class GraduationPeriodBean extends BaseController implements Serializable
 	public List<Student> loadStudentByGP(long graduationPeriodId) {
 		students = new ArrayList<Student>();
 		students = studentDAO.findSTByGP(graduationPeriodId);
+		
+//		if (student.getDepartmentStatus() && student.getLibraryStatus() && student.getSchoolFeeStatus()) {
+//			if (student.getoComStatus()) {
+//				if (student.getmComStatus()) {
+//					System.out.println("Da hoan thanh thu tuc");
+//				}else {
+//					System.out.println("Chua hoan thanh thu tuc");
+//				}
+//			}else {
+//				System.out.println("Da hoan thanh thu tuc");
+//			}
+//		}
+//		
+//		boolean is = student.getDepartmentStatus() && student.getLibraryStatus() && student.getSchoolFeeStatus() ? 
+//				(student.getoComStatus() ? (student.getmComStatus() ? true : false) : true):false;
+
 		return students;
 	}
 
@@ -1066,6 +1147,7 @@ public class GraduationPeriodBean extends BaseController implements Serializable
 		countStudentsL();
 		countStudentsB();
 		countStudentsO();
+		loadStudentByGraNotComplete(((GraduationPeriod) event.getObject()).getGraduationPeriodId());
 	}
 
 	public void onRowUnselect(UnselectEvent event) {
@@ -1456,11 +1538,19 @@ public class GraduationPeriodBean extends BaseController implements Serializable
 		}
 		return result;
 	}
+	
+	public List<Student> loadStudentByGraNotComplete(long graduationPeriodId) {
+		lstStudentByGraNotComplete = studentDAO.findStudentByGraNotComplete(graduationPeriodId);
+		return lstStudentByGraNotComplete;
+	}
 
 	private void loadGraduatonPeriods() {
 		graduationPeriods = graduationPeriodDAO.findAllGP();
+//		if (Objects.isNull(graduationPeriod)) {
+//			loadStudentByGraNotComplete(this.graduationPeriod.getGraduationPeriodId());
+//		}
 	}
-
+	
 	// GET SET
 
 	public GraduationPeriod getGraduationPeriod() {
@@ -1567,4 +1657,12 @@ public class GraduationPeriodBean extends BaseController implements Serializable
 		this.lstImport = lstImport;
 	}
 
+	public List<Student> getLstStudentByGraNotComplete() {
+		return lstStudentByGraNotComplete;
+	}
+
+	public void setLstStudentByGraNotComplete(List<Student> lstStudentByGraNotComplete) {
+		this.lstStudentByGraNotComplete = lstStudentByGraNotComplete;
+	}
+	
 }

@@ -2,6 +2,7 @@ package vn.edu.nuce.datn.dao;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 import org.hibernate.Criteria;
 //import org.hibernate.Query;
@@ -10,6 +11,7 @@ import org.hibernate.query.Query;
 
 import vn.edu.nuce.datn.db.HibernateUtil;
 import vn.edu.nuce.datn.db.Operator;
+import vn.edu.nuce.datn.entity.Student;
 import vn.edu.nuce.datn.util.CommonUtil;
 
 /**
@@ -174,6 +176,32 @@ public abstract class BaseDAO<T> {
 	public List<T> findByConditionsWithoutDomain(String[] cols, Operator[] operators, Object[] values, String orders) {
 		return this.findByConditionsWithoutDomain(getEntityClass(), cols, operators, values, orders);
 	}
+//	public <E> List<E> findByConditionsWithoutDomain(Class<E> clazz, String[] cols, Operator[] operators, Object[] values, String orders) {
+//
+//		Session session = HibernateUtil.getOpenSession();
+//		List<E> lst = null;
+//		try {
+//
+//			// Criteria cri = session.createCriteria(clazz);
+//			String queryString = "SELECT obj FROM " + clazz.getName() + " obj WHERE 1 = 1 ";
+//			queryString += getWhereString(cols, operators);
+//
+//			if (!CommonUtil.isEmpty(orders))
+//				queryString += " ORDER BY " + orders;
+//
+//			Query<E> query = session.createQuery(queryString);
+//			setWhereParam(cols, operators, values, query);
+//			lst = query.getResultList();
+//		} catch (Exception e) {
+//			//e.printStackTrace();
+//			throw e;
+//		} finally {
+//			session.close();
+//		}
+//
+//		return lst;
+//	}
+	
 	public <E> List<E> findByConditionsWithoutDomain(Class<E> clazz, String[] cols, Operator[] operators, Object[] values, String orders) {
 
 		Session session = HibernateUtil.getOpenSession();
@@ -183,10 +211,12 @@ public abstract class BaseDAO<T> {
 			// Criteria cri = session.createCriteria(clazz);
 			String queryString = "SELECT obj FROM " + clazz.getName() + " obj WHERE 1 = 1 ";
 			queryString += getWhereString(cols, operators);
-
-			if (!CommonUtil.isEmpty(orders))
-				queryString += " ORDER BY " + orders;
-
+			if(clazz.getName().equalsIgnoreCase(Student.class.getName())){
+				queryString += " ORDER BY substring(obj.studentId,length(obj.studentId) -1, 2) DESC , obj._class DESC " + (!CommonUtil.isEmpty(orders) ? "," + orders : "");
+			} else {
+				if (!CommonUtil.isEmpty(orders))
+					queryString += " ORDER BY " + orders;
+			}
 			Query<E> query = session.createQuery(queryString);
 			setWhereParam(cols, operators, values, query);
 			lst = query.getResultList();
@@ -199,8 +229,7 @@ public abstract class BaseDAO<T> {
 
 		return lst;
 	}
-
-
+	
 	private <E> void setWhereParam(String[] cols, Operator[] operators, Object[] values, Query<E> query) {
 		for (int i = 0; i < cols.length; i++) {
 			if (Operator.IN.equals(operators[i])) {
@@ -442,6 +471,6 @@ public abstract class BaseDAO<T> {
 			session.close();
 		}
 	}
-
+	
 	abstract protected Class<T> getEntityClass();
 }

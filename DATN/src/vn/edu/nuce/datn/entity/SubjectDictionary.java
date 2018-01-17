@@ -45,7 +45,5 @@ public class SubjectDictionary implements Serializable {
 	public void setSubjectId(String subjectId) {
 		this.subjectId = subjectId;
 	}
-
 	
-
 }

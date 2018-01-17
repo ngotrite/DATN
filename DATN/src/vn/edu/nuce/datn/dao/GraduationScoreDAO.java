@@ -96,5 +96,22 @@ public class GraduationScoreDAO extends BaseDAO<GraduationScore> implements Seri
 		}
 		return result;
 	}
+	
+	public List<GraduationScore> getLstCheckGraduationScore(String createDate) {
+		Session session = HibernateUtil.getOpenSession();
+		List<GraduationScore> lst = null;
+		try {
+
+			String queryString = "SELECT * FROM  graduation_score WHERE DATE_FORMAT(CREATE_DATE, '%Y%m%d') >= " + createDate;
+			Query query = session.createNativeQuery(queryString, GraduationScore.class); 
+			lst = query.getResultList();
+		} catch (Exception e) {
+			//e.printStackTrace();
+			throw e;
+		} finally {
+			session.close();
+		}
+		return lst;
+	}
 
 }

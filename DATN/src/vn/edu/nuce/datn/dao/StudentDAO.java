@@ -72,6 +72,16 @@ public class StudentDAO extends BaseDAO<Student> implements Serializable {
 		return lst;
 	}
 
+//	public List<Student> findSTUFinishedByGP(Long graduationPeriodId) {
+//		List<Student> lst = null;
+//		String[] cols = { "graduationPeriodId" , "schoolFeeStatus", "libraryStatus" , "departmentStatus" };
+//		Operator[] operators = { Operator.EQ , Operator.EQ , Operator.EQ, Operator.EQ };
+//		Object[] values = { graduationPeriodId , false, false, false};
+//		lst = findByConditionsWithoutDomain(cols, operators, values, "");
+//		return lst;
+//	}
+//	
+	
 	public List<Student> findSTUFinishedByGP(Long graduationPeriodId) {
 		List<Student> lst = null;
 		String[] cols = { "graduationPeriodId" , "schoolFeeStatus", "libraryStatus" , "departmentStatus" };
@@ -80,6 +90,8 @@ public class StudentDAO extends BaseDAO<Student> implements Serializable {
 		lst = findByConditionsWithoutDomain(cols, operators, values, "");
 		return lst;
 	}
+	
+	
 	
 	public List<Student> findSTSFFinishedByGP(Long graduationPeriodId) {
 		List<Student> lst = null;
@@ -439,6 +451,31 @@ public class StudentDAO extends BaseDAO<Student> implements Serializable {
 		return result;
 	}
 
+	public List<Student> findStudentByGraNotComplete(Long graduationPeriodId) {
+
+		List<Student> lst = null;
+		String hql = " SELECT a FROM Student a "
+				+ "WHERE "
+				+ "NOT EXISTS (SELECT 1 "
+				+ "FROM GraduationScore b "
+				+ "WHERE b.studentId = a.studentId) "
+//				+ "AND b.status = 0) "
+				+ "AND a.graduationPeriodId = :graduationPeriodId";
+
+		Session session = HibernateUtil.getOpenSession();
+		try {
+
+			Query query = session.createQuery(hql);
+			query.setParameter("graduationPeriodId", graduationPeriodId);
+			lst = query.getResultList();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			session.close();
+		}
+
+		return lst;
+	}
 
 	
 	@Override

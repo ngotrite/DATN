@@ -9,6 +9,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.nio.channels.FileChannel;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -62,7 +64,7 @@ public class GraduationScoreBean extends BaseController implements Serializable 
 		this.isEdit = false;
 	}
 	String srcPath = ResourceBundleUtil.getString("server.path.document");
-
+//	String srcPath = ResourceBundleUtil.getString("local.path.document");
 	public void showDialogGS(GraduationScore graScore) {
 		if (graScore == null) {
 			this.graScore = new GraduationScore();
@@ -133,6 +135,7 @@ public class GraduationScoreBean extends BaseController implements Serializable 
 			graScoresSelection.clear();
 			activeButton();
 			loadGraScores();
+			resetDataTable("form-gs-list:dtGraScore");
 			this.showMessageINFO("validate.deleteSuccess", super.readProperties(""));
 		} else {
 			System.out.println("Fail");
@@ -201,7 +204,11 @@ public class GraduationScoreBean extends BaseController implements Serializable 
 			graScore.setStudentId(studentId);
 			graScore.setFileName(file.getName());
 			graScore.setFilePath(file.getPath());
-
+			
+			// set mặc định khi upload thành công
+			graScore.setStatus(true);
+			graScore.setCreateDate(new Date());
+			
 			graScoreDAO.saveOrUpdate(graScore);
 			lstgraScoresDLG.add(graScore);
 			graScores.add(graScore);
@@ -211,6 +218,25 @@ public class GraduationScoreBean extends BaseController implements Serializable 
 		}
 	}
 	
+	
+	public void checkUploadStatus(){
+		LocalDate now = LocalDate.now();
+		String dateStr = now.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+		GraduationScoreDAO graduationScoreDAO = new GraduationScoreDAO();
+		List<GraduationScore> lstGraduationScore = graduationScoreDAO.getLstCheckGraduationScore(dateStr);
+		List<GraduationScore> lstUpdate = new ArrayList<>();
+		for(GraduationScore item: lstGraduationScore){
+//			File file = new File(ResourceBundleUtil.getString("local.path.document") + item.getFileName());
+			File file = new File(ResourceBundleUtil.getString("server.path.document") + item.getFileName());
+			if (!file.exists()) {
+				item.setStatus(false);
+				lstUpdate.add(item);
+			}
+		}
+		if (lstUpdate.size() >= 0) {
+			graduationScoreDAO.saveGS(lstUpdate);
+		}
+    }
 
 
 	// View File PDF
@@ -297,12 +323,16 @@ public class GraduationScoreBean extends BaseController implements Serializable 
 				graScore.setStudentId(studentId);
 				graScore.setFileName(file.getName());
 				graScore.setFilePath(file.getPath());
+				
+				// set mặc định khi upload thành công
+//				graScore.setStatus(true);
+//				graScore.setCreateDate(new Date());
 
 				graScoreDAO.saveOrUpdate(graScore);
 //				graScores.add(graScore);
 				lstgraScoresDLG.add(graScore);
 				loadGraScores();
-				FacesMessage message = new FacesMessage("Succesful", event.getFile().getFileName() + " is uploaded.");
+				FacesMessage message = new FacesMessage("Succesfull", event.getFile().getFileName() + " is uploaded.");
 				FacesContext.getCurrentInstance().addMessage(null, message);
 			} else {
 				System.out.println("selectedTestScore is null");

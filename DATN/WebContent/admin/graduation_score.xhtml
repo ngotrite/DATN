@@ -40,7 +40,7 @@
 					styleClass="btn_edit_file_upload_gs"
 					fileUploadListener="#{graScoreBean.editFileUpload}" mode="advanced"
 					dragDropSupport="true" multiple="false" auto="true"
-					sizeLimit="999999" fileLimit="60000"
+					sizeLimit="99999999" fileLimit="60000"
 					update="form-gs-list:dtGraScore dtGraScoreDLG form-gs-input"
 					fileLimitMessage="#{msg['validate.fileLimit']}"
 					invalidSizeMessage="#{msg['validate.importSize']}"
@@ -159,7 +159,30 @@
 				<h:outputText
 					value="#{graScoreBean.viewInfoStu(item, 'GRAPERIOD_NAME')}" />
 			</p:column>
-
+			
+<!-- 			<p:column sortBy="#{item.status}" filterBy="#{item.status}" -->
+<!-- 				style="text-align:center; width:15%" filterMatchMode="contains" -->
+<!-- 				headerText="Trạng thái"> -->
+<!-- 				<h:outputText value="#{item.status}"  /> -->
+<!-- 			</p:column> -->
+			
+			<p:column filterBy="#{item.status}"
+					styleClass="text-center" headerText="Trạng thái"
+					filterMatchMode="equals">
+					<f:facet name="filter">
+						<p:selectOneMenu onchange="PF('tblGraScoreWV').filter()"
+							value="#{graScoreBean.graScore.status}"
+							styleClass="form-control" >
+							<f:converter converterId="javax.faces.Boolean" />
+							<f:selectItem itemLabel="Tất cả" noSelectionOption="null" />
+							<f:selectItem itemLabel="Chưa upload" itemValue="false" />
+							<f:selectItem itemLabel="Đã upload" itemValue="true" />
+							<p:ajax event="change" update="dtGraScore" />
+						</p:selectOneMenu>
+					</f:facet>
+					<h:outputText value="#{item.status eq true ? 'Đã upload' : 'Chưa upload'}"/>
+				</p:column>
+			
 			<p:column headerText="#{msg['common.action']}"
 				style="text-align:center; width:17%">
 				<f:facet name="header">
@@ -218,6 +241,12 @@
 					styleClass="pull-right">
 					<p:confirm header="#{msg['common.delete']}"
 						message="#{msg['common.confirmDelete']}" icon="ui-icon-alert" />
+				</p:commandButton>
+				
+				<p:commandButton value="Làm mới"
+					 update="form-gs-list:dtGraScore"
+					actionListener="#{graScoreBean.checkUploadStatus()}"
+					styleClass="pull-right">
 				</p:commandButton>
 			</f:facet>
 

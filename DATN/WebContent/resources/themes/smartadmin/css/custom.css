@@ -1199,6 +1199,10 @@ button>span {
 	background: #EDF1F5;
 }
 
+.rowColorGreen {
+	background: #66ff66;
+}
+
 .btn-remove-background {
 	background: red !important;
 }

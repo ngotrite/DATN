@@ -60,7 +60,6 @@ public class GraduationPeriodDAO extends BaseDAO<GraduationPeriod> implements Se
 			// SAVE GRADUATION PERIOD
 			session.saveOrUpdate(graduationPeriod);
 			// SAVE OR UPDATE STUDENTS
-			
 			for (int i = 0; i < lstST.size(); i++) {
 				Student stMap = lstST.get(i);
 				stMap.setGraduationPeriodId(graduationPeriod.getGraduationPeriodId());
