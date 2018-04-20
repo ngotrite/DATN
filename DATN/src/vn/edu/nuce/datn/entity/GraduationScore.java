@@ -13,6 +13,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.GenerationTime;
 
 @SuppressWarnings("serial")
 @Entity
@@ -32,8 +33,8 @@ public class GraduationScore implements Serializable {
 	@ColumnDefault(value = "false")
 	private Boolean status;
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "CREATE_DATE", nullable = false)
+	@Column(name = "CREATE_DATE",columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP", insertable=false)
+	@Temporal(TemporalType.TIMESTAMP)	
 	private Date createDate;
 
 	public String getStudentId() {
